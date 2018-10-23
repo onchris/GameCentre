@@ -3,7 +3,7 @@
 * Set up the repository with Kevin's A2 files
 * set up the team agreement contract
 
-## Phase 1 Tasks
+## Phase 1 Tasks (from Quercus)
 Phase 1 (adding functionality to A2)
 * Game launch centre:
     * Sign up/Sign in: Users should be able to sign up for an
@@ -44,3 +44,7 @@ Phase 1 (adding functionality to A2)
 ## Tasks to be completed
 * fill out and complete the team agreement
 * make a plan for how to complete the tasks for phase 1
+* make README.md file
+    * Will instruct the marker on how to run your program and describe
+    the various functionalities you have implemented, and any other
+    information we need to set up and run your code
