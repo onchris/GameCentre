@@ -1,24 +1,24 @@
 # Team Agreement
 
-##Contact Information
+## Contact Information
 
 ### Janet Wang
 Email: jienet.wang@mail.utoronto.ca
 Phone: 6138900056
 
-###Shixiu Lin
+### Shixiu Lin
 Email: shixiu.lin@mail.utoronto.ca
 Phone: 6475712831
 
-###Kevin Li
+### Kevin Li
 Email:
 Phone:
 
-###Kangming Gu
+### Kangming Gu
 Email:
 Phone:
 
-##Communication tools
+## Communication tools
 Facebook Messenger
 
-##Team Contract
+## Team Contract
