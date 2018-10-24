@@ -1,0 +1,21 @@
+# Meeting 1: 2018/10/24
+## Tasks completed during the meeting
+* Finished up the TEAM agreement
+* added README.md file
+* Broke down the design for Phase 1:
+    * Adding a GameLaunchCentre screen at the beginning
+        * will have sign-in/sign-up/play as guest functionality
+    * Adding a Scoreboard
+        * Calculate Score
+        * List of scores
+        * add/remove scores
+    * Adding choosing game complexity to StartingActivity
+    * Adding undo and autosave to BoardManager
+
+## Tasks to be completed
+* need to decide on a scoring system - to add to Scoreboard
+* Kevin will work on GameLaunchCentre
+* Janet will work on Scoreboard
+* Kangming will work on StartingActivity (adding game complexity
+    options)
+* Shixiu will work on BoardManager (adding undo and autosave)
