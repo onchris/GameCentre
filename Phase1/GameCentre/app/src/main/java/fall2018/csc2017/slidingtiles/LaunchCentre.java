@@ -27,6 +27,8 @@ public class LaunchCentre extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_launchcentre);
+        addGuestButtonListener();
     }
 
     public void saveCredentialsToFile(String fileName){
@@ -64,6 +66,17 @@ public class LaunchCentre extends AppCompatActivity {
                 if(authUser()) {
                     Intent tmp = new Intent(v.getContext(), GameActivity.class);
                 }
+            }
+        });
+    }
+
+    private void addGuestButtonListener() {
+        Button guestButton = findViewById(R.id.button_guest);
+        guestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent tmp = new Intent(v.getContext(), GameSelection.class);
+                startActivity(tmp);
             }
         });
     }
