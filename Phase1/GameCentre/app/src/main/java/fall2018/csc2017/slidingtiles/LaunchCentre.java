@@ -148,8 +148,8 @@ public class LaunchCentre extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent tmp = new Intent(v.getContext(), GameSelection.class);
-                tmp.putExtra("currentUser", currentUser);
                 currentUser = "-1";
+                tmp.putExtra("currentUser", currentUser);
                 startActivity(tmp);
             }
         });

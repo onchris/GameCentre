@@ -14,7 +14,10 @@ public class GameSelection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
         currentUserTextView = findViewById(R.id.text_loggedas);
-        currentUserTextView.setText(getIntent().getStringExtra("currentUser"));
+        if(!getIntent().getStringExtra("currentUser").equals("-1"))
+            currentUserTextView.setText(getIntent().getStringExtra("currentUser"));
+        else
+            currentUserTextView.setText("Guest");
         addSlidingGameButtonListener();
     }
 
