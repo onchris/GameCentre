@@ -1,9 +1,10 @@
 package fall2018.csc2017.slidingtiles;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Account {
+public class Account implements Serializable {
     private String username;
     private String password;
     private List<BoardManager> boardList = new ArrayList<>();
@@ -33,6 +34,10 @@ public class Account {
     public void addToBoardList(BoardManager board) {
         if(!boardList.contains(board))
             boardList.add(board);
+    }
+
+    public boolean equals(Account account){
+        return account.getUsername().equals(this.getUsername());
     }
 
     public void resetBoardList(){

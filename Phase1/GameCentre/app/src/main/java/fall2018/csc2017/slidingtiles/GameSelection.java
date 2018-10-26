@@ -4,18 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class GameSelection extends AppCompatActivity {
+    private TextView currentUserTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
-        addLoginButtonListener();
+        currentUserTextView = findViewById(R.id.text_loggedas);
+        currentUserTextView.setText(getIntent().getStringExtra("currentUser"));
+        addSlidingGameButtonListener();
     }
 
-    private void addLoginButtonListener() {
+    private void addSlidingGameButtonListener() {
         ImageButton game1Button = findViewById(R.id.button_gameselect1);
         game1Button.setOnClickListener(new View.OnClickListener() {
             @Override

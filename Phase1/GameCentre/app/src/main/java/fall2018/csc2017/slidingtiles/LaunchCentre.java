@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,14 +25,23 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class LaunchCentre extends AppCompatActivity {
 
-    public static final String SAVE_FILENAME = "account_file.ser";
+    public static final String ACCOUNTS_FILENAME = "account_file.ser";
     private List<Account> accountsList = new ArrayList<>();
+    private EditText userTextField;
+    private EditText passwordTextField;
+    private static String currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launchcentre);
+        loadAccountsFromFile(ACCOUNTS_FILENAME);
         addGuestButtonListener();
+        addRegisterButtonListener();
+        addLoginButtonListener();
+        addPasswordOnKeyListener();
+        userTextField = findViewById(R.id.text_username);
+        passwordTextField = findViewById(R.id.text_password);
     }
 
     public void saveCredentialsToFile(String fileName){
@@ -58,16 +71,75 @@ public class LaunchCentre extends AppCompatActivity {
         }
     }
 
+    private void addPasswordOnKeyListener(){
+        EditText passwordField = findViewById(R.id.text_password);
+        passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    Button loginButton = findViewById(R.id.button_login);
+                    loginButton.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void addRegisterButtonListener(){
+        Button registerButton = findViewById(R.id.button_register);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String regUsername = userTextField.getText().toString();
+                String regPassword = passwordTextField.getText().toString();
+                Account newAccount = new Account(regUsername, regPassword);
+                if(regUsername.equals("Guest") || regUsername.equals("guest")){
+                    makeCustomToastText("Account name reserved for guests only!");
+                }
+                else if(!checkExistingAccount(newAccount)){
+                    accountsList.add(newAccount);
+                    saveCredentialsToFile(ACCOUNTS_FILENAME);
+                    makeCustomToastText("Account creation successful!");
+                }
+                else{
+                    makeCustomToastText("Account already exists!");
+                }
+            }
+        });
+    }
+    private boolean checkExistingAccount(Account account){
+        if(accountsList.isEmpty())
+            return false;
+        for(Account existingAccount: accountsList)
+        {
+            if(existingAccount.equals(account))
+                return true;
+        }
+        return false;
+    }
+
     private void addLoginButtonListener() {
         Button loginButton = findViewById(R.id.button_login);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(authUser()) {
-                    Intent tmp = new Intent(v.getContext(), GameActivity.class);
+                    makeCustomToastText("Login sucessful!");
+                    Intent tmp = new Intent(v.getContext(), GameSelection.class);
+                    tmp.putExtra("currentUser", currentUser);
+                    startActivity(tmp);
+                }
+                else{
+                    makeCustomToastText("Wrong credentials, please try again!");
                 }
             }
         });
+    }
+
+    private void makeCustomToastText(String displayText)
+    {
+        Toast.makeText(this, displayText, Toast.LENGTH_SHORT).show();
     }
 
     private void addGuestButtonListener() {
@@ -76,6 +148,8 @@ public class LaunchCentre extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent tmp = new Intent(v.getContext(), GameSelection.class);
+                tmp.putExtra("currentUser", currentUser);
+                currentUser = "-1";
                 startActivity(tmp);
             }
         });
@@ -83,13 +157,12 @@ public class LaunchCentre extends AppCompatActivity {
 
 
     public boolean authUser(){
-        EditText userTextField = findViewById(R.id.text_username);
-        EditText passwordTextField = findViewById(R.id.text_password);
         String username = userTextField.getText().toString();
         String password = passwordTextField.getText().toString();
         for(Account acc: accountsList)
         {
             if(username.equals(acc.getUsername())&& password.equals(acc.getPassword())){
+                currentUser = username;
                 return true;
             }
         }
