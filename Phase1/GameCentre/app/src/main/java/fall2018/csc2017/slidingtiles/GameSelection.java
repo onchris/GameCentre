@@ -159,23 +159,12 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         atLoadGameScreen = true;
     }
     /**
-     * Generates 10 games to the list
+     * On click function for SlidingTile game selection button
      * @param v the current view(Called by application)
-     * @deprecated To be deleted in final build
      */
-    public void debugOnClick(View v){
-        for(int i = 0; i < 10; i++) {
-            List<Tile> tiles = new ArrayList<>();
-            final int numTiles = Board.NUM_ROWS * Board.NUM_COLS;
-            for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-            tiles.add(new Tile(tileNum));
-            }
-        Collections.shuffle(tiles);
-        boardList.add(new Board(tiles));
-        }
-        LaunchCentre.makeCustomToastText("successfully generated boards for debug",getBaseContext());
-        CustomScrollView customScrollView = findViewById(R.id.scrollable_loadablegames);
-        customScrollView.setAdapter(new LoaderAdapter((ArrayList<Board>) boardList, customScrollView.getContext()));
+    public void resetOnClick(View v){
+        boardList.clear();
+        loaderAdapter.notifyDataSetChanged();
     }
     /**
      * Handles the functionality of the phone's back button
