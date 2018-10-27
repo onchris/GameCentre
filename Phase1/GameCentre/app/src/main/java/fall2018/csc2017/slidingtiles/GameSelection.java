@@ -35,6 +35,7 @@ public class GameSelection extends AppCompatActivity {
         if(!getIntent().getStringExtra("currentUser").equals("-1")) {
             currentUsername = getIntent().getStringExtra("currentUser");
             currentUserTextView.setText(currentUsername);
+            getCurrentAccount(currentUsername);
         }
         else {
             currentUserTextView.setText("Guest");
@@ -43,8 +44,7 @@ public class GameSelection extends AppCompatActivity {
         if(isGuest)
             boardList = new ArrayList<>();
         else
-            currentAccount.getBoardList();
-        getCurrentAccount(currentUsername);
+            boardList = currentAccount.getBoardList();
         addSlidingGameButtonListener();
     }
 
@@ -97,17 +97,13 @@ public class GameSelection extends AppCompatActivity {
                     boardList.add(new Board(tiles));
                 }
                 //currentAccount.setBoardList(boardList);
-                makeCustomToastText("successfully generated boards for debug");
+                LaunchCentre.makeCustomToastText("successfully generated boards for debug",getBaseContext());
                 CustomScrollView customScrollView = findViewById(R.id.scrollable_loadablegames);
                 customScrollView.setLoadingList(boardList);
                 customScrollView.setNestedScrollingEnabled(true);
                 customScrollView.setAdapter(new LoaderAdapter((ArrayList<Board>) boardList, customScrollView.getContext()));
             }
         });
-    }
-    private void makeCustomToastText(String displayText)
-    {
-        Toast.makeText(this, displayText, Toast.LENGTH_SHORT).show();
     }
 
     public static void saveToFile(String fileName, BoardManager bm, Context ctx) {

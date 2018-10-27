@@ -7,7 +7,7 @@ import java.util.List;
 public class Account implements Serializable {
     private String username;
     private String password;
-    private List<Board> boardList = new ArrayList<>();
+    private ArrayList<Board> boardList = new ArrayList<>();
     public int numSolved, highscore;
 
     public Account(String username, String password){
@@ -27,7 +27,7 @@ public class Account implements Serializable {
         this.password = password;
     }
 
-    public List<Board> getBoardList() {
+    public ArrayList<Board> getBoardList() {
         return boardList;
     }
 
@@ -36,7 +36,7 @@ public class Account implements Serializable {
             boardList.add(board);
     }
 
-    public void setBoardList(List<Board> boardList){
+    public void setBoardList(ArrayList<Board> boardList){
         this.boardList = boardList;
     }
 

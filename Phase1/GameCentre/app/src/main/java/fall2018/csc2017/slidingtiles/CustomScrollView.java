@@ -47,9 +47,6 @@ public class CustomScrollView extends ListView {
     public void setLoadingList(List<Board> boardList){
         this.boardList = boardList;
     }
-    private void createLoadButton(Context context){
-
-    }
     @Override
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
@@ -61,33 +58,4 @@ public class CustomScrollView extends ListView {
         setBackground(background);
         setMeasuredDimension(width, height);
     }
-
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent ev){
-//        return gDetector.onTouchEvent(ev);
-//    }
-//    @Override
-//    public boolean onInterceptTouchEvent(MotionEvent ev) {
-//        int action = ev.getActionMasked();
-//        gDetector.onTouchEvent(ev);
-//
-//        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
-//            mFlingConfirmed = false;
-//        } else if (action == MotionEvent.ACTION_DOWN) {
-//            mTouchX = ev.getX();
-//            mTouchY = ev.getY();
-//        } else {
-//            if (mFlingConfirmed) {
-//                return true;
-//            }
-//            float dX = (Math.abs(ev.getX() - mTouchX));
-//            float dY = (Math.abs(ev.getY() - mTouchY));
-//            if ((dX > SWIPE_MIN_DISTANCE) || (dY > SWIPE_MIN_DISTANCE)) {
-//                mFlingConfirmed = true;
-//                return true;
-//            }
-//        }
-//        return super.onInterceptTouchEvent(ev);
-//    }
 }

@@ -1,5 +1,6 @@
 package fall2018.csc2017.slidingtiles;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -95,15 +96,15 @@ public class LaunchCentre extends AppCompatActivity {
                 String regPassword = passwordTextField.getText().toString();
                 Account newAccount = new Account(regUsername, regPassword);
                 if(regUsername.equals("Guest") || regUsername.equals("guest")){
-                    makeCustomToastText("Account name reserved for guests only!");
+                    makeCustomToastText("Account name reserved for guests only!", getBaseContext());
                 }
                 else if(!checkExistingAccount(newAccount)){
                     accountsList.add(newAccount);
                     saveCredentialsToFile(ACCOUNTS_FILENAME);
-                    makeCustomToastText("Account creation successful!");
+                    makeCustomToastText("Account creation successful!", getBaseContext());
                 }
                 else{
-                    makeCustomToastText("Account already exists!");
+                    makeCustomToastText("Account already exists!", getBaseContext());
                 }
             }
         });
@@ -125,21 +126,21 @@ public class LaunchCentre extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(authUser()) {
-                    makeCustomToastText("Login sucessful!");
+                    makeCustomToastText("Login sucessful!", getBaseContext());
                     Intent tmp = new Intent(v.getContext(), GameSelection.class);
                     tmp.putExtra("currentUser", currentUser);
                     startActivity(tmp);
                 }
                 else{
-                    makeCustomToastText("Wrong credentials, please try again!");
+                    makeCustomToastText("Wrong credentials, please try again!", getBaseContext());
                 }
             }
         });
     }
 
-    private void makeCustomToastText(String displayText)
+    public static void makeCustomToastText(String displayText, Context ctx)
     {
-        Toast.makeText(this, displayText, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ctx, displayText, Toast.LENGTH_SHORT).show();
     }
 
     private void addGuestButtonListener() {

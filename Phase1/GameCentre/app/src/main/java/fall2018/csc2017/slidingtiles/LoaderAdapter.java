@@ -61,6 +61,7 @@ public class LoaderAdapter extends BaseAdapter {
                 ctx.startActivity(tmp);
             }
         });
+        v.text.setText("Game " + i);
         return view;
     }
 }
