@@ -100,7 +100,8 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="205dp"
-        android:text="Login User" />
+        android:text="Login User"
+        android:onClick="loginButtonOnClick"/>
 
     <Button
         android:id="@+id/button_register"
@@ -110,7 +111,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="15dp"
         android:layout_marginBottom="70dp"
-        android:text="Register Using Credentials" />
+        android:text="Register Using Credentials"
+        android:onClick="registerButtonOnClick"/>
 
     <Button
         android:id="@+id/button_guest"
@@ -122,7 +124,8 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="70dp"
-        android:text="Login as Guest" />
+        android:text="Login as Guest"
+        android:onClick="guestButtonOnClick"/>
 
     <TextView
         android:id="@+id/text_status"

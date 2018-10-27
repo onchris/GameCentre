@@ -4,46 +4,91 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The account of the user.
+ */
 public class Account implements Serializable {
+    /**
+     * Account's username
+     */
     private String username;
+    /**
+     * Account's password
+     */
     private String password;
+    /**
+     * Account's saved games
+     */
     private ArrayList<Board> boardList = new ArrayList<>();
+    /**
+     * Account's statistics, number of puzzles solved and highest score achieved
+     */
     public int numSolved, highscore;
-
+    /**
+     * Account constructor
+     * @param username user's name
+     * @param password user's password
+     */
     public Account(String username, String password){
         this.username = username;
         this.password = password;
         numSolved = 0;
         highscore = 0;
     }
+    /**
+     * Gets this account's username
+     * @return the username as String
+     */
     public String getUsername() {
         return username;
     }
+    /**
+     * Gets this account's password
+     * @return the password as String
+     */
     public String getPassword() {
         return password;
     }
-
+    /**
+     * Gets this account's username
+     * @param password as the new password to be reset
+     */
     public void resetPassword(String password) {
         this.password = password;
     }
-
+    /**
+     * Gets this account's list of sliding game's boards
+     * @return the ArrayList of Boards
+     */
     public ArrayList<Board> getBoardList() {
         return boardList;
     }
-
+    /**
+     * Add to this account's list of sliding game's boards
+     * @param board the board to be added to this account's list of boards
+     */
     public void addToBoardList(Board board) {
         if(!boardList.contains(board))
             boardList.add(board);
     }
-
+    /**
+     * Sets this account's list of sliding game's boards
+     * @param boardList the board to be replaced with
+     */
     public void setBoardList(ArrayList<Board> boardList){
         this.boardList = boardList;
     }
-
+    /**
+     * Assert with this account's username is equal to the account to be compared with
+     * @param account the account to be compared with
+     * @return The equality test with this account's username and param account's username
+     */
     public boolean equals(Account account){
         return account.getUsername().equals(this.getUsername());
     }
-
+    /**
+     * Reset this account's list of sliding game's boards
+     */
     public void resetBoardList(){
         boardList.clear();
     }
