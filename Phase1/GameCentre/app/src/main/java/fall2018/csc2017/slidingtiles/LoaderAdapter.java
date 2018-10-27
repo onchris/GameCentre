@@ -18,12 +18,12 @@ public class LoaderAdapter extends BaseAdapter {
     private Context ctx;
     static class ViewHolder {
         TextView text;
+        TextView textDifficulty;
         Button button;
     }
     public LoaderAdapter(ArrayList<Board> boardList, Context ctx){
         this.boardList = boardList;
         this.ctx = ctx;
-
     }
     @Override
     public int getCount() {
@@ -40,6 +40,13 @@ public class LoaderAdapter extends BaseAdapter {
         return i;
     }
 
+    private String getDifficulty(int i){
+        Board b = boardList.get(i);
+        String returnString = b.getTilesDimension();
+        String[] stringArray = returnString.split(",");
+        return stringArray[0] + "x" + stringArray[1];
+    }
+
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder v = new ViewHolder();
@@ -47,6 +54,7 @@ public class LoaderAdapter extends BaseAdapter {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_loadlist, viewGroup, false  );
             v.button = (Button) view.findViewById(R.id.button_load);
             v.text = (TextView) view.findViewById(R.id.text_game);
+            v.textDifficulty = (TextView) view.findViewById(R.id.text_difficulty);
             view.setTag(v);
         }
         else
@@ -62,7 +70,16 @@ public class LoaderAdapter extends BaseAdapter {
             }
         });
         v.text.setText("Game " + i);
+        v.textDifficulty.setText(getDifficulty(i));
         return view;
+    }
+    public void addToBoardList(Board board){
+        boardList.add(board);
+        notifyDataSetChanged();
+    }
+    public void setBoardList(List<Board> listBoard){
+        boardList = (ArrayList<Board>) listBoard;
+        notifyDataSetChanged();
     }
 }
 

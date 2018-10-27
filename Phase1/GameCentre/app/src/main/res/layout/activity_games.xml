@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_simplebg2"
-    tools:context="fall2018.csc2017.slidingtiles.LaunchCentre">
+    tools:context="fall2018.csc2017.slidingtiles.GameSelection">
 
     <TextView
         android:id="@+id/textView"
@@ -53,7 +53,8 @@
         android:layout_marginTop="270dp"
         android:backgroundTint="@color/colorAccent"
         android:src="@drawable/ic_button1"
-        android:text="Button" />
+        android:text="Button"
+        android:onClick="slidingGameButtonOnClick"/>
 
     <ImageButton
         android:id="@+id/button_gameselect2"

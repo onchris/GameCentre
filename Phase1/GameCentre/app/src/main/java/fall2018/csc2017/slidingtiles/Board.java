@@ -107,4 +107,13 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
             }
         };
     }
+
+    /**
+     * Return the dimensions of tiles on the board.
+     * @return the dimensions of tiles on the board as String
+     */
+    public String getTilesDimension(){
+        String returnString = tiles.length + "," + tiles[0].length;
+        return returnString;
+    }
 }
