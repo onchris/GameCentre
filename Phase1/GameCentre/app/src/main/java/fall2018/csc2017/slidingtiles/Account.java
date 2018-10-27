@@ -7,7 +7,7 @@ import java.util.List;
 public class Account implements Serializable {
     private String username;
     private String password;
-    private List<BoardManager> boardList = new ArrayList<>();
+    private List<Board> boardList = new ArrayList<>();
     public int numSolved, highscore;
 
     public Account(String username, String password){
@@ -27,13 +27,17 @@ public class Account implements Serializable {
         this.password = password;
     }
 
-    public List<BoardManager> getBoardList() {
+    public List<Board> getBoardList() {
         return boardList;
     }
 
-    public void addToBoardList(BoardManager board) {
+    public void addToBoardList(Board board) {
         if(!boardList.contains(board))
             boardList.add(board);
+    }
+
+    public void setBoardList(List<Board> boardList){
+        this.boardList = boardList;
     }
 
     public boolean equals(Account account){
