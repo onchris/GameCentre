@@ -38,10 +38,6 @@ public class ScoreBoard extends AppCompatActivity {
         addGameSelectionButtonListener();
         setContentView(R.layout.activity_loadedgamelist);
         scoreList = findViewById(R.id.scoreboard_list);
-//        //TODO: fix this!
-//        scoreBoardAdapter = new ScoreBoardAdapter((ArrayList<Board>)boardList,gameListDisplay.getContext());
-//        scoreList.setAdapter(scoreBoardAdapter);
-//        atLoadGameScreen = true;
     }
 
     //TODO: need to somehow get the list of scores to come up
@@ -94,13 +90,4 @@ public class ScoreBoard extends AppCompatActivity {
         setContentView(R.layout.activity_games);
     }
 
-//    /** //TODO:get rid of this!
-//     * On click function for SlidingTile game selection button
-//     * @param v the current view(Called by application)
-//     */
-//    public void slidingGameButtonOnClick(View v) {
-//        loaderAdapter = new LoaderAdapter((ArrayList<Board>)boardList,gameListDisplay.getContext());
-//        gameListDisplay.setAdapter(loaderAdapter);
-//        atLoadGameScreen = true;
-//    }
 }
