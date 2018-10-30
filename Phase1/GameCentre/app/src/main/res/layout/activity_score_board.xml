@@ -18,22 +18,15 @@
         android:textSize="36sp"
         android:textStyle="bold" />
 
-    <fall2018.csc2017.slidingtiles.CustomScrollView
+    <ListView
         android:id="@+id/scoreboard_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/scoreboard_title"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="24dp"
         android:layout_marginTop="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="84dp"
-        android:nestedScrollingEnabled="true"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:scrollbars="vertical"
-        android:verticalScrollbarPosition="right">
-
-    </fall2018.csc2017.slidingtiles.CustomScrollView>
+        android:layout_marginBottom="84dp">
+    </ListView>
 
     <Button
         android:id="@+id/button_game_selection"

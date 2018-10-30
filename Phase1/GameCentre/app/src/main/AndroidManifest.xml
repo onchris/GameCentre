@@ -19,6 +19,7 @@
         <activity android:name="fall2018.csc2017.slidingtiles.GameActivity"></activity>
         <activity android:name="fall2018.csc2017.slidingtiles.GameSelection"></activity>
         <activity android:name="fall2018.csc2017.slidingtiles.StartingActivity"></activity>
+        <activity android:name="fall2018.csc2017.slidingtiles.ScoreBoard"></activity>
     </application>
 
 </manifest>
