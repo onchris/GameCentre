@@ -47,6 +47,15 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private static int columnWidth, columnHeight;
 
     /**
+     * The main save file.
+     */
+    public static final String SAVE_FILENAME = "save_file.ser";
+    /**
+     * A temporary save file.
+     */
+    public static final String TEMP_SAVE_FILENAME = "save_file_tmp.ser";
+
+    /**
      * Set up the background image for each button based on the master list
      * of positions, and then call the adapter to set the view.
      */
@@ -66,6 +75,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
         createTileButtons(this);
         setContentView(R.layout.activity_main);
         addUndoButtonListener();
+        addSaveButtonListener();
 
         // Add View to activity
         gridView = findViewById(R.id.grid);
@@ -186,6 +196,28 @@ public class GameActivity extends AppCompatActivity implements Observer {
 
             }
         });
+    }
+
+    /**
+     * Activate the save button.
+     */
+    private void addSaveButtonListener() {
+        Button saveButton = findViewById(R.id.SaveButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveToFile(SAVE_FILENAME);
+                saveToFile(TEMP_SAVE_FILENAME);
+                makeToastSavedText();
+            }
+        });
+    }
+
+    /**
+     * Display that a game was saved successfully.
+     */
+    private void makeToastSavedText() {
+        Toast.makeText(this, "Game Saved", Toast.LENGTH_SHORT).show();
     }
 
     @Override
