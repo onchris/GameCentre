@@ -35,8 +35,6 @@ public class ScoreBoard extends AppCompatActivity{
         ListView scoreList = findViewById(R.id.scoreboard_list);
         // Instantiating an array list
         List<String> scores = new ArrayList<>();
-        scores.add("sadfjsadlfkg");
-        scores.add("sadjkgdlfa;gfs");
 
         // This is the array adapter, it takes the context of the activity as a
         // first parameter, the type of list view as a second parameter and your
@@ -44,7 +42,11 @@ public class ScoreBoard extends AppCompatActivity{
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 scores );
+        scores.add("sadfjsadlfkg");
+        scores.add("sadjkgdlfa;gfs");
+
         scoreList.setAdapter(arrayAdapter);
+        arrayAdapter.notifyDataSetChanged();
 
     }
 
