@@ -24,32 +24,34 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/scoreboard_title"
         android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="84dp">
+        android:layout_marginBottom="84dp"
+        android:background="@drawable/bg_simplebg">
     </ListView>
 
     <Button
         android:id="@+id/button_game_selection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/scoreboard_list"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="44dp"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="20dp"
-        android:text="Game Selection" />
+        android:onClick="gameSelectionButtonOnClick"
+        android:text="Game Selection"/>
 
     <Button
         android:id="@+id/button_new_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/scoreboard_list"
         android:layout_alignEnd="@+id/scoreboard_title"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="-44dp"
         android:layout_marginBottom="20dp"
+        android:onClick="newGameButtonOnClick"
         android:text="New Game" />
 
 
