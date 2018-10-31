@@ -1,9 +1,11 @@
 package fall2018.csc2017.slidingtiles;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -14,33 +16,39 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScoreBoard extends AppCompatActivity {
+public class ScoreBoard extends AppCompatActivity{
 
     /**
      * Account data storage file
      */
     public static final String ACCOUNTS_FILENAME = "account_file.ser";
-    /**
-     * List view for displaying list of scores
-     */
-    private ListView scoreList;
-    /**
-     * Custom Scoreboard Adapter for displaying list of scores by hooking up to ListView
-     */
-    private ScoreBoardAdapter scoreBoardAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score_board);
         loadUsersFromFile(ACCOUNTS_FILENAME);
-        addStartButtonListener();
+        addNewGameButtonListener();
         addGameSelectionButtonListener();
-        setContentView(R.layout.activity_loadedgamelist);
-        scoreList = findViewById(R.id.scoreboard_list);
-    }
 
-    //TODO: need to somehow get the list of scores to come up
+        //TODO: need to somehow get the list of scores to come up
+        ListView scoreList = findViewById(R.id.scoreboard_list);
+        // Instantiating an array list
+        List<String> scores = new ArrayList<>();
+
+        // This is the array adapter, it takes the context of the activity as a
+        // first parameter, the type of list view as a second parameter and your
+        // array as a third parameter.
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
+                scores );
+        scores.add("sadfjsadlfkg");
+        scores.add("sadjkgdlfa;gfs");
+
+        scoreList.setAdapter(arrayAdapter);
+        arrayAdapter.notifyDataSetChanged();
+
+    }
 
     private void loadUsersFromFile(String fileName) {
         try {
@@ -56,10 +64,9 @@ public class ScoreBoard extends AppCompatActivity {
         } /*catch (ClassNotFoundException e) {
             Log.e("making scoreboard", "Oops! File contained unexpected data type: " + e.toString());
         }*/
-
     }
 
-    private void addStartButtonListener() {
+    private void addNewGameButtonListener() {
         Button newGameButton = findViewById(R.id.button_new_game);
         newGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,14 +76,31 @@ public class ScoreBoard extends AppCompatActivity {
         });
     }
 
+    /**
+     * On click function for the new game button
+     * @param v the current view(Called by application)
+     */
+    public void newGameButtonOnClick(View v){
+        Intent tmp = new Intent(v.getContext(), LaunchCentre.class);
+        startActivity(tmp);
+    }
+
     private void addGameSelectionButtonListener() {
         Button gameSelectionButton = findViewById(R.id.button_game_selection);
         gameSelectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_games);
+                setContentView(R.layout.activity_launchcentre);
             }
         });
+    }
+
+    /**
+     * On click function for the game selection button
+     * @param v the current view(Called by application)
+     */
+    public void gameSelectionButtonOnClick(View v){
+
     }
 
     /**
@@ -86,7 +110,6 @@ public class ScoreBoard extends AppCompatActivity {
      */
     @Override
     public void onBackPressed(){
-
         setContentView(R.layout.activity_games);
     }
 
