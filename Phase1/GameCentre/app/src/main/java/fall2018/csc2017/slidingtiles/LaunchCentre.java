@@ -137,7 +137,7 @@ public class LaunchCentre extends AppCompatActivity {
      */
     public void loginButtonOnClick(View v){
         if(authUser()) {
-            makeCustomToastText("Login sucessful!", getBaseContext());
+            makeCustomToastText("Login successful!", getBaseContext());
             if(rememberCheckbox.isChecked())
                 rememberPrefStore();
             Intent tmp = new Intent(v.getContext(), GameSelection.class);

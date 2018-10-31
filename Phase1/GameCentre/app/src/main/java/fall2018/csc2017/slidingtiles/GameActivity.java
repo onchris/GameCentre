@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -63,6 +65,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
         loadFromFile(StartingActivity.TEMP_SAVE_FILENAME);
         createTileButtons(this);
         setContentView(R.layout.activity_main);
+        addUndoButtonListener();
 
         // Add View to activity
         gridView = findViewById(R.id.grid);
@@ -164,6 +167,25 @@ public class GameActivity extends AppCompatActivity implements Observer {
         } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
+    }
+
+    /**
+     * Activate the undo button.
+     */
+    private void addUndoButtonListener() {
+        Button undoButton = findViewById(R.id.UndoButton);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (boardManager.canUndo()){
+                    boardManager.undo();
+                } else{
+                    Context context = getApplicationContext();
+                    Toast.makeText(context, "Not Able To Undo", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
     @Override
