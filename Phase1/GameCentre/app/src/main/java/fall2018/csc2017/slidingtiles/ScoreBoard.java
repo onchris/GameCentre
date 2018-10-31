@@ -23,12 +23,6 @@ public class ScoreBoard extends AppCompatActivity{
      */
     public static final String ACCOUNTS_FILENAME = "account_file.ser";
 
-//    TODO: need to fix
-//     /**
-//     * Custom Scoreboard Adapter for displaying list of scores by hooking up to ListView
-//     */
-//    private ScoreBoardAdapter scoreBoardAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
