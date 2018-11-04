@@ -74,6 +74,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         if (boardManager.puzzleSolved()) {
+            currentScore = -100;//TODO: remove, it's not a real score
             currentAccount.addToSlidingGameScores(10); //TODO: add the sliding game score
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);

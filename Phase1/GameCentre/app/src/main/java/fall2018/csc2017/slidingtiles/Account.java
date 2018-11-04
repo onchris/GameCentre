@@ -40,6 +40,10 @@ public class Account implements Serializable {
         this.password = password;
         numSolved = 0;
         highscore = 0;
+        //TODO: remove this, just for testing
+        slidingGameScores.add(1);
+        slidingGameScores.add(2);
+        slidingGameScores.add(3);
     }
     /**
      * Gets this account's username
