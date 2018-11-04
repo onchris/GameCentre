@@ -19,7 +19,7 @@ public class Account implements Serializable {
     /**
      * Account's saved games
      */
-    private ArrayList<Board> boardList = new ArrayList<>();
+    private ArrayList<BoardManager> boardList = new ArrayList<>();
     /**
      * Account's statistics, number of puzzles solved and highest score achieved
      */
@@ -60,14 +60,14 @@ public class Account implements Serializable {
      * Gets this account's list of sliding game's boards
      * @return the ArrayList of Boards
      */
-    public ArrayList<Board> getBoardList() {
+    public ArrayList<BoardManager> getBoardList() {
         return boardList;
     }
     /**
      * Add to this account's list of sliding game's boards
      * @param board the board to be added to this account's list of boards
      */
-    public void addToBoardList(Board board) {
+    public void addToBoardList(BoardManager board) {
         if(!boardList.contains(board))
             boardList.add(board);
     }
@@ -75,7 +75,7 @@ public class Account implements Serializable {
      * Sets this account's list of sliding game's boards
      * @param boardList the board to be replaced with
      */
-    public void setBoardList(ArrayList<Board> boardList){
+    public void setBoardList(ArrayList<BoardManager> boardList){
         this.boardList = boardList;
     }
     /**

@@ -1,27 +1,34 @@
 package fall2018.csc2017.slidingtiles;
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
+
 /**
  * The game selection screen where user chooses a game to play
  */
@@ -37,7 +44,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
     /**
      * Current user's board list
      */
-    private List<Board> boardList;
+    public ArrayList<BoardManager> boardList;
     /**
      * Current user's account
      */
@@ -46,7 +53,8 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * State of whether user is a guest.
      * State of whether user is at loading screen.
      */
-    private boolean isGuest = false, atLoadGameScreen = false;
+    public static boolean IS_GUEST = false;
+    private boolean atLoadGameScreen = false;
     /**
      * Custom scroll view for displaying list of games
      */
@@ -55,6 +63,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * Custom adapter for displaying list of games by hooking up to CustomScrollView
      */
     private LoaderAdapter loaderAdapter;
+    private long lastTimeClicked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,32 +72,39 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         if(!getIntent().getStringExtra("currentUser").equals("-1")) {
             currentUsername = getIntent().getStringExtra("currentUser");
             currentUserTextView.setText(currentUsername);
-            getCurrentAccount(currentUsername);
+            currentAccount = getCurrentAccount(currentUsername);
+            IS_GUEST = false;
         }
         else {
             currentUserTextView.setText("Guest");
-            isGuest = true;
+            IS_GUEST = true;
         }
-        if(isGuest)
+        getCurrentAccountBoardList();
+    }
+
+    private void getCurrentAccountBoardList(){
+        if(IS_GUEST) {
             boardList = new ArrayList<>();
-        else
+        }
+        else {
             boardList = currentAccount.getBoardList();
+        }
     }
     /**
      * Gets the account by iterating through the accounts file and set to currentAccount
      * @param accountName the account to search for
      */
-    private void getCurrentAccount(String accountName){
+    private Account getCurrentAccount(String accountName){
         try {
-            InputStream inputStream = this.openFileInput(LaunchCentre.ACCOUNTS_FILENAME);
+            InputStream inputStream = this.openFileInput(ACCOUNTS_FILENAME);
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
                 List<Account> accountList = (ArrayList<Account>) input.readObject();
                 inputStream.close();
                 for(Account account: accountList)
                 {
-                    if(account.getUsername().equals(currentUsername))
-                        currentAccount = account;
+                    if(account.getUsername().equals(accountName))
+                        return account;
                 }
             }
         } catch (FileNotFoundException e) {
@@ -98,6 +114,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         } catch (ClassNotFoundException e) {
             Log.e("login activity", "File contained unexpected data type: " + e.toString());
         }
+        return null;
     }
     /**
      * On click function for the new game button
@@ -116,18 +133,41 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      */
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.dialog_slidingdifficulty, null));
+        final Dialog dialog = builder.create();
         switch (menuItem.getItemId()){
             case R.id.item1:
                 return true;
             case R.id.item2:
                 Board randomBoard = newRandomBoard(4,4);
-                boardList.add(randomBoard);
+                boardList.add(new BoardManager(randomBoard));
                 loaderAdapter.notifyDataSetChanged();
-                LaunchCentre.makeCustomToastText(menuItem.toString(),getBaseContext());
+                saveBoardsToAccounts(this, currentAccount, boardList);
+                makeCustomToastText(menuItem.toString(),getBaseContext());
                 return true;
             case R.id.item3:
                 return true;
             case R.id.item4:
+                dialog.show();
+                Button confirmButton = dialog.findViewById(R.id.button_confirm_difficulty);
+                final EditText rows = dialog.findViewById(R.id.text_row);
+                final EditText columns = dialog.findViewById(R.id.text_column);
+                final EditText undos = dialog.findViewById(R.id.text_undos);
+                confirmButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(rows.getText().toString().equals("") ||
+                                columns.getText().toString().equals("") ||
+                                undos.getText().toString().equals("")){
+                            makeCustomToastText("Fields must not be empty!", view.getContext());
+                        } else {
+                            //Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()), Integer.parseInt(columns.getText().toString()));
+                            dialog.dismiss();
+                        }
+                    }
+                });
                 return true;
         }
         return false;
@@ -152,11 +192,19 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * @param v the current view(Called by application)
      */
     public void slidingGameButtonOnClick(View v) {
-        setContentView(R.layout.activity_loadedgamelist);
-        gameListDisplay = findViewById(R.id.scrollable_loadablegames);
-        loaderAdapter = new LoaderAdapter((ArrayList<Board>)boardList,gameListDisplay.getContext());
-        gameListDisplay.setAdapter(loaderAdapter);
-        atLoadGameScreen = true;
+        if(IS_GUEST){
+            saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,
+                    new BoardManager(newRandomBoard(4,4)), this);
+            Intent tmp = new Intent(this, GameActivity.class);
+            this.startActivity(tmp);
+        } else {
+            setContentView(R.layout.activity_loadedgamelist);
+            gameListDisplay = findViewById(R.id.scrollable_loadablegames);
+            loaderAdapter = new LoaderAdapter((ArrayList<BoardManager>) boardList, gameListDisplay.getContext());
+            loaderAdapter.account = currentAccount;
+            gameListDisplay.setAdapter(loaderAdapter);
+            atLoadGameScreen = true;
+        }
     }
     /**
      * On click function for SlidingTile game selection button
@@ -165,7 +213,9 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
     public void resetOnClick(View v){
         boardList.clear();
         loaderAdapter.notifyDataSetChanged();
+        saveBoardsToAccounts(this, currentAccount, boardList);
     }
+
     /**
      * Handles the functionality of the phone's back button
      * If at loading screen, back button would send user to the Game Selection screen
@@ -176,24 +226,17 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         if(atLoadGameScreen) {
             atLoadGameScreen = false;
             setContentView(R.layout.activity_games);
+            currentUserTextView = findViewById(R.id.text_loggedas);
+            currentUserTextView.setText(currentUsername);
         }
-        else
+        else {
             super.onBackPressed();
-    }
-    /**
-     * Static function for saving a file for BoardManager
-     * @param fileName directory and name of the file
-     * @param bm the BoardManager to be saved
-     * @param ctx the current context
-     * @deprecated Might be deprecated if StartingActivity is no longer used
-     */
-    public static void saveToFile(String fileName, BoardManager bm, Context ctx) {
-        try {
-            ObjectOutputStream outputStream = new ObjectOutputStream( ctx.openFileOutput(fileName, MODE_PRIVATE));
-            outputStream.writeObject(bm);
-            outputStream.close();
-        } catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
         }
+    }
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 }
