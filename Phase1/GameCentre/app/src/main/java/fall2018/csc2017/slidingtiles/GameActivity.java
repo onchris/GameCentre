@@ -63,6 +63,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private Timer timer = new Timer();
     private TimerTask timerTask;
     private Button undoButton;
+    private Integer currentScore;
 
     /**
      * Set up the background image for each button based on the master list
@@ -80,7 +81,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
                 tmp.putExtra("currentUsername", currentAccount.getUsername());
             else
                 tmp.putExtra("currentUsername", "-1");
-            tmp.putExtra("currentScore", 9); //TODO: pass the current score
+            tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
             startActivity(tmp);
         }
         undoButton = findViewById(R.id.UndoButton);

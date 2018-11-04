@@ -5,5 +5,5 @@
     android:layout_height="wrap_content"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:textSize="30sp"
+    android:textSize="20sp"
     android:textStyle="bold"></TextView>

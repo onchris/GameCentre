@@ -8,7 +8,11 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,8 +41,10 @@ public class ScoreBoard extends AppCompatActivity{
      */
     private boolean IS_GUEST;
     private ListView scoreList;
-    private List<Integer> userScores;
+    private List<Integer> userScores = new ArrayList<>();
     private List<Pair<Integer, String>> gameScores = new ArrayList<>();
+    private TextView currentScore;
+    private ToggleButton changeScoreboardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +69,13 @@ public class ScoreBoard extends AppCompatActivity{
         }
 
         buildGameScoresList();
-        getIntent().getStringExtra("currentScore") ;
+
+        currentScore = findViewById(R.id.lastscore);
+        currentScore.setText(getIntent().getStringExtra("currentScore"));
 
         scoreList = findViewById(R.id.scoreboard_list);
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter<Pair<Integer, String>>(this,
+        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
                 R.layout.activity_scorelist, gameScores);
-
         scoreList.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
 
@@ -116,6 +122,24 @@ public class ScoreBoard extends AppCompatActivity{
         //TODO: sort: Collections.sort();
     }
 
+    public void onCheckedChangeScoreboardView(CompoundButton buttonView, boolean isChecked) {
+        ToggleButton newGameButton = findViewById(R.id.switchscoreboardview);
+        scoreList = findViewById(R.id.scoreboard_list);
+        if (isChecked) {
+            ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, R.layout.activity_scorelist, userScores);
+            scoreList.setAdapter(arrayAdapter);
+            arrayAdapter.notifyDataSetChanged();
+            if (IS_GUEST) {
+                Toast.makeText(scoreList.getContext(), "Guest has no saved scores!", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
+                    R.layout.activity_scorelist, gameScores);
+            scoreList.setAdapter(arrayAdapter);
+            arrayAdapter.notifyDataSetChanged();
+        }
+    }
+
     /**
      * Allows user to begin a new game of what they just played
      */
@@ -157,6 +181,11 @@ public class ScoreBoard extends AppCompatActivity{
      */
     public void gameSelectionButtonOnClick(View v){
         Intent tmp = new Intent(v.getContext(), GameSelection.class);
+        if (!IS_GUEST) {
+            tmp.putExtra("currentUser", currentAccount.getUsername());
+        } else {
+            tmp.putExtra("currentUser", "-1");
+        }
         startActivity(tmp);
     }
 
@@ -167,7 +196,13 @@ public class ScoreBoard extends AppCompatActivity{
      */
     @Override
     public void onBackPressed(){
-        setContentView(R.layout.activity_games);
+        Intent tmp = new Intent(scoreList.getContext(), GameSelection.class);
+        if (!IS_GUEST) {
+            tmp.putExtra("currentUser", currentAccount.getUsername());
+        } else {
+            tmp.putExtra("currentUser", "-1");
+        }
+        startActivity(tmp);
     }
 
 }

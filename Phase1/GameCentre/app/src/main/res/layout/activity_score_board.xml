@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="sans-serif"
         android:text="Scoreboard!"
         android:textSize="36sp"
@@ -26,7 +26,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="84dp"
         android:layout_marginBottom="84dp"
         android:background="@drawable/bg_simplebg">
     </ListView>
@@ -54,6 +54,43 @@
         android:layout_marginBottom="20dp"
         android:onClick="newGameButtonOnClick"
         android:text="New Game" />
+
+    <TextView
+        android:id="@+id/yourscore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scoreboard_title"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="20dp"
+        android:text="Score: "
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/lastscore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scoreboard_title"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="27dp"
+        android:layout_toStartOf="@+id/switchscoreboardview"
+        android:layout_toEndOf="@+id/yourscore"
+        android:textSize="24sp" />
+
+    <ToggleButton
+        android:id="@+id/switchscoreboardview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scoreboard_title"
+        android:layout_alignBottom="@+id/yourscore"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="-8dp"
+        android:text="Change Scoreboard View"
+        android:textOn="Your scores"
+        android:textOff="Global Scores" />
 
 
 </RelativeLayout>
