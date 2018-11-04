@@ -33,6 +33,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
      * The buttons to display.
      */
     private ArrayList<Button> tileButtons;
+    /**
+     * The current user's username
+     */
+    private String currentUsername;
 
     /**
      * Constants for swiping directions. Should be an enum, probably.
@@ -64,7 +68,9 @@ public class GameActivity extends AppCompatActivity implements Observer {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         if (boardManager.puzzleSolved()) {
-            setContentView(R.layout.activity_score_board);
+            gridView = findViewById(R.id.grid);
+            Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
+            startActivity(tmp);
         }
     }
 

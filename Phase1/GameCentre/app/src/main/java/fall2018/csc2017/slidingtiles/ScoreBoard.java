@@ -22,6 +22,19 @@ public class ScoreBoard extends AppCompatActivity{
      * Account data storage file
      */
     public static final String ACCOUNTS_FILENAME = "account_file.ser";
+    /**
+     * Current user's account
+     */
+    private Account currentAccount;
+    /**
+     * Account list, to be loaded from local file
+     */
+    private List<Account> accountsList = new ArrayList<>();
+    /**
+     * Litview for showing the list of scores.
+     */
+    private ListView scoreList;
+    private String[] accountsArray = {"A", "B", "C"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,41 +44,39 @@ public class ScoreBoard extends AppCompatActivity{
         addNewGameButtonListener();
         addGameSelectionButtonListener();
 
-        //TODO: need to somehow get the list of scores to come up
-        ListView scoreList = findViewById(R.id.scoreboard_list);
-        // Instantiating an array list
-        List<String> scores = new ArrayList<>();
+        scoreList = findViewById(R.id.scoreboard_list);
 
-        // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter and your
-        // array as a third parameter.
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                scores );
-        scores.add("sadfjsadlfkg");
-        scores.add("sadjkgdlfa;gfs");
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this,
+                R.layout.activity_scorelist, accountsArray);
 
         scoreList.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
 
     }
-
+    /**
+     * Load list of accounts to accountsList
+     * @param fileName the name of the file
+     */
     private void loadUsersFromFile(String fileName) {
         try {
             InputStream inputStream = getApplicationContext().openFileInput(fileName);
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
+                accountsList = (ArrayList<Account>) input.readObject();
                 inputStream.close();
             }
         } catch (FileNotFoundException e) {
             Log.e("making scoreboard", "Oops! File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("making scoreboard", "Oops! Cannot read file: " + e.toString());
-        } /*catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             Log.e("making scoreboard", "Oops! File contained unexpected data type: " + e.toString());
-        }*/
+        }
     }
 
+    /**
+     * Allows user to begin a new game of what they just played
+     */
     private void addNewGameButtonListener() {
         Button newGameButton = findViewById(R.id.button_new_game);
         newGameButton.setOnClickListener(new View.OnClickListener() {
@@ -81,10 +92,13 @@ public class ScoreBoard extends AppCompatActivity{
      * @param v the current view(Called by application)
      */
     public void newGameButtonOnClick(View v){
-        Intent tmp = new Intent(v.getContext(), LaunchCentre.class);
+        Intent tmp = new Intent(v.getContext(), GameActivity.class);
         startActivity(tmp);
     }
 
+    /**
+     * Allow user to go back to the list of games to pick a different game
+     */
     private void addGameSelectionButtonListener() {
         Button gameSelectionButton = findViewById(R.id.button_game_selection);
         gameSelectionButton.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +114,8 @@ public class ScoreBoard extends AppCompatActivity{
      * @param v the current view(Called by application)
      */
     public void gameSelectionButtonOnClick(View v){
-
+        Intent tmp = new Intent(v.getContext(), GameSelection.class);
+        startActivity(tmp);
     }
 
     /**
