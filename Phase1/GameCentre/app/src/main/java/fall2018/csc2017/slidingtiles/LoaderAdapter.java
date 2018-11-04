@@ -1,8 +1,12 @@
 package fall2018.csc2017.slidingtiles;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.preference.DialogPreference;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -15,11 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
 
 public class LoaderAdapter extends BaseAdapter {
     private ArrayList<BoardManager> boardList;
     private Context ctx;
     private long lastTimeClicked;
+    private AlertDialog ad;
     public Account account;
     static class ViewHolder {
         TextView text;
@@ -30,6 +36,7 @@ public class LoaderAdapter extends BaseAdapter {
     public LoaderAdapter(ArrayList<BoardManager> boardList, Context ctx){
         this.boardList = boardList;
         this.ctx = ctx;
+        ad = UtilityManager.alertDialogBuilder(null, "You can't undelete a game! Make your choice!", ctx);
     }
     @Override
     public int getCount() {
@@ -88,12 +95,35 @@ public class LoaderAdapter extends BaseAdapter {
                 long currTime = System.currentTimeMillis();
                 if (currTime - lastTimeClicked < ViewConfiguration.getDoubleTapTimeout()) {
                     Log.e("Double click detection system 9000", "yeee");
+                    deleteFromBoard(i, viewGroup.getContext());
                 }
                 lastTimeClicked = currTime;
             }
         });
         return view;
-
+    }
+    private void deleteFromBoard(final int position, final Context ctx){
+        ad.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                boardList.remove(position);
+                saveBoardsToAccounts(ctx, account, boardList);
+                notifyDataSetChanged();
+            }
+        });
+        ad.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        TextView titleText = new TextView(ctx);
+        titleText.setText("Delete Game " + position + "?");
+        titleText.setPadding(10,10,10,10);
+        titleText.setTextSize(30);
+        titleText.setGravity(Gravity.CENTER);
+        ad.setCustomTitle(titleText);
+        ad.show();
     }
 }
 

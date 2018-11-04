@@ -1,7 +1,10 @@
 package fall2018.csc2017.slidingtiles;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -98,6 +101,24 @@ public final class UtilityManager {
         } catch (ClassNotFoundException e) {
             Log.e("UM: saveBoardsToAccounts", "File contained unexpected data type: " + e.toString());
         }
+    }
+    public static AlertDialog alertDialogBuilder(String title, String message, Context ctx){
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        AlertDialog ad = builder.create();
+        if(title != null) {
+            TextView titleText = new TextView(ctx);
+            titleText.setText(title);
+            titleText.setPadding(10, 10, 10, 10);
+            titleText.setTextSize(30);
+            titleText.setGravity(Gravity.CENTER);
+            ad.setCustomTitle(titleText);
+        }else
+            ad.setTitle(" ");
+        if(message != null) {
+            ad.setMessage(message);
+        } else
+            ad.setMessage(" ");
+        return ad;
     }
 
 }

@@ -2,10 +2,13 @@ package fall2018.csc2017.slidingtiles;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
+import static fall2018.csc2017.slidingtiles.UtilityManager.alertDialogBuilder;
 import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
@@ -202,6 +206,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
             gameListDisplay = findViewById(R.id.scrollable_loadablegames);
             loaderAdapter = new LoaderAdapter((ArrayList<BoardManager>) boardList, gameListDisplay.getContext());
             loaderAdapter.account = currentAccount;
+
             gameListDisplay.setAdapter(loaderAdapter);
             atLoadGameScreen = true;
         }
@@ -211,9 +216,29 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * @param v the current view(Called by application)
      */
     public void resetOnClick(View v){
-        boardList.clear();
-        loaderAdapter.notifyDataSetChanged();
-        saveBoardsToAccounts(this, currentAccount, boardList);
+        final Context ctx = this;
+        AlertDialog ad = alertDialogBuilder(null, "There is no going back, son", ctx);
+        ad.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                boardList.clear();
+                loaderAdapter.notifyDataSetChanged();
+                saveBoardsToAccounts(ctx, currentAccount, boardList);
+            }
+        });
+        ad.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        TextView titleText = new TextView(this);
+        titleText.setText("Delete all games?");
+        titleText.setPadding(10,10,10,10);
+        titleText.setTextSize(30);
+        titleText.setGravity(Gravity.CENTER);
+        ad.setCustomTitle(titleText);
+        ad.show();
     }
 
     /**
