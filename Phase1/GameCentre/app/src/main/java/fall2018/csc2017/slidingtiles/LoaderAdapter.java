@@ -65,10 +65,10 @@ public class LoaderAdapter extends BaseAdapter {
         ViewHolder v = new ViewHolder();
         if(view == null) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_loadlist, viewGroup, false  );
-            v.button = (Button) view.findViewById(R.id.button_load);
-            v.text = (TextView) view.findViewById(R.id.text_game);
-            v.textDifficulty = (TextView) view.findViewById(R.id.text_difficulty);
-            v.textUndos = (TextView) view.findViewById(R.id.text_undos);
+            v.button = view.findViewById(R.id.button_load);
+            v.text = view.findViewById(R.id.text_game);
+            v.textDifficulty = view.findViewById(R.id.text_difficulty);
+            v.textUndos = view.findViewById(R.id.text_undos);
             view.setTag(v);
         }
         else

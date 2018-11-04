@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ScoreBoard extends AppCompatActivity{
@@ -33,8 +35,10 @@ public class ScoreBoard extends AppCompatActivity{
     /**
      * Litview for showing the list of scores.
      */
+    private boolean IS_GUEST;
     private ListView scoreList;
-    private String[] accountsArray = {"A", "B", "C"};
+    private List<Integer> userScores;
+    private List<Pair<Integer, String>> gameScores = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +48,33 @@ public class ScoreBoard extends AppCompatActivity{
         addNewGameButtonListener();
         addGameSelectionButtonListener();
 
+        if(!getIntent().getStringExtra("currentUsername").equals("-1")) {
+            IS_GUEST = false;
+            for(Account account: accountsList) {
+                if(account.getUsername().equals(getIntent().getStringExtra("currentUsername"))) {
+                    currentAccount = account;
+                    userScores = currentAccount.getSlidingGameScores();
+                    break;
+                }
+            }
+
+        } else {
+            IS_GUEST = true;
+        }
+
+        buildGameScoresList();
+        getIntent().getStringExtra("currentScore") ;
+
         scoreList = findViewById(R.id.scoreboard_list);
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this,
-                R.layout.activity_scorelist, accountsArray);
+        ArrayAdapter arrayAdapter = new ArrayAdapter<Pair<Integer, String>>(this,
+                R.layout.activity_scorelist, gameScores);
 
         scoreList.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
 
     }
+
     /**
      * Load list of accounts to accountsList
      * @param fileName the name of the file
@@ -72,6 +94,26 @@ public class ScoreBoard extends AppCompatActivity{
         } catch (ClassNotFoundException e) {
             Log.e("making scoreboard", "Oops! File contained unexpected data type: " + e.toString());
         }
+    }
+
+    private void buildGameScoresList() {
+        Pair<Integer, String> p;
+        for(Account account: accountsList) {
+            List<Integer> accountScores = account.getSlidingGameScores();
+            for (int i = 0; i <= accountScores.size() - 1; i ++) {
+                p = new Pair<>(accountScores.get(i), account.getUsername());
+                gameScores.add(p);
+            }
+        }
+        if (IS_GUEST) {
+            try {
+                p = new Pair<>(Integer.parseInt(getIntent().getStringExtra("currentScore")), "Guest");
+                gameScores.add(p);
+            } catch (NumberFormatException e) {
+                p = new Pair<>(-1, "Guest");
+            }
+        }
+        //TODO: sort: Collections.sort();
     }
 
     /**
