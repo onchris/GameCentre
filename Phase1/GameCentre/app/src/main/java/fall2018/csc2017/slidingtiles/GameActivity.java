@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Adapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -16,19 +18,23 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import static fall2018.csc2017.slidingtiles.UtilityManager.TEMP_SAVE_FILENAME;
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
 /**
  * The game activity.
  */
 public class GameActivity extends AppCompatActivity implements Observer {
-
     /**
      * The board manager.
      */
     private BoardManager boardManager;
-
     /**
      * The buttons to display.
      */
@@ -46,18 +52,17 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public static final int LEFT = 3;
     public static final int RIGHT = 4;
 
+    public static final int SAVE_INTERVAL = 10000;
+
     // Grid View and calculated column height and width based on device size
     private GestureDetectGridView gridView;
     private static int columnWidth, columnHeight;
-
-    /**
-     * The main save file.
-     */
-    public static final String SAVE_FILENAME = "save_file.ser";
-    /**
-     * A temporary save file.
-     */
-    public static final String TEMP_SAVE_FILENAME = "save_file_tmp.ser";
+    private Account currentAccount;
+    private ArrayList<BoardManager> boardList;
+    private int boardIndex;
+    private Timer timer = new Timer();
+    private TimerTask timerTask;
+    private Button undoButton;
 
     /**
      * Set up the background image for each button based on the master list
@@ -72,16 +77,24 @@ public class GameActivity extends AppCompatActivity implements Observer {
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             startActivity(tmp);
         }
+        undoButton = findViewById(R.id.UndoButton);
+        undoButton.setText("Undo:"+boardManager.getNumCanUndo());
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadFromFile(StartingActivity.TEMP_SAVE_FILENAME);
+        loadFromFile(TEMP_SAVE_FILENAME);
         createTileButtons(this);
+        currentAccount = (Account) getIntent().getSerializableExtra("account");
+        boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
+        boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
         setContentView(R.layout.activity_main);
         addUndoButtonListener();
-        addSaveButtonListener();
+        TextView v = findViewById(R.id.text_currentUserGame);
+        if(!GameSelection.IS_GUEST)
+            v.setText(currentAccount.getUsername());
+        else
+            v.setText("Guest");
 
         // Add View to activity
         gridView = findViewById(R.id.grid);
@@ -100,12 +113,23 @@ public class GameActivity extends AppCompatActivity implements Observer {
 
                         columnWidth = displayWidth / Board.NUM_COLS;
                         columnHeight = displayHeight / Board.NUM_ROWS;
-
                         display();
                     }
                 });
-    }
 
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onClickSaveBoard(getCurrentFocus(),true);
+                    }
+                });
+            }
+        };
+        timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
+    }
     /**
      * Create the buttons for displaying the tiles.
      *
@@ -122,7 +146,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
             }
         }
     }
-
     /**
      * Update the backgrounds on the buttons to match the tiles.
      */
@@ -136,7 +159,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
             nextPos++;
         }
     }
-
     /**
      * Dispatch onPause() to fragments.
      */
@@ -145,7 +167,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
         super.onPause();
         saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
     }
-
     /**
      * Load the board manager from fileName.
      *
@@ -168,7 +189,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
             Log.e("login activity", "File contained unexpected data type: " + e.toString());
         }
     }
-
     /**
      * Save the board manager to fileName.
      *
@@ -184,7 +204,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
-
     /**
      * Activate the undo button.
      */
@@ -195,37 +214,45 @@ public class GameActivity extends AppCompatActivity implements Observer {
             public void onClick(View v) {
                 if (boardManager.canUndo()){
                     boardManager.undo();
+                    display();
                 } else{
                     Context context = getApplicationContext();
                     Toast.makeText(context, "Not Able To Undo", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }
-
-    /**
-     * Activate the save button.
-     */
-    private void addSaveButtonListener() {
-        Button saveButton = findViewById(R.id.SaveButton);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveToFile(SAVE_FILENAME);
-                saveToFile(TEMP_SAVE_FILENAME);
-                makeToastSavedText();
+    public void onClickSaveBoard(View v, boolean isAutosave){
+        if(GameSelection.IS_GUEST)
+            makeCustomToastText("Cannot save as guest!", this);
+        else {
+            if (boardIndex != -1) {
+                boardList.set(boardIndex, boardManager);
             }
-        });
+            saveBoardsToAccounts(this, currentAccount, boardList);
+            if (isAutosave)
+                makeCustomToastText("Auto-saved!", this);
+        }
     }
-
-    /**
-     * Display that a game was saved successfully.
-     */
-    private void makeToastSavedText() {
-        Toast.makeText(this, "Game Saved", Toast.LENGTH_SHORT).show();
+    public void onClickSaveBoard(View v){
+        if(GameSelection.IS_GUEST)
+            makeCustomToastText("Cannot save as guest!", this);
+        else {
+            if (boardIndex != -1) {
+                boardList.set(boardIndex, boardManager);
+            }
+            saveBoardsToAccounts(this, currentAccount, boardList);
+            makeCustomToastText("Saved!", this);
+        }
     }
-
+    @Override
+    public void onBackPressed() {
+        onClickSaveBoard(getCurrentFocus(), false);
+        super.onBackPressed();
+        timer.cancel();
+        timerTask.cancel();
+        finish();
+    }
     @Override
     public void update(Observable o, Object arg) {
         display();

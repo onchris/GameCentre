@@ -8,31 +8,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.Context.MODE_PRIVATE;
+import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
+import static fall2018.csc2017.slidingtiles.UtilityManager.loadAccountList;
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+
 /**
  * The launch centre, which is a login screen
  */
 public class LaunchCentre extends AppCompatActivity {
-    /**
-    * Account data storage file
-     */
-    public static final String ACCOUNTS_FILENAME = "account_file.ser";
     /**
      * Account list, to be loaded from local file
      */
@@ -52,7 +45,7 @@ public class LaunchCentre extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launchcentre);
-        loadAccountsFromFile(ACCOUNTS_FILENAME);
+        accountsList = loadAccountList(this);
         addPasswordOnKeyListener();
         userTextField = findViewById(R.id.text_username);
         passwordTextField = findViewById(R.id.text_password);
@@ -72,26 +65,6 @@ public class LaunchCentre extends AppCompatActivity {
             outputStream.close();
         } catch (IOException e){
             Log.e("Exception", "Credential write failed: " + e.toString());
-        }
-    }
-    /**
-     * Load list of accounts to accountsList
-     * @param fileName the name of the file
-     */
-    public void loadAccountsFromFile(String fileName){
-        try {
-            InputStream inputStream = this.openFileInput(fileName);
-            if (inputStream != null) {
-                ObjectInputStream input = new ObjectInputStream(inputStream);
-                accountsList = (ArrayList<Account>) input.readObject();
-                inputStream.close();
-            }
-        } catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        } catch (ClassNotFoundException e) {
-            Log.e("login activity", "File contained unexpected data type: " + e.toString());
         }
     }
     /**
@@ -206,14 +179,5 @@ public class LaunchCentre extends AppCompatActivity {
                 return true;
         }
         return false;
-    }
-    /**
-     * Static function for creating custom Toast messages
-     * @param displayText, the string to be displayed
-     * @param ctx the current context
-     */
-    public static void makeCustomToastText(String displayText, Context ctx)
-    {
-        Toast.makeText(ctx, displayText, Toast.LENGTH_SHORT).show();
     }
 }

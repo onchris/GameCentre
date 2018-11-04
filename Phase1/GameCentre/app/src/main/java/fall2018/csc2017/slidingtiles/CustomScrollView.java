@@ -5,6 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.List;
@@ -40,4 +43,5 @@ public class CustomScrollView extends ListView {
         setBackground(background);
         setMeasuredDimension(width, height);
     }
+
 }
