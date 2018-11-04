@@ -1,7 +1,11 @@
 package fall2018.csc2017.slidingtiles;
 
+import android.util.Pair;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -21,8 +25,10 @@ public class Account implements Serializable {
      */
     private ArrayList<BoardManager> boardList = new ArrayList<>();
     /**
-     * Account's statistics, number of puzzles solved and highest score achieved
+     * Account's statistics, number of puzzles solved and scores achieved in sliding tiles
      */
+    private List<Integer> slidingGameScores = new ArrayList<>();
+
     public int numSolved, highscore;
     /**
      * Account constructor
@@ -49,6 +55,11 @@ public class Account implements Serializable {
     public String getPassword() {
         return password;
     }
+
+    public List<Integer> getSlidingGameScores() {
+        return this.slidingGameScores;
+    }
+
     /**
      * Gets this account's username
      * @param password as the new password to be reset
@@ -91,5 +102,10 @@ public class Account implements Serializable {
      */
     public void resetBoardList(){
         boardList.clear();
+    }
+
+    public void addToSlidingGameScores(int score) {
+        this.slidingGameScores.add(score);
+        Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
     }
 }

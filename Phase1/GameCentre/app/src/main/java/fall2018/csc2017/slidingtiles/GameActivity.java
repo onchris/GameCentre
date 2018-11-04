@@ -40,6 +40,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     private ArrayList<Button> tileButtons;
     /**
+     * The current user's username
+     */
+    private String currentUsername;
+
+    /**
      * Constants for swiping directions. Should be an enum, probably.
      */
     public static final int UP = 1;
@@ -58,6 +63,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private Timer timer = new Timer();
     private TimerTask timerTask;
     private Button undoButton;
+    private Integer currentScore;
 
     /**
      * Set up the background image for each button based on the master list
@@ -68,7 +74,15 @@ public class GameActivity extends AppCompatActivity implements Observer {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         if (boardManager.puzzleSolved()) {
-            setContentView(R.layout.activity_score_board);
+            currentAccount.addToSlidingGameScores(10); //TODO: add the sliding game score
+            gridView = findViewById(R.id.grid);
+            Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
+            if(!GameSelection.IS_GUEST)
+                tmp.putExtra("currentUsername", currentAccount.getUsername());
+            else
+                tmp.putExtra("currentUsername", "-1");
+            tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
+            startActivity(tmp);
         }
         undoButton = findViewById(R.id.UndoButton);
         undoButton.setText("Undo:"+boardManager.getNumCanUndo());

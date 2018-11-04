@@ -204,7 +204,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         } else {
             setContentView(R.layout.activity_loadedgamelist);
             gameListDisplay = findViewById(R.id.scrollable_loadablegames);
-            loaderAdapter = new LoaderAdapter((ArrayList<BoardManager>) boardList, gameListDisplay.getContext());
+            loaderAdapter = new LoaderAdapter(boardList, gameListDisplay.getContext());
             loaderAdapter.account = currentAccount;
 
             gameListDisplay.setAdapter(loaderAdapter);
