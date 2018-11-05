@@ -12,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,6 +19,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ScoreBoard extends AppCompatActivity{
@@ -37,20 +37,24 @@ public class ScoreBoard extends AppCompatActivity{
      */
     private List<Account> accountsList = new ArrayList<>();
     /**
-     * Litview for showing the list of scores.
+     * Listview for showing the list of scores.
      */
-    private boolean IS_GUEST;
     private ListView scoreList;
     private List<Integer> userScores = new ArrayList<>();
+    private List<String> displayUserScoresList = new ArrayList<>();
     private List<Pair<Integer, String>> gameScores = new ArrayList<>();
+    private List<String> displayGameScoresList = new ArrayList<>();
     private TextView currentScore;
-    private ToggleButton changeScoreboardView;
+    private Button changeScoreboardView;
+    private boolean IS_GUEST;
+    private boolean IS_GLOBAL_SCOREBOARD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score_board);
         loadUsersFromFile(ACCOUNTS_FILENAME);
+        addChangeScoreboardViewButton();
         addNewGameButtonListener();
         addGameSelectionButtonListener();
 
@@ -63,19 +67,20 @@ public class ScoreBoard extends AppCompatActivity{
                     break;
                 }
             }
-
+            buildDisplayUserScoresList();
         } else {
             IS_GUEST = true;
         }
-
         buildGameScoresList();
+        buildDisplayGameScoresList();
 
         currentScore = findViewById(R.id.lastscore);
         currentScore.setText(getIntent().getStringExtra("currentScore"));
 
         scoreList = findViewById(R.id.scoreboard_list);
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
-                R.layout.activity_scorelist, gameScores);
+                R.layout.activity_scorelist, displayGameScoresList);
+        IS_GLOBAL_SCOREBOARD = true;
         scoreList.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
 
@@ -104,9 +109,9 @@ public class ScoreBoard extends AppCompatActivity{
 
     private void buildGameScoresList() {
         Pair<Integer, String> p;
-        for(Account account: accountsList) {
+        for (Account account : accountsList) {
             List<Integer> accountScores = account.getSlidingGameScores();
-            for (int i = 0; i <= accountScores.size() - 1; i ++) {
+            for (int i = 0; i <= accountScores.size() - 1; i++) {
                 p = new Pair<>(accountScores.get(i), account.getUsername());
                 gameScores.add(p);
             }
@@ -119,24 +124,64 @@ public class ScoreBoard extends AppCompatActivity{
                 p = new Pair<>(-1, "Guest");
             }
         }
-        //TODO: sort: Collections.sort();
+        Collections.sort(gameScores, new Comparator<Pair<Integer, String>>() {
+            @Override
+            public int compare(Pair<Integer, String> p1, Pair<Integer, String> p2) {
+                return p2.first.compareTo(p1.first);
+            }
+        });
+    }
+    private void buildDisplayGameScoresList() {
+        String sep = ":      ";
+        for (int i = 0; i <= gameScores.size() - 1; i ++){
+            Pair<Integer, String> score = gameScores.get(i);
+            String displayScore = score.second + sep + score.first.toString();
+            displayGameScoresList.add(displayScore);
+        }
     }
 
-    public void onCheckedChangeScoreboardView(CompoundButton buttonView, boolean isChecked) {
-        ToggleButton newGameButton = findViewById(R.id.switchscoreboardview);
+    private void buildDisplayUserScoresList() {
+        currentAccount.sortSlidingGameScores();
+        String sep = ":      ";
+        for (int i = 0; i <= userScores.size() - 1; i ++){
+            Integer score = userScores.get(i);
+            String displayScore = currentAccount.getUsername() + sep + score.toString();
+            displayUserScoresList.add(displayScore);
+        }
+    }
+
+    public void addChangeScoreboardViewButton(){
+        Button changeScoreboardView = findViewById(R.id.button_new_game);
+        changeScoreboardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_main);
+            }
+        });
+    }
+
+    /**
+     * On click function for the change scoreboard view button
+     * @param v the current view(Called by application)
+     */
+    public void changeScoreboardViewOnClick(View v) {
+        Button switchScoreboardView = findViewById(R.id.switchscoreboardview);
         scoreList = findViewById(R.id.scoreboard_list);
-        if (isChecked) {
-            ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, R.layout.activity_scorelist, userScores);
+        if (IS_GLOBAL_SCOREBOARD) {
+            ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, R.layout.activity_scorelist, displayUserScoresList);
             scoreList.setAdapter(arrayAdapter);
             arrayAdapter.notifyDataSetChanged();
+            IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             if (IS_GUEST) {
                 Toast.makeText(scoreList.getContext(), "Guest has no saved scores!", Toast.LENGTH_SHORT).show();
+                IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             }
         } else {
             ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
-                    R.layout.activity_scorelist, gameScores);
+                    R.layout.activity_scorelist, displayGameScoresList);
             scoreList.setAdapter(arrayAdapter);
             arrayAdapter.notifyDataSetChanged();
+            IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
         }
     }
 
@@ -158,7 +203,12 @@ public class ScoreBoard extends AppCompatActivity{
      * @param v the current view(Called by application)
      */
     public void newGameButtonOnClick(View v){
-        Intent tmp = new Intent(v.getContext(), GameActivity.class);
+        Intent tmp = new Intent(scoreList.getContext(), GameSelection.class);
+        if (!IS_GUEST) {
+            tmp.putExtra("currentUser", currentAccount.getUsername());
+        } else {
+            tmp.putExtra("currentUser", "-1");
+        }
         startActivity(tmp);
     }
 
@@ -170,7 +220,7 @@ public class ScoreBoard extends AppCompatActivity{
         gameSelectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_launchcentre);
+                setContentView(R.layout.activity_games);
             }
         });
     }
@@ -196,13 +246,8 @@ public class ScoreBoard extends AppCompatActivity{
      */
     @Override
     public void onBackPressed(){
-        Intent tmp = new Intent(scoreList.getContext(), GameSelection.class);
-        if (!IS_GUEST) {
-            tmp.putExtra("currentUser", currentAccount.getUsername());
-        } else {
-            tmp.putExtra("currentUser", "-1");
-        }
-        startActivity(tmp);
+        super.onBackPressed();
+        finish();
     }
 
 }

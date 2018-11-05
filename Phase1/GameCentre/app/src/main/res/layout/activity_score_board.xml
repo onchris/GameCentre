@@ -53,7 +53,7 @@
         android:layout_marginEnd="-44dp"
         android:layout_marginBottom="20dp"
         android:onClick="newGameButtonOnClick"
-        android:text="New Game" />
+        android:text="Try Again" />
 
     <TextView
         android:id="@+id/yourscore"
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/scoreboard_title"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:text="Score: "
         android:textSize="24sp" />
@@ -73,12 +73,12 @@
         android:layout_below="@+id/scoreboard_title"
         android:layout_marginStart="11dp"
         android:layout_marginTop="19dp"
-        android:layout_marginEnd="27dp"
+        android:layout_marginEnd="11dp"
         android:layout_toStartOf="@+id/switchscoreboardview"
         android:layout_toEndOf="@+id/yourscore"
         android:textSize="24sp" />
 
-    <ToggleButton
+    <Button
         android:id="@+id/switchscoreboardview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,11 +86,10 @@
         android:layout_alignBottom="@+id/yourscore"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="-8dp"
-        android:text="Change Scoreboard View"
-        android:textOn="Your scores"
-        android:textOff="Global Scores" />
+        android:onClick="changeScoreboardViewOnClick"
+        android:text="Change Scoreboard" />
 
 
 </RelativeLayout>

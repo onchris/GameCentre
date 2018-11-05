@@ -73,9 +73,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void display() {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
-        if (boardManager.puzzleSolved()) {
+        //if (boardManager.puzzleSolved()) {
             currentScore = -100;//TODO: remove, it's not a real score
-            currentAccount.addToSlidingGameScores(10); //TODO: add the sliding game score
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             if(!GameSelection.IS_GUEST)
@@ -84,7 +83,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
                 tmp.putExtra("currentUsername", "-1");
             tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
             startActivity(tmp);
-        }
+        //}
         undoButton = findViewById(R.id.UndoButton);
         undoButton.setText("Undo:"+boardManager.getNumCanUndo());
     }
