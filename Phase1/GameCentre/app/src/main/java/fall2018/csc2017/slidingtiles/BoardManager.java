@@ -56,11 +56,11 @@ class BoardManager implements Serializable, Undoable {
     /**
      * Manage a new shuffled board.
      */
-    BoardManager() {
+    BoardManager(String gameChoice) {
         List<Tile> tiles = new ArrayList<>();
         final int numTiles = Board.NUM_ROWS * Board.NUM_COLS;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-            tiles.add(new Tile(tileNum));
+            tiles.add(new Tile(tileNum, gameChoice));
         }
 
         Collections.shuffle(tiles);

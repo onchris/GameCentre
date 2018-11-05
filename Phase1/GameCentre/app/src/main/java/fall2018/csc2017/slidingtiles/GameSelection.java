@@ -143,15 +143,31 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         final Dialog dialog = builder.create();
         switch (menuItem.getItemId()){
             case R.id.item1:
+                Board.NUM_ROWS = 3;
+                Board.NUM_COLS = 3;
+                BoardManager randomBoard = new BoardManager("3");
+                boardList.add(randomBoard);
+                loaderAdapter.notifyDataSetChanged();
+                saveBoardsToAccounts(this, currentAccount, boardList);
+                makeCustomToastText(menuItem.toString(),getBaseContext());
                 return true;
             case R.id.item2:
-                Board randomBoard = newRandomBoard(4,4);
-                boardList.add(new BoardManager(randomBoard));
+                Board.NUM_ROWS = 4;
+                Board.NUM_COLS = 4;
+                BoardManager randomBoard2 = new BoardManager("4");
+                boardList.add(randomBoard2);
                 loaderAdapter.notifyDataSetChanged();
                 saveBoardsToAccounts(this, currentAccount, boardList);
                 makeCustomToastText(menuItem.toString(),getBaseContext());
                 return true;
             case R.id.item3:
+                Board.NUM_ROWS = 5;
+                Board.NUM_COLS = 5;
+                BoardManager randomBoard3 = new BoardManager("5");
+                boardList.add(randomBoard3);
+                loaderAdapter.notifyDataSetChanged();
+                saveBoardsToAccounts(this, currentAccount, boardList);
+                makeCustomToastText(menuItem.toString(),getBaseContext());
                 return true;
             case R.id.item4:
                 dialog.show();
@@ -186,7 +202,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         List<Tile> tiles = new ArrayList<>();
         int numTiles = rows * columns;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-            tiles.add(new Tile(tileNum));
+            tiles.add(new Tile(tileNum, "4"));
         }
         Collections.shuffle(tiles);
         return new Board(tiles);
