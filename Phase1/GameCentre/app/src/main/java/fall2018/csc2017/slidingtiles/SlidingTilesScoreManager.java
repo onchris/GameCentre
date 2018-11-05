@@ -7,9 +7,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * A score manager for the sliding tiles game, populates and sorts the lists of scores.
+ */
 public class SlidingTilesScoreManager extends ScoreManager {
 
-
+    /**
+     * Sort the scores in a sliding tiles game
+     * @param username
+     * @param ctx
+     * @param score
+     */
     public SlidingTilesScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
     }
@@ -20,11 +28,13 @@ public class SlidingTilesScoreManager extends ScoreManager {
     @Override
     protected void buildGameScoresList() {
         Pair<Integer, String> p;
-        for (Account account : accountsList) {
-            List<Integer> accountScores = account.getSlidingGameScores();
-            for (int i = 0; i <= accountScores.size() - 1; i++) {
-                p = new Pair<>(accountScores.get(i), account.getUsername());
-                gameScores.add(p);
+        if (gameScores.size() == 0) {
+            for (Account account : accountsList) {
+                List<Integer> accountScores = account.getSlidingGameScores();
+                for (int i = 0; i <= accountScores.size() - 1; i++) {
+                    p = new Pair<>(accountScores.get(i), account.getUsername());
+                    gameScores.add(p);
+                }
             }
         }
         if (IS_GUEST) {
@@ -48,11 +58,13 @@ public class SlidingTilesScoreManager extends ScoreManager {
      */
     @Override
     protected void buildDisplayGameScoresList() {
-        String sep = ":      ";
-        for (int i = 0; i <= gameScores.size() - 1; i ++){
-            Pair<Integer, String> score = gameScores.get(i);
-            String displayScore = score.second + sep + score.first.toString();
-            displayGameScoresList.add(displayScore);
+        if (displayGameScoresList.size() == 0) {
+            String sep = ":      ";
+            for (int i = 0; i <= gameScores.size() - 1; i++) {
+                Pair<Integer, String> score = gameScores.get(i);
+                String displayScore = score.second + sep + score.first.toString();
+                displayGameScoresList.add(displayScore);
+            }
         }
     }
 
@@ -62,13 +74,13 @@ public class SlidingTilesScoreManager extends ScoreManager {
     @Override
     protected void buildDisplayUserScoresList() {
         currentAccount.sortSlidingGameScores();
-        String sep = ":      ";
-        for (int i = 0; i <= userScores.size() - 1; i ++){
-            Integer score = userScores.get(i);
-            String displayScore = currentAccount.getUsername() + sep + score.toString();
-            displayUserScoresList.add(displayScore);
+        if (displayGameScoresList.size() == 0) {
+            String sep = ":      ";
+            for (int i = 0; i <= userScores.size() - 1; i++) {
+                Integer score = userScores.get(i);
+                String displayScore = currentAccount.getUsername() + sep + score.toString();
+                displayUserScoresList.add(displayScore);
+            }
         }
     }
-
-
 }

@@ -3,8 +3,6 @@ package fall2018.csc2017.slidingtiles;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,18 +10,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
 
+/**
+ * A general scoreboard activity that displays game-wide and user-specific scores.
+ */
 public class ScoreBoard extends AppCompatActivity{
 
     /**
@@ -80,7 +75,7 @@ public class ScoreBoard extends AppCompatActivity{
     }
 
     /**
-     * Adding a button so the user can switch between the game-wide scoreboard to per-user scoreboard
+     * A button to allow the user can switch between the game-wide scoreboard to per-user scoreboard
      */
     public void addChangeScoreboardViewButton(){
         Button changeScoreboardView = findViewById(R.id.button_new_game);
