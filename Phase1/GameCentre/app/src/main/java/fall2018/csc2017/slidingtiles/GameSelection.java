@@ -189,7 +189,11 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 Integer.parseInt(columns.getText().toString()) < 3 )
                         {
                             makeCustomToastText("Rows/Columns cannot be lesser than 3!", v.getContext());
-                        } else {
+                        } else if (Integer.parseInt(rows.getText().toString()) > 33  ||
+                                Integer.parseInt(columns.getText().toString()) > 33 ) {
+                            makeCustomToastText("Dude stop you can't even see the board at this size", v.getContext());
+                        }
+                        else {
                             String url = etUrl.getText().toString();
                             Intent imageIntent = new Intent(v.getContext(), ImageServiceIntent.class);
                             imageIntent.putExtra("receiver", resultReceiver);
@@ -227,7 +231,10 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 Integer.parseInt(columns.getText().toString()) < 3 )
                         {
                             makeCustomToastText("Rows/Columns cannot be lesser than 3!", view.getContext());
-                        } else {
+                        } else if (Integer.parseInt(rows.getText().toString()) > 33  ||
+                                Integer.parseInt(columns.getText().toString()) > 33 ) {
+                            makeCustomToastText("Dude stop you can't even see the board at this size", view.getContext());
+                        }else {
                             Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()), Integer.parseInt(columns.getText().toString()));
                             boardList.add(new BoardManager(randomBoard));
                             loaderAdapter.notifyDataSetChanged();

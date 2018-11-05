@@ -163,36 +163,74 @@ public class GameActivity extends AppCompatActivity implements Observer {
             return getDrawable(R.drawable.bg_simplebg);
         }
         else if(id < 10){
-            Drawable bg = getDrawable(R.drawable.bg_simplebg);
-            int numberPath = this.getResources().getIdentifier("ic_"+Integer.toString(id), "drawable", getPackageName());
-            Drawable number = getDrawable(numberPath);
-            LayerDrawable ld = new LayerDrawable(new Drawable[]{bg,number});
-            ld.setLayerInset(1, columnWidth/4,0,0,30);
-            ld.setLayerWidth(1, columnWidth/2);
+            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_ONES, id);
             if(!t.hasBackground())
                 t.setBackground(ld);
             return ld;
         }
         else if (id < 100){
-            Drawable bg = getDrawable(R.drawable.bg_simplebg);
-            String tensString = Integer.toString(id).substring(0,1);
-            String onesString = Integer.toString(id).substring(1);
-            int onesNumberPath = this.getResources().getIdentifier("ic_"+onesString, "drawable", getPackageName());
-            int tensNumberPath = this.getResources().getIdentifier("ic_"+tensString, "drawable", getPackageName());
-            Drawable onesDrawable = getDrawable(onesNumberPath);
-            Drawable tensDrawable = getDrawable(tensNumberPath);
-            LayerDrawable ld = new LayerDrawable(new Drawable[]{bg,tensDrawable, onesDrawable});
-            ld.setLayerWidth(1, columnWidth/2 - 5);
-            ld.setLayerWidth(2, columnWidth/2 - 5);
-            ld.setLayerInset(1,0,0,0,30);
-            ld.setLayerInset(2, columnWidth/2,0,0,30);
+            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_TENS, id);
+            if(!t.hasBackground())
+                t.setBackground(ld);
+            return ld;
+        } else if (id < 1000)
+        {
+            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_THOU, id);
             if(!t.hasBackground())
                 t.setBackground(ld);
             return ld;
         }
         return null;
     }
-
+    public enum DigitEnum
+    {
+        DIGIT_ONES, DIGIT_TENS, DIGIT_THOU
+    }
+    public LayerDrawable generateTileLayers(DigitEnum digitEnum, int id)
+    {
+        Drawable bg = getDrawable(R.drawable.bg_simplebg);
+        switch (digitEnum) {
+            case DIGIT_ONES:
+                int onesNumberPath = this.getResources().getIdentifier("ic_"+Integer.toString(id), "drawable", getPackageName());
+                Drawable onesDrawable = getDrawable(onesNumberPath);
+                LayerDrawable ld = new LayerDrawable(new Drawable[]{bg,onesDrawable});
+                ld.setLayerInset(1, columnWidth/4,0,0,30);
+                ld.setLayerWidth(1, columnWidth/2);
+                return ld;
+            case DIGIT_TENS:
+                String tensString = Integer.toString(id).substring(0,1);
+                String onesString = Integer.toString(id).substring(1);
+                int onesNumberPath2 = this.getResources().getIdentifier("ic_"+onesString, "drawable", getPackageName());
+                int tensNumberPath2 = this.getResources().getIdentifier("ic_"+tensString, "drawable", getPackageName());
+                Drawable onesDrawable2 = getDrawable(onesNumberPath2);
+                Drawable tensDrawable = getDrawable(tensNumberPath2);
+                LayerDrawable ld2 = new LayerDrawable(new Drawable[]{bg,tensDrawable, onesDrawable2});
+                ld2.setLayerWidth(1, columnWidth/2 - 5);
+                ld2.setLayerWidth(2, columnWidth/2 - 5);
+                ld2.setLayerInset(1,0,0,0,30);
+                ld2.setLayerInset(2, columnWidth/2,0,0,30);
+                return ld2;
+            case DIGIT_THOU:
+                String thouString3 = Integer.toString(id).substring(0,1);
+                String tensString3 = Integer.toString(id).substring(1,2);
+                String onesString3 = Integer.toString(id).substring(2);
+                int thouNumberPath3 = this.getResources().getIdentifier("ic_"+thouString3, "drawable", getPackageName());
+                int tensNumberPath3 = this.getResources().getIdentifier("ic_"+tensString3, "drawable", getPackageName());
+                int onesNumberPath3 = this.getResources().getIdentifier("ic_"+onesString3, "drawable", getPackageName());
+                Drawable onesDrawable3 = getDrawable(onesNumberPath3);
+                Drawable tensDrawable3 = getDrawable(tensNumberPath3);
+                Drawable thouDrawable3 = getDrawable(thouNumberPath3);
+                LayerDrawable ld3 = new LayerDrawable(new Drawable[]{bg,thouDrawable3,tensDrawable3, onesDrawable3});
+                ld3.setLayerWidth(1, columnWidth/3 - 5);
+                ld3.setLayerWidth(2, columnWidth/3 - 5);
+                ld3.setLayerWidth(3, columnWidth/3 - 5);
+                ld3.setLayerInset(1,0,0,0,30);
+                ld3.setLayerInset(2, columnWidth/3,0,0,30);
+                ld3.setLayerInset(3, 2*columnWidth/3,0,0,30);
+                return ld3;
+        }
+        return null;
+    }
     public Drawable generateImageTiles(Tile t, @Nullable Bitmap b, boolean blank){
         if(blank)
         {
