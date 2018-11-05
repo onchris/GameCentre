@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,7 +17,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -166,13 +170,56 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
             case R.id.item4:
                 dialog.show();
                 Button confirmButton = dialog.findViewById(R.id.button_confirm_difficulty);
+                Button loadImageButton = dialog.findViewById(R.id.button_loadImage);
+                final ImageView imagePreview = dialog.findViewById(R.id.iv_preview);
                 final EditText rows = dialog.findViewById(R.id.text_row);
                 final EditText columns = dialog.findViewById(R.id.text_column);
                 final EditText undos = dialog.findViewById(R.id.text_undos);
+                final EditText etUrl = dialog.findViewById(R.id.et_Url);
+                final ImageResultReceiver resultReceiver = new ImageResultReceiver(new Handler(), imagePreview);
+                resultReceiver.setmReceiver(resultReceiver);
+                loadImageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(rows.getText().toString().equals("") ||
+                                columns.getText().toString().equals("") ||
+                                undos.getText().toString().equals("")){
+                            makeCustomToastText("Fields must not be empty!", v.getContext());
+                        } else if (Integer.parseInt(rows.getText().toString()) < 3  ||
+                                Integer.parseInt(columns.getText().toString()) < 3 )
+                        {
+                            makeCustomToastText("Rows/Columns cannot be lesser than 3!", v.getContext());
+                        } else {
+                            String url = etUrl.getText().toString();
+                            Intent imageIntent = new Intent(v.getContext(), ImageServiceIntent.class);
+                            imageIntent.putExtra("receiver", resultReceiver);
+                            imageIntent.putExtra("url", url);
+                            imageIntent.putExtra("rows", Integer.parseInt(rows.getText().toString()));
+                            imageIntent.putExtra("columns", Integer.parseInt(columns.getText().toString()));
+                            startService(imageIntent);
+                        }
+                    }
+                });
                 confirmButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(rows.getText().toString().equals("") ||
+                        CheckBox useImage = dialog.findViewById(R.id.cb_useImage);
+                        if(useImage.isChecked()){
+                            if(resultReceiver.contentReceived()){
+                                Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()), Integer.parseInt(columns.getText().toString()));
+                                BoardManager bm = new BoardManager(randomBoard);
+                                bm.setCustomImageSet(resultReceiver.getBitmapArrayList());
+                                bm.setUseImage(true);
+                                boardList.add(bm);
+                                loaderAdapter.notifyDataSetChanged();
+                                saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
+                                makeCustomToastText(randomBoard.getTilesDimension(),getBaseContext());
+                                dialog.dismiss();
+                            }else{
+                                makeCustomToastText("You must wait for your image to finish downloading!", view.getContext());
+                            }
+                        }
+                        else if(rows.getText().toString().equals("") ||
                                 columns.getText().toString().equals("") ||
                                 undos.getText().toString().equals("")){
                             makeCustomToastText("Fields must not be empty!", view.getContext());

@@ -2,8 +2,11 @@ package fall2018.csc2017.slidingtiles;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -66,6 +69,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private Integer currentScore;
     private int numRows, numColumns;
     private final Context ctx = this;
+    public static ArrayList<Bitmap> IMAGE_SET;
 
     /**
      * Set up the background image for each button based on the master list
@@ -73,19 +77,26 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     // Display
     public void display() {
-        updateTileButtons();
+        updateTileButtons(boardManager.isUseImage());
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         if (boardManager.puzzleSolved()) {
+            timer.cancel();
+            timerTask.cancel();
             currentScore = -100;//TODO: remove, it's not a real score
-            currentAccount.addToSlidingGameScores(10); //TODO: add the sliding game score
+            if(!GameSelection.IS_GUEST)
+                currentAccount.addToSlidingGameScores(10); //TODO: add the sliding game score
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
-            if(!GameSelection.IS_GUEST)
+            if(!GameSelection.IS_GUEST) {
                 tmp.putExtra("currentUsername", currentAccount.getUsername());
-            else
+                tmp.putExtra("board", boardManager.getBoard());
+            }
+            else {
                 tmp.putExtra("currentUsername", "-1");
+            }
             tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
             startActivity(tmp);
+            finish();
         }
         undoButton = findViewById(R.id.UndoButton);
         undoButton.setText("Undo:"+boardManager.getNumCanUndo());
@@ -94,12 +105,14 @@ public class GameActivity extends AppCompatActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadFromFile(TEMP_SAVE_FILENAME);
-
         currentAccount = (Account) getIntent().getSerializableExtra("account");
         boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
         boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
         setContentView(R.layout.activity_main);
-
+        boardManager.setUseImage(IMAGE_SET!=null);
+        if(boardManager.isUseImage()){
+            boardManager.setCustomImageSet(IMAGE_SET);
+        }
         addUndoButtonListener();
         TextView v = findViewById(R.id.text_currentUserGame);
         if(!GameSelection.IS_GUEST)
@@ -124,7 +137,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
 
                         columnWidth = displayWidth / numColumns;
                         columnHeight = displayHeight / numRows;
-                        createTileButtons(ctx);
+                        createTileButtons(ctx, boardManager.isUseImage());
                         display();
                     }
                 });
@@ -179,12 +192,26 @@ public class GameActivity extends AppCompatActivity implements Observer {
         }
         return null;
     }
+
+    public Drawable generateImageTiles(Tile t, @Nullable Bitmap b, boolean blank){
+        if(blank)
+        {
+            if(!t.hasBackground())
+                t.setBackground(getDrawable(R.drawable.bg_simplebg));
+            return getDrawable(R.drawable.bg_simplebg);
+        }else {
+            Drawable bg = new BitmapDrawable(getResources(), b);
+            if (!t.hasBackground())
+                t.setBackground(bg);
+            return bg;
+        }
+    }
     /**
      * Create the buttons for displaying the tiles.
      *
      * @param context the context
      */
-    private void createTileButtons(Context context) {
+    private void createTileButtons(Context context, boolean useImage) {
         Board board = boardManager.getBoard();
         numColumns = board.numColumns;
         numRows = board.numRows;
@@ -192,7 +219,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
         for (int row = 0; row != numRows; row++) {
             for (int col = 0; col != numColumns; col++) {
                 Button tmp = new Button(context);
-                if(board.getTile(row,col).getId() < numColumns*numRows)
+                if(useImage){
+                    tmp.setBackground(generateImageTiles(board.getTile(row,col), boardManager.getCustomImageSet().get(board.getTile(row,col).getId()-1), false));
+                }
+                else if(board.getTile(row,col).getId() < numColumns*numRows)
                     tmp.setBackground(generateBackgroundTiles(board.getTile(row,col).getId(),false, board.getTile(row,col) ));
                 else
                     tmp.setBackground(generateBackgroundTiles(board.getTile(row,col).getId(),true, board.getTile(row,col)));
@@ -204,7 +234,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     /**
      * Update the backgrounds on the buttons to match the tiles.
      */
-    private void updateTileButtons() {
+    private void updateTileButtons(boolean useImage) {
         Board board = boardManager.getBoard();
         int count = 0;
         for(int row = 0; row != numRows; row++){
@@ -308,7 +338,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
         timer.cancel();
         timerTask.cancel();
         super.onBackPressed();
-
         finish();
     }
     @Override

@@ -1,5 +1,7 @@
 package fall2018.csc2017.slidingtiles;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
 import java.io.NotActiveException;
@@ -29,6 +31,24 @@ class BoardManager implements Serializable, Undoable {
      * The steps for users to undo.
      */
     private Stack<Integer> availableUndoSteps = new Stack<>();
+    private transient ArrayList<Bitmap> customImageSet;
+    private transient boolean useImage;
+
+    public boolean isUseImage() {
+        return useImage;
+    }
+
+    public void setUseImage(boolean useImage) {
+        this.useImage = useImage;
+    }
+
+    public ArrayList<Bitmap> getCustomImageSet() {
+        return customImageSet;
+    }
+
+    public void setCustomImageSet(ArrayList<Bitmap> customImageSet) {
+        this.customImageSet = customImageSet;
+    }
 
     /**
      * Gets the available number of steps that users can undo.

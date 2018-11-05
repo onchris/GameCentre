@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
+
 public class ScoreBoard extends AppCompatActivity{
 
     /**
@@ -48,6 +51,7 @@ public class ScoreBoard extends AppCompatActivity{
     private Button changeScoreboardView;
     private boolean IS_GUEST;
     private boolean IS_GLOBAL_SCOREBOARD;
+    private Board board;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +60,10 @@ public class ScoreBoard extends AppCompatActivity{
         loadUsersFromFile(ACCOUNTS_FILENAME);
         addChangeScoreboardViewButton();
         addNewGameButtonListener();
-        addGameSelectionButtonListener();
 
         if(!getIntent().getStringExtra("currentUsername").equals("-1")) {
             IS_GUEST = false;
+            board = (Board) getIntent().getSerializableExtra("board");
             for(Account account: accountsList) {
                 if(account.getUsername().equals(getIntent().getStringExtra("currentUsername"))) {
                     currentAccount = account;
@@ -193,34 +197,22 @@ public class ScoreBoard extends AppCompatActivity{
         newGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_main);
-            }
-        });
-    }
-
-    /**
-     * On click function for the new game button
-     * @param v the current view(Called by application)
-     */
-    public void newGameButtonOnClick(View v){
-        Intent tmp = new Intent(scoreList.getContext(), GameSelection.class);
-        if (!IS_GUEST) {
-            tmp.putExtra("currentUser", currentAccount.getUsername());
-        } else {
-            tmp.putExtra("currentUser", "-1");
-        }
-        startActivity(tmp);
-    }
-
-    /**
-     * Allow user to go back to the list of games to pick a different game
-     */
-    private void addGameSelectionButtonListener() {
-        Button gameSelectionButton = findViewById(R.id.button_game_selection);
-        gameSelectionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_games);
+                if(IS_GUEST){
+                    saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,
+                            new BoardManager(), v.getContext());
+                    Intent tmp = new Intent(v.getContext(), GameActivity.class);
+                    tmp.putExtra("account", -1);
+                    startActivity(tmp);
+                } else {
+                    BoardManager bm = new BoardManager(newRandomBoard(board.numRows,board.numColumns));
+                    saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME, bm, v.getContext());
+                    Intent tmp = new Intent(v.getContext(), GameActivity.class);
+                    currentAccount.getBoardList().add(bm);
+                    tmp.putExtra("account", currentAccount);
+                    tmp.putExtra("boardList", currentAccount.getBoardList());
+                    tmp.putExtra("boardIndex", currentAccount.getBoardList().indexOf(bm));
+                    startActivity(tmp);
+                }
             }
         });
     }
@@ -230,13 +222,8 @@ public class ScoreBoard extends AppCompatActivity{
      * @param v the current view(Called by application)
      */
     public void gameSelectionButtonOnClick(View v){
-        Intent tmp = new Intent(v.getContext(), GameSelection.class);
-        if (!IS_GUEST) {
-            tmp.putExtra("currentUser", currentAccount.getUsername());
-        } else {
-            tmp.putExtra("currentUser", "-1");
-        }
-        startActivity(tmp);
+        this.getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        onBackPressed();
     }
 
     /**

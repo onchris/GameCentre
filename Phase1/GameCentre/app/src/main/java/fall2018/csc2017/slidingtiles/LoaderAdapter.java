@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcel;
 import android.preference.DialogPreference;
 import android.util.Log;
 import android.view.Gravity;
@@ -44,7 +46,7 @@ public class LoaderAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
+    public BoardManager getItem(int i) {
         return boardList.get(i);
     }
 
@@ -77,7 +79,9 @@ public class LoaderAdapter extends BaseAdapter {
         v.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BoardManager bm = (BoardManager) getItem(i);
+                BoardManager bm = getItem(i);
+                if(bm.isUseImage())
+                    GameActivity.IMAGE_SET = bm.getCustomImageSet();
                 saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME, bm, ctx);
                 Intent tmp = new Intent(view.getContext(), GameActivity.class);
                 tmp.putExtra("account", account);

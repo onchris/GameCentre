@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -119,6 +120,22 @@ public final class UtilityManager {
         } else
             ad.setMessage(" ");
         return ad;
+    }
+    /**
+     * Generates a new random board with sizes based on parameters passed in
+     * @param rows the new game's row properties
+     * @param columns the new game's columns properties
+     * @return A random board with specified dimensions
+     */
+    public static Board newRandomBoard(int rows, int columns){
+        List<Tile> tiles = new ArrayList<>();
+        int numTiles = rows * columns;
+        for (int tileNum = 0; tileNum != numTiles; tileNum++) {
+            tiles.add(new Tile(tileNum));
+        }
+        Collections.shuffle(tiles);
+        Board b = new Board(tiles, rows, columns);
+        return b;
     }
 
 }
