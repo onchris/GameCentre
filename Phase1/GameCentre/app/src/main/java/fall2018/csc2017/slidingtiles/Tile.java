@@ -1,12 +1,29 @@
 package fall2018.csc2017.slidingtiles;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
 import android.widget.Button;
 
+import java.io.File;
 import java.io.Serializable;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import fall2018.csc2017.slidingtiles.R;
+
+import static android.support.v4.content.res.ResourcesCompat.getColor;
+import static android.support.v4.content.res.ResourcesCompat.getDrawable;
 
 /**
  * A Tile in a sliding tiles puzzle.
@@ -16,7 +33,8 @@ public class Tile implements Comparable<Tile>, Serializable {
     /**
      * The background id to find the tile image.
      */
-    private int background;
+
+    private transient Drawable background;
 
     /**
      * The unique id.
@@ -28,7 +46,7 @@ public class Tile implements Comparable<Tile>, Serializable {
      *
      * @return the background id
      */
-    public int getBackground() {
+    public Drawable getBackground() {
         return background;
     }
 
@@ -47,9 +65,18 @@ public class Tile implements Comparable<Tile>, Serializable {
      * @param id         the id
      * @param background the background
      */
-    public Tile(int id, int background) {
+    private transient boolean hasBackground;
+    public boolean hasBackground(){
+        return hasBackground;
+    }
+    public void setBackground(Drawable bg){
+        this.background = bg;
+        this.hasBackground = true;
+    }
+    public Tile(int id, Drawable background) {
         this.id = id;
         this.background = background;
+        hasBackground = true;
     }
 
     /**
@@ -57,174 +84,8 @@ public class Tile implements Comparable<Tile>, Serializable {
      *
      * @param backgroundId
      */
-    public Tile(int backgroundId, String Choice) {
+    public Tile(int backgroundId) {
         id = backgroundId + 1;
-        // This looks so ugly.
-        if(Choice.equals("4")){
-            switch (backgroundId + 1) {
-                case 1:
-                    background = R.drawable.tile_1;
-                    break;
-                case 2:
-                    background = R.drawable.tile_2;
-                    break;
-                case 3:
-                    background = R.drawable.tile_3;
-                    break;
-                case 4:
-                    background = R.drawable.tile_4;
-                    break;
-                case 5:
-                    background = R.drawable.tile_5;
-                    break;
-                case 6:
-                    background = R.drawable.tile_6;
-                    break;
-                case 7:
-                    background = R.drawable.tile_7;
-                    break;
-                case 8:
-                    background = R.drawable.tile_8;
-                    break;
-                case 9:
-                    background = R.drawable.tile_9;
-                    break;
-                case 10:
-                    background = R.drawable.tile_10;
-                    break;
-                case 11:
-                    background = R.drawable.tile_11;
-                    break;
-                case 12:
-                    background = R.drawable.tile_12;
-                    break;
-                case 13:
-                    background = R.drawable.tile_13;
-                    break;
-                case 14:
-                    background = R.drawable.tile_14;
-                    break;
-                case 15:
-                    background = R.drawable.tile_15;
-                    break;
-                case 16:
-                    background = R.drawable.tile_16;
-                    break;
-                default:
-                    background = R.drawable.tile_16;
-            }}
-        else if(Choice.equals("3")){
-            switch (backgroundId + 1) {
-                case 1:
-                    background = R.drawable.tile_1;
-                    break;
-                case 2:
-                    background = R.drawable.tile_2;
-                    break;
-                case 3:
-                    background = R.drawable.tile_3;
-                    break;
-                case 4:
-                    background = R.drawable.tile_4;
-                    break;
-                case 5:
-                    background = R.drawable.tile_5;
-                    break;
-                case 6:
-                    background = R.drawable.tile_6;
-                    break;
-                case 7:
-                    background = R.drawable.tile_7;
-                    break;
-                case 8:
-                    background = R.drawable.tile_8;
-                    break;
-                case 9:
-                    background = R.drawable.tile_16;
-                    break;
-                default:
-                    background = R.drawable.tile_16;
-            }}
-        else if(Choice.equals("5")){
-            switch (backgroundId + 1) {
-                case 1:
-                    background = R.drawable.tile_1;
-                    break;
-                case 2:
-                    background = R.drawable.tile_2;
-                    break;
-                case 3:
-                    background = R.drawable.tile_3;
-                    break;
-                case 4:
-                    background = R.drawable.tile_4;
-                    break;
-                case 5:
-                    background = R.drawable.tile_5;
-                    break;
-                case 6:
-                    background = R.drawable.tile_6;
-                    break;
-                case 7:
-                    background = R.drawable.tile_7;
-                    break;
-                case 8:
-                    background = R.drawable.tile_8;
-                    break;
-                case 9:
-                    background = R.drawable.tile_9;
-                    break;
-                case 10:
-                    background = R.drawable.tile_10;
-                    break;
-                case 11:
-                    background = R.drawable.tile_11;
-                    break;
-                case 12:
-                    background = R.drawable.tile_12;
-                    break;
-                case 13:
-                    background = R.drawable.tile_13;
-                    break;
-                case 14:
-                    background = R.drawable.tile_14;
-                    break;
-                case 15:
-                    background = R.drawable.tile_15;
-                    break;
-                case 16:
-                    background = R.drawable.tile_1;
-                    break;
-                case 17:
-                    background = R.drawable.tile_1;
-                    break;
-                case 18:
-                    background = R.drawable.tile_1;
-                    break;
-                case 19:
-                    background = R.drawable.tile_1;
-                    break;
-                case 20:
-                    background = R.drawable.tile_1;
-                    break;
-                case 21:
-                    background = R.drawable.tile_1;
-                    break;
-                case 22:
-                    background = R.drawable.tile_1;
-                    break;
-                case 23:
-                    background = R.drawable.tile_1;
-                    break;
-                case 24:
-                    background = R.drawable.tile_1;
-                    break;
-                case 25:
-                    background = R.drawable.tile_16;
-                    break;
-                default:
-                    background = R.drawable.tile_16;
-            }}
     }
 
     @Override

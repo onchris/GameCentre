@@ -42,25 +42,25 @@ class BoardManager implements Serializable, Undoable {
      * Manage a board that has been pre-populated.
      * @param board the board
      */
-    BoardManager(Board board) {
+    public BoardManager(Board board) {
         this.board = board;
     }
 
     /**
      * Return the current board.
      */
-    Board getBoard() {
+    public Board getBoard() {
         return board;
     }
 
     /**
      * Manage a new shuffled board.
      */
-    BoardManager(String gameChoice) {
+    public BoardManager() {
         List<Tile> tiles = new ArrayList<>();
-        final int numTiles = Board.NUM_ROWS * Board.NUM_COLS;
+        int numTiles = 4 * 4;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-            tiles.add(new Tile(tileNum, gameChoice));
+            tiles.add(new Tile(tileNum));
         }
 
         Collections.shuffle(tiles);
@@ -94,14 +94,14 @@ class BoardManager implements Serializable, Undoable {
      */
     boolean isValidTap(int position) {
 
-        int row = position / Board.NUM_COLS;
-        int col = position % Board.NUM_COLS;
+        int row = position / board.numRows;
+        int col = position % board.numColumns;
         int blankId = board.numTiles();
         // Are any of the 4 the blank tile?
         Tile above = row == 0 ? null : board.getTile(row - 1, col);
-        Tile below = row == Board.NUM_ROWS - 1 ? null : board.getTile(row + 1, col);
+        Tile below = row == board.numRows - 1 ? null : board.getTile(row + 1, col);
         Tile left = col == 0 ? null : board.getTile(row, col - 1);
-        Tile right = col == Board.NUM_COLS - 1 ? null : board.getTile(row, col + 1);
+        Tile right = col == board.numColumns - 1 ? null : board.getTile(row, col + 1);
         return (below != null && below.getId() == blankId)
                 || (above != null && above.getId() == blankId)
                 || (left != null && left.getId() == blankId)
@@ -114,17 +114,17 @@ class BoardManager implements Serializable, Undoable {
      * @param position the position
      */
     void touchMove(int position) {
-        int row = position / Board.NUM_ROWS;
-        int col = position % Board.NUM_COLS;
+        int row = position / board.numRows;
+        int col = position % board.numColumns;
         int blankId = board.numTiles();
         if(isValidTap(position))
         {
             availableUndoSteps.push(row);
             availableUndoSteps.push(col);
             Tile above = row == 0 ? null : board.getTile(row - 1, col);
-            Tile below = row == Board.NUM_ROWS - 1 ? null : board.getTile(row + 1, col);
+            Tile below = row == board.numRows - 1 ? null : board.getTile(row + 1, col);
             Tile left = col == 0 ? null : board.getTile(row, col - 1);
-            Tile right = col == Board.NUM_COLS - 1 ? null : board.getTile(row, col + 1);
+            Tile right = col == board.numColumns - 1 ? null : board.getTile(row, col + 1);
             if(above != null && above.getId() == blankId)
             {
                 board.swapTiles(row, col, row-1, col);

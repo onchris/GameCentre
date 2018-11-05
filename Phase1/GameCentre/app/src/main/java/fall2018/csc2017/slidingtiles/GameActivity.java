@@ -2,12 +2,13 @@ package fall2018.csc2017.slidingtiles;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +19,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
@@ -64,6 +64,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private TimerTask timerTask;
     private Button undoButton;
     private Integer currentScore;
+    private int numRows, numColumns;
+    private final Context ctx = this;
 
     /**
      * Set up the background image for each button based on the master list
@@ -74,13 +76,15 @@ public class GameActivity extends AppCompatActivity implements Observer {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         if (boardManager.puzzleSolved()) {
+            currentScore = -100;//TODO: remove, it's not a real score
+            currentAccount.addToSlidingGameScores(10); //TODO: add the sliding game score
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             if(!GameSelection.IS_GUEST)
                 tmp.putExtra("currentUsername", currentAccount.getUsername());
             else
                 tmp.putExtra("currentUsername", "-1");
-            tmp.putExtra("currentScore", currentScore.toString());
+            tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
             startActivity(tmp);
         }
         undoButton = findViewById(R.id.UndoButton);
@@ -90,11 +94,12 @@ public class GameActivity extends AppCompatActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadFromFile(TEMP_SAVE_FILENAME);
-        createTileButtons(this);
+
         currentAccount = (Account) getIntent().getSerializableExtra("account");
         boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
         boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
         setContentView(R.layout.activity_main);
+
         addUndoButtonListener();
         TextView v = findViewById(R.id.text_currentUserGame);
         if(!GameSelection.IS_GUEST)
@@ -104,7 +109,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
 
         // Add View to activity
         gridView = findViewById(R.id.grid);
-        gridView.setNumColumns(Board.NUM_COLS);
+        gridView.setNumColumns(numColumns);
         gridView.setBoardManager(boardManager);
         boardManager.getBoard().addObserver(this);
         // Observer sets up desired dimensions as well as calls our display function
@@ -117,8 +122,9 @@ public class GameActivity extends AppCompatActivity implements Observer {
                         int displayWidth = gridView.getMeasuredWidth();
                         int displayHeight = gridView.getMeasuredHeight();
 
-                        columnWidth = displayWidth / Board.NUM_COLS;
-                        columnHeight = displayHeight / Board.NUM_ROWS;
+                        columnWidth = displayWidth / numColumns;
+                        columnHeight = displayHeight / numRows;
+                        createTileButtons(ctx);
                         display();
                     }
                 });
@@ -136,6 +142,43 @@ public class GameActivity extends AppCompatActivity implements Observer {
         };
         timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
     }
+    public Drawable generateBackgroundTiles(int id, boolean blank, Tile t){
+        if(blank)
+        {
+            if(!t.hasBackground())
+                t.setBackground(getDrawable(R.drawable.bg_simplebg));
+            return getDrawable(R.drawable.bg_simplebg);
+        }
+        else if(id < 10){
+            Drawable bg = getDrawable(R.drawable.bg_simplebg);
+            int numberPath = this.getResources().getIdentifier("ic_"+Integer.toString(id), "drawable", getPackageName());
+            Drawable number = getDrawable(numberPath);
+            LayerDrawable ld = new LayerDrawable(new Drawable[]{bg,number});
+            ld.setLayerInset(1, columnWidth/4,0,0,30);
+            ld.setLayerWidth(1, columnWidth/2);
+            if(!t.hasBackground())
+                t.setBackground(ld);
+            return ld;
+        }
+        else if (id < 100){
+            Drawable bg = getDrawable(R.drawable.bg_simplebg);
+            String tensString = Integer.toString(id).substring(0,1);
+            String onesString = Integer.toString(id).substring(1);
+            int onesNumberPath = this.getResources().getIdentifier("ic_"+onesString, "drawable", getPackageName());
+            int tensNumberPath = this.getResources().getIdentifier("ic_"+tensString, "drawable", getPackageName());
+            Drawable onesDrawable = getDrawable(onesNumberPath);
+            Drawable tensDrawable = getDrawable(tensNumberPath);
+            LayerDrawable ld = new LayerDrawable(new Drawable[]{bg,tensDrawable, onesDrawable});
+            ld.setLayerWidth(1, columnWidth/2 - 5);
+            ld.setLayerWidth(2, columnWidth/2 - 5);
+            ld.setLayerInset(1,0,0,0,30);
+            ld.setLayerInset(2, columnWidth/2,0,0,30);
+            if(!t.hasBackground())
+                t.setBackground(ld);
+            return ld;
+        }
+        return null;
+    }
     /**
      * Create the buttons for displaying the tiles.
      *
@@ -143,11 +186,17 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     private void createTileButtons(Context context) {
         Board board = boardManager.getBoard();
+        numColumns = board.numColumns;
+        numRows = board.numRows;
         tileButtons = new ArrayList<>();
-        for (int row = 0; row != Board.NUM_ROWS; row++) {
-            for (int col = 0; col != Board.NUM_COLS; col++) {
+        for (int row = 0; row != numRows; row++) {
+            for (int col = 0; col != numColumns; col++) {
                 Button tmp = new Button(context);
-                tmp.setBackgroundResource(board.getTile(row, col).getBackground());
+                if(board.getTile(row,col).getId() < numColumns*numRows)
+                    tmp.setBackground(generateBackgroundTiles(board.getTile(row,col).getId(),false, board.getTile(row,col) ));
+                else
+                    tmp.setBackground(generateBackgroundTiles(board.getTile(row,col).getId(),true, board.getTile(row,col)));
+
                 this.tileButtons.add(tmp);
             }
         }
@@ -157,12 +206,12 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     private void updateTileButtons() {
         Board board = boardManager.getBoard();
-        int nextPos = 0;
-        for (Button b : tileButtons) {
-            int row = nextPos / Board.NUM_ROWS;
-            int col = nextPos % Board.NUM_COLS;
-            b.setBackgroundResource(board.getTile(row, col).getBackground());
-            nextPos++;
+        int count = 0;
+        for(int row = 0; row != numRows; row++){
+            for(int col = 0; col != numColumns; col++){
+                tileButtons.get(count).setBackground(board.getTile(row,col).getBackground());
+                count++;
+            }
         }
     }
     /**
@@ -185,6 +234,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
                 boardManager = (BoardManager) input.readObject();
+                numRows = boardManager.getBoard().numRows;
+                numColumns = boardManager.getBoard().numColumns;
                 inputStream.close();
             }
         } catch (FileNotFoundException e) {
@@ -254,9 +305,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
     @Override
     public void onBackPressed() {
         onClickSaveBoard(getCurrentFocus(), false);
-        super.onBackPressed();
         timer.cancel();
         timerTask.cancel();
+        super.onBackPressed();
+
         finish();
     }
     @Override

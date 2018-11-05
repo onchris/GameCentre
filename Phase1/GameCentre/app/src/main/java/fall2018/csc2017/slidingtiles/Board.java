@@ -16,17 +16,17 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
     /**
      * The number of rows.
      */
-    static int NUM_ROWS = 4;
+    public int numRows;
 
     /**
      * The number of rows.
      */
-    static int NUM_COLS = 4;
+    public int numColumns;
 
     /**
      * The tiles on the board in row-major order.
      */
-    private Tile[][] tiles = new Tile[NUM_ROWS][NUM_COLS];
+    private Tile[][] tiles;
 
     /**
      * A new board of tiles in row-major order.
@@ -34,11 +34,24 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
      *
      * @param tiles the tiles for the board
      */
-    Board(List<Tile> tiles) {
+    public Board(List<Tile> tiles) {
+        numRows = 4;
+        numColumns = 4;
+        this.tiles = new Tile[4][4];
         Iterator<Tile> iter = tiles.iterator();
-
-        for (int row = 0; row != Board.NUM_ROWS; row++) {
-            for (int col = 0; col != Board.NUM_COLS; col++) {
+        for (int row = 0; row != 4; row++) {
+            for (int col = 0; col != 4; col++) {
+                this.tiles[row][col] = iter.next();
+            }
+        }
+    }
+    public Board(List<Tile> tiles, int rows, int columns){
+        numRows = rows;
+        numColumns = columns;
+        this.tiles = new Tile[rows][columns];
+        Iterator<Tile> iter = tiles.iterator();
+        for (int row = 0; row != rows; row++) {
+            for (int col = 0; col != columns; col++) {
                 this.tiles[row][col] = iter.next();
             }
         }

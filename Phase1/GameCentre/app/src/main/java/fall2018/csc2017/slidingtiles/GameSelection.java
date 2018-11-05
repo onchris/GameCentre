@@ -143,28 +143,22 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         final Dialog dialog = builder.create();
         switch (menuItem.getItemId()){
             case R.id.item1:
-                Board.NUM_ROWS = 3;
-                Board.NUM_COLS = 3;
-                BoardManager randomBoard = new BoardManager("3");
-                boardList.add(randomBoard);
+                Board randomBoard3 = newRandomBoard(3,3);
+                boardList.add(new BoardManager(randomBoard3));
                 loaderAdapter.notifyDataSetChanged();
                 saveBoardsToAccounts(this, currentAccount, boardList);
                 makeCustomToastText(menuItem.toString(),getBaseContext());
                 return true;
             case R.id.item2:
-                Board.NUM_ROWS = 4;
-                Board.NUM_COLS = 4;
-                BoardManager randomBoard2 = new BoardManager("4");
-                boardList.add(randomBoard2);
+                Board randomBoard4 = newRandomBoard(4,4);
+                boardList.add(new BoardManager(randomBoard4));
                 loaderAdapter.notifyDataSetChanged();
                 saveBoardsToAccounts(this, currentAccount, boardList);
                 makeCustomToastText(menuItem.toString(),getBaseContext());
                 return true;
             case R.id.item3:
-                Board.NUM_ROWS = 5;
-                Board.NUM_COLS = 5;
-                BoardManager randomBoard3 = new BoardManager("5");
-                boardList.add(randomBoard3);
+                Board randomBoard5 = newRandomBoard(5,5);
+                boardList.add(new BoardManager(randomBoard5));
                 loaderAdapter.notifyDataSetChanged();
                 saveBoardsToAccounts(this, currentAccount, boardList);
                 makeCustomToastText(menuItem.toString(),getBaseContext());
@@ -182,8 +176,16 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 columns.getText().toString().equals("") ||
                                 undos.getText().toString().equals("")){
                             makeCustomToastText("Fields must not be empty!", view.getContext());
+                        } else if (Integer.parseInt(rows.getText().toString()) < 3  ||
+                                Integer.parseInt(columns.getText().toString()) < 3 )
+                        {
+                            makeCustomToastText("Rows/Columns cannot be lesser than 3!", view.getContext());
                         } else {
-                            //Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()), Integer.parseInt(columns.getText().toString()));
+                            Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()), Integer.parseInt(columns.getText().toString()));
+                            boardList.add(new BoardManager(randomBoard));
+                            loaderAdapter.notifyDataSetChanged();
+                            saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
+                            makeCustomToastText(randomBoard.getTilesDimension(),getBaseContext());
                             dialog.dismiss();
                         }
                     }
@@ -202,10 +204,11 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         List<Tile> tiles = new ArrayList<>();
         int numTiles = rows * columns;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-            tiles.add(new Tile(tileNum, "4"));
+            tiles.add(new Tile(tileNum));
         }
         Collections.shuffle(tiles);
-        return new Board(tiles);
+        Board b = new Board(tiles, rows, columns);
+        return b;
     }
     /**
      * On click function for SlidingTile game selection button
