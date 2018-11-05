@@ -79,7 +79,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void display() {
         updateTileButtons(boardManager.isUseImage());
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
-        //if (boardManager.puzzleSolved()) {
+        if (boardManager.puzzleSolved()) {
             timer.cancel();
             timerTask.cancel();
             currentScore = -100;//TODO: remove, it's not a real score
@@ -98,7 +98,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
             tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
             startActivity(tmp);
             finish();
-        //}
+        }
         undoButton = findViewById(R.id.UndoButton);
         undoButton.setText("Undo:"+boardManager.getNumCanUndo());
     }
