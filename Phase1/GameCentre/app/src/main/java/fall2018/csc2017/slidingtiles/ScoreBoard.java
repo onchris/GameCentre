@@ -8,7 +8,6 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,10 +27,6 @@ import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFil
 public class ScoreBoard extends AppCompatActivity{
 
     /**
-     * Account data storage file
-     */
-    public static final String ACCOUNTS_FILENAME = "account_file.ser";
-    /**
      * Current user's account
      */
     private Account currentAccount;
@@ -42,13 +37,11 @@ public class ScoreBoard extends AppCompatActivity{
     /**
      * Listview for showing the list of scores.
      */
+    private ScoreManager scoreManager;
     private ListView scoreList;
-    private List<Integer> userScores = new ArrayList<>();
     private List<String> displayUserScoresList = new ArrayList<>();
-    private List<Pair<Integer, String>> gameScores = new ArrayList<>();
     private List<String> displayGameScoresList = new ArrayList<>();
     private TextView currentScore;
-    private Button changeScoreboardView;
     private boolean IS_GUEST;
     private boolean IS_GLOBAL_SCOREBOARD;
     private Board board;
@@ -57,103 +50,38 @@ public class ScoreBoard extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score_board);
-        loadUsersFromFile(ACCOUNTS_FILENAME);
+        scoreList = findViewById(R.id.scoreboard_list);
         addChangeScoreboardViewButton();
         addNewGameButtonListener();
+
+        if (getIntent().getStringExtra("currentGame").equals("slidingTiles")) {
+            scoreManager = new SlidingTilesScoreManager(getIntent().getStringExtra("currentUsername"),
+                    scoreList.getContext(),
+                    Integer.parseInt(getIntent().getStringExtra("currentScore")));
+        }
+        displayGameScoresList = scoreManager.getDisplayGameScoresList();
+        displayUserScoresList = scoreManager.getDisplayUserScoresList();
 
         if(!getIntent().getStringExtra("currentUsername").equals("-1")) {
             IS_GUEST = false;
             board = (Board) getIntent().getSerializableExtra("board");
-            for(Account account: accountsList) {
-                if(account.getUsername().equals(getIntent().getStringExtra("currentUsername"))) {
-                    currentAccount = account;
-                    userScores = currentAccount.getSlidingGameScores();
-                    break;
-                }
-            }
-            buildDisplayUserScoresList();
         } else {
             IS_GUEST = true;
         }
-        buildGameScoresList();
-        buildDisplayGameScoresList();
 
         currentScore = findViewById(R.id.lastscore);
         currentScore.setText(getIntent().getStringExtra("currentScore"));
 
-        scoreList = findViewById(R.id.scoreboard_list);
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
                 R.layout.activity_scorelist, displayGameScoresList);
         IS_GLOBAL_SCOREBOARD = true;
         scoreList.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
-
     }
 
     /**
-     * Load list of accounts to accountsList
-     * @param fileName the name of the file
+     * Adding a button so the user can switch between the game-wide scoreboard to per-user scoreboard
      */
-    private void loadUsersFromFile(String fileName) {
-        try {
-            InputStream inputStream = getApplicationContext().openFileInput(fileName);
-            if (inputStream != null) {
-                ObjectInputStream input = new ObjectInputStream(inputStream);
-                accountsList = (ArrayList<Account>) input.readObject();
-                inputStream.close();
-            }
-        } catch (FileNotFoundException e) {
-            Log.e("making scoreboard", "Oops! File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("making scoreboard", "Oops! Cannot read file: " + e.toString());
-        } catch (ClassNotFoundException e) {
-            Log.e("making scoreboard", "Oops! File contained unexpected data type: " + e.toString());
-        }
-    }
-
-    private void buildGameScoresList() {
-        Pair<Integer, String> p;
-        for (Account account : accountsList) {
-            List<Integer> accountScores = account.getSlidingGameScores();
-            for (int i = 0; i <= accountScores.size() - 1; i++) {
-                p = new Pair<>(accountScores.get(i), account.getUsername());
-                gameScores.add(p);
-            }
-        }
-        if (IS_GUEST) {
-            try {
-                p = new Pair<>(Integer.parseInt(getIntent().getStringExtra("currentScore")), "Guest");
-                gameScores.add(p);
-            } catch (NumberFormatException e) {
-                p = new Pair<>(-1, "Guest");
-            }
-        }
-        Collections.sort(gameScores, new Comparator<Pair<Integer, String>>() {
-            @Override
-            public int compare(Pair<Integer, String> p1, Pair<Integer, String> p2) {
-                return p2.first.compareTo(p1.first);
-            }
-        });
-    }
-    private void buildDisplayGameScoresList() {
-        String sep = ":      ";
-        for (int i = 0; i <= gameScores.size() - 1; i ++){
-            Pair<Integer, String> score = gameScores.get(i);
-            String displayScore = score.second + sep + score.first.toString();
-            displayGameScoresList.add(displayScore);
-        }
-    }
-
-    private void buildDisplayUserScoresList() {
-        currentAccount.sortSlidingGameScores();
-        String sep = ":      ";
-        for (int i = 0; i <= userScores.size() - 1; i ++){
-            Integer score = userScores.get(i);
-            String displayScore = currentAccount.getUsername() + sep + score.toString();
-            displayUserScoresList.add(displayScore);
-        }
-    }
-
     public void addChangeScoreboardViewButton(){
         Button changeScoreboardView = findViewById(R.id.button_new_game);
         changeScoreboardView.setOnClickListener(new View.OnClickListener() {
@@ -190,7 +118,7 @@ public class ScoreBoard extends AppCompatActivity{
     }
 
     /**
-     * Allows user to begin a new game of what they just played
+     * A button to allow the user to begin a new game of what they just played
      */
     private void addNewGameButtonListener() {
         Button newGameButton = findViewById(R.id.button_new_game);
@@ -213,6 +141,7 @@ public class ScoreBoard extends AppCompatActivity{
                     tmp.putExtra("boardIndex", currentAccount.getBoardList().indexOf(bm));
                     startActivity(tmp);
                 }
+                finish();
             }
         });
     }
