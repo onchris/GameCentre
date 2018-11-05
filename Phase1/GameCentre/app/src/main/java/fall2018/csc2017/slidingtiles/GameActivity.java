@@ -73,7 +73,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void display() {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
-        //if (boardManager.puzzleSolved()) {
+        if (boardManager.puzzleSolved()) {
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             if(!GameSelection.IS_GUEST)
@@ -82,7 +82,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
                 tmp.putExtra("currentUsername", "-1");
             tmp.putExtra("currentScore", currentScore.toString());
             startActivity(tmp);
-        //}
+        }
         undoButton = findViewById(R.id.UndoButton);
         undoButton.setText("Undo:"+boardManager.getNumCanUndo());
     }
