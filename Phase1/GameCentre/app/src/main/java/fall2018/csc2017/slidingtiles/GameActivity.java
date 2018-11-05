@@ -74,14 +74,13 @@ public class GameActivity extends AppCompatActivity implements Observer {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         //if (boardManager.puzzleSolved()) {
-            currentScore = -100;//TODO: remove, it's not a real score
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             if(!GameSelection.IS_GUEST)
                 tmp.putExtra("currentUsername", currentAccount.getUsername());
             else
                 tmp.putExtra("currentUsername", "-1");
-            tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
+            tmp.putExtra("currentScore", currentScore.toString());
             startActivity(tmp);
         //}
         undoButton = findViewById(R.id.UndoButton);
