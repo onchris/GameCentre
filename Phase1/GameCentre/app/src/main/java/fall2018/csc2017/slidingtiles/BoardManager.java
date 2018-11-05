@@ -114,8 +114,10 @@ class BoardManager implements Serializable, Undoable {
      */
     boolean isValidTap(int position) {
 
-        int row = position / board.numRows;
-        int col = position % board.numColumns;
+        int row = position / board.numColumns;
+//        int col = row * board.numColumns - 1 - position;
+        int col = position - row*board.numColumns;
+        Log.e("arr", row +","+col+":"+board.numRows+","+board.numColumns);
         int blankId = board.numTiles();
         // Are any of the 4 the blank tile?
         Tile above = row == 0 ? null : board.getTile(row - 1, col);
@@ -134,8 +136,8 @@ class BoardManager implements Serializable, Undoable {
      * @param position the position
      */
     void touchMove(int position) {
-        int row = position / board.numRows;
-        int col = position % board.numColumns;
+        int row = position / board.numColumns;
+        int col = position - row*board.numColumns;
         int blankId = board.numTiles();
         if(isValidTap(position))
         {
