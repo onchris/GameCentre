@@ -28,7 +28,8 @@ open the folder Phase1 and select GameCentre, then press "OK")
     Android Studio's SDK directory, select OK.
 3. Run the app (Run --> Run app), you will be prompted to select
 deployment target. Select the Google Pixel phone.
-4. The app will be installed automatically onto the emulator
+4. The app will be installed automatically onto the emulator and begin
+to run.
 
 ## What to click when running the app: (Getting to play SlidingTiles)
 1. Open the app from the phone's app drawer.
@@ -48,3 +49,24 @@ points if you win faster
 you can see scores of all users in the Game Centre, or only look at your
 own.
 8. Start a new game with the same size board or go back to the game selection.
+
+## Functionalities of GameCentre
+1. Login and register activity. Users can register an account to save
+unfinished games and pick up where they left off, or to play as a guest
+with limited game features
+2. Currently there is only Sliding Tiles available to play
+3. In Sliding Tiles, registered players can select game board size and
+number of undos steps. They can also load an image from a URL to solve
+an image puzzle
+4. In the Sliding Tiles game play, users can undo the a maximum number
+of specified moves, and save their game play. Game will also autosave at
+preset time intervals.
+5. When the game is solved, player scores will be calculated
+automatically and be directed to the scoreboard
+6. The scoreboard will display the list of scores of all registered
+players from highest to lowest. If the user is a guest, the guest score
+will also be ordered into this list, but not saved.
+7. On the scoreboard, registered users have the option of looking at
+their own list of high scores, Guests do not have this option.
+8. On the scoreboard, the user has the option of selecting a new game to
+play, or to try the same board again.
