@@ -156,8 +156,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
                         columnWidth = displayWidth / numColumns;
                         columnHeight = displayHeight / numRows;
                         tileBuilder = new TileBuilder(boardManager, getBaseContext(), columnWidth);
+                        tileBuilder.setUseImages(boardManager.isUseImage(), IMAGE_SET);
                         tileBuilder.createTileButtons();
                         tileButtons = tileBuilder.getTileButtons();
+
                         display();
                     }
                 });
