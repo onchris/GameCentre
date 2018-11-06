@@ -20,10 +20,18 @@ abstract class ScoreManager {
     protected boolean IS_GUEST;
     protected Integer score;
 
+    /**
+     * Gets the User's score list for display
+     * @return List<String> of the user's scores
+     */
     public List<String> getDisplayUserScoresList() {
         return displayUserScoresList;
     }
 
+    /**
+     * Gets the scores of everyone in the game
+     * @return List<String> of the user's scores for everyone in the game
+     */
     public List<String> getDisplayGameScoresList() {
         return displayGameScoresList;
     }

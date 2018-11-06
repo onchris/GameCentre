@@ -111,15 +111,16 @@ public class Account implements Serializable {
     }
 
     /**
-     * Add to this account's list of scores
-     * @param score the score to be appended
+     * Add a score from a game of sliding tiles to the list of the user's scores
+     * @param score
      */
     public void addToSlidingGameScores(int score) {
         this.slidingGameScores.add(score);
         Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
     }
+
     /**
-     * Sorts the scores
+     * Sort the user's SlidingTiles in reverse order from highest to lowest
      */
     public void sortSlidingGameScores() {
         Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());

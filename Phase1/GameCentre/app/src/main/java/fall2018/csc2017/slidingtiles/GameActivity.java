@@ -75,12 +75,21 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void display() {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
+        checkGameIsOver();
+        undoButton = findViewById(R.id.UndoButton);
+        undoButton.setText("Undo:"+boardManager.getNumCanUndo());
+    }
+
+    /**
+     * A check if the board is solved and change to the scoreboard
+     */
+    private void checkGameIsOver() {
         if (boardManager.puzzleSolved()) {
             timer.cancel();
             timerTask.cancel();
             currentScore = -100;//TODO: remove, it's not a real score
             if(!GameSelection.IS_GUEST)
-                currentAccount.addToSlidingGameScores(10); //TODO: add the sliding game score
+                currentAccount.addToSlidingGameScores(currentScore); //TODO: add the sliding game score and needs to save to file
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             if(!GameSelection.IS_GUEST) {
@@ -96,9 +105,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
             IMAGE_SET = null;
             finish();
         }
-        undoButton = findViewById(R.id.UndoButton);
-        undoButton.setText("Undo:"+boardManager.getNumCanUndo());
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
