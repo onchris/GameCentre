@@ -65,6 +65,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private Chronometer chronometer;
     private boolean isChmRunning;
     private long pauseTime;
+    private ScoringSystem scoringSystem = new ScoringSystem();
     public static ArrayList<Bitmap> IMAGE_SET;
 
     /**
@@ -87,7 +88,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
         if (boardManager.puzzleSolved()) {
             timer.cancel();
             timerTask.cancel();
-            currentScore = -100;//TODO: remove, it's not a real score
+            pauseChronometer(chronometer);
+            int movesTaken = boardManager.getMoves();
+            boardManager.setTimeSpent(SystemClock.elapsedRealtime() - chronometer.getBase());
+            int timeTaken = (int)boardManager.getTimeSpent() / 1000;
+            currentScore = scoringSystem.calculateScore(movesTaken, timeTaken);
             if(!GameSelection.IS_GUEST)
                 currentAccount.addToSlidingGameScores(currentScore); //TODO: add the sliding game score and needs to save to file
             gridView = findViewById(R.id.grid);
@@ -100,7 +105,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
                 tmp.putExtra("currentUsername", "-1");
             }
             tmp.putExtra("currentGame", "slidingTiles");
-            tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
+            tmp.putExtra("currentScore", currentScore.toString());
             startActivity(tmp);
             IMAGE_SET = null;
             finish();

@@ -26,6 +26,12 @@ class BoardManager implements Serializable, Undoable {
      * The number of steps that users can undo.
      */
     private int numCanUndo = 3;
+
+    /**
+     * The number of moves that users have taken.
+     */
+    private static int moves = 0;
+
     private long timeSpent = 0;
 
     /**
@@ -60,15 +66,28 @@ class BoardManager implements Serializable, Undoable {
     }
 
     /**
+     * Gets the total number of moves that users have taken.
+     * @return the total number of moves that users have taken
+     */
+    public int getMoves() {
+        return moves;
+    }
+
+    /**
      * Gets the available number of steps that users can undo.
      * @return the available number of steps that users can undo
      */
     public int getNumCanUndo() {
         return numCanUndo;
     }
+
+    /**
+     * sets the available number of steps that users can undo.
+     */
     public void setNumCanUndo(int numCanUndo){
         this.numCanUndo = numCanUndo;
     }
+
     /**
      * Manage a board that has been pre-populated.
      * @param board the board
@@ -180,6 +199,7 @@ class BoardManager implements Serializable, Undoable {
                 availableUndoSteps.push(row);
                 availableUndoSteps.push(col + 1);
             }
+            moves ++;
         }
     }
 
@@ -197,6 +217,7 @@ class BoardManager implements Serializable, Undoable {
             int row2 = availableUndoSteps.pop();
             board.swapTiles(row1, col1, row2, col2);
             numCanUndo --;
+            moves ++;
         }
     }
 
