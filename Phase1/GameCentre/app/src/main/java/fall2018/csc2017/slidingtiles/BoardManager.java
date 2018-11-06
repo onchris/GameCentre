@@ -30,7 +30,7 @@ class BoardManager implements Serializable, Undoable {
     /**
      * The number of moves that users have taken.
      */
-    private static int moves = 0;
+    private int moves = 0;
 
     private long timeSpent = 0;
 

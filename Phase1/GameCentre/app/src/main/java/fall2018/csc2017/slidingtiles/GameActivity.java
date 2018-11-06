@@ -94,15 +94,17 @@ public class GameActivity extends AppCompatActivity implements Observer {
             int movesTaken = boardManager.getMoves();
             boardManager.setTimeSpent(SystemClock.elapsedRealtime() - chronometer.getBase());
             int timeTaken = (int)boardManager.getTimeSpent() / 1000;
+            Log.e(" wot", timeTaken + ":" + movesTaken );
             currentScore = scoringSystem.calculateScore(movesTaken, timeTaken);
-            if(!GameSelection.IS_GUEST){
-                currentAccount.addToSlidingGameScores(currentScore);
-                saveScoresToAccounts(this, currentAccount, currentScore);}
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             if(!GameSelection.IS_GUEST) {
+                currentAccount.addToSlidingGameScores(currentScore);
+                saveScoresToAccounts(this, currentAccount, currentScore);
                 tmp.putExtra("currentUsername", currentAccount.getUsername());
                 tmp.putExtra("board", boardManager.getBoard());
+                boardList.remove(boardManager);
+                saveBoardsToAccounts(this,currentAccount,boardList);
             }
             else {
                 tmp.putExtra("currentUsername", "-1");
@@ -119,7 +121,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadFromFile(TEMP_SAVE_FILENAME);
-        currentAccount = (Account) getIntent().getSerializableExtra("account");
+        if(!GameSelection.IS_GUEST)
+            currentAccount = (Account) getIntent().getSerializableExtra("account");
         boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
         boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
         setContentView(R.layout.activity_main);
@@ -295,7 +298,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void onBackPressed() {
         pauseChronometer(chronometer);
         boardManager.setTimeSpent(pauseTime);
-        onClickSaveBoard(getCurrentFocus(), false);
+        if(!GameSelection.IS_GUEST)
+            onClickSaveBoard(getCurrentFocus(), false);
         timer.cancel();
         timerTask.cancel();
         IMAGE_SET = null;
