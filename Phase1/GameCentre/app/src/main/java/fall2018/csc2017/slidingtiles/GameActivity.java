@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +62,9 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private int numRows, numColumns;
     private final Context ctx = this;
     private TileBuilder tileBuilder;
+    private Chronometer chronometer;
+    private boolean isChmRunning;
+    private long pauseTime;
     public static ArrayList<Bitmap> IMAGE_SET;
 
     /**
@@ -112,6 +117,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
             v.setText(currentAccount.getUsername());
         else
             v.setText("Guest");
+        chronometer = findViewById(R.id.chronometer);
+        startChronometer(chronometer);
 
         // Add View to activity
         gridView = findViewById(R.id.grid);
@@ -246,6 +253,23 @@ public class GameActivity extends AppCompatActivity implements Observer {
             makeCustomToastText("Saved!", this);
         }
     }
+
+    public void startChronometer(Chronometer chronometer){
+        if (!isChmRunning){
+            chronometer.setBase(SystemClock.elapsedRealtime() - pauseTime);
+            chronometer.start();
+            isChmRunning = true;
+        }
+    }
+
+    public void pauseChronometer(Chronometer chronometer){
+        if (isChmRunning){
+            chronometer.stop();
+            pauseTime = SystemClock.elapsedRealtime() - chronometer.getBase();
+            isChmRunning = false;
+        }
+    }
+
     @Override
     public void onBackPressed() {
         onClickSaveBoard(getCurrentFocus(), false);

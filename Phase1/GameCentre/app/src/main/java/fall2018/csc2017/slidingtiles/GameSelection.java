@@ -211,6 +211,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 BoardManager bm = new BoardManager(randomBoard);
                                 bm.setCustomImageSet(resultReceiver.getBitmapArrayList());
                                 bm.setUseImage(true);
+                                bm.setNumCanUndo(Integer.parseInt(undos.getText().toString()));
                                 boardList.add(bm);
                                 loaderAdapter.notifyDataSetChanged();
                                 saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
@@ -235,8 +236,11 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 Integer.parseInt(columns.getText().toString()) > 31 ) {
                             makeCustomToastText("Dude stop you can't even see the board at this size", view.getContext());
                         }else {
-                            Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()), Integer.parseInt(columns.getText().toString()));
-                            boardList.add(new BoardManager(randomBoard));
+                            Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()),
+                                    Integer.parseInt(columns.getText().toString()));
+                            BoardManager bm = new BoardManager(randomBoard);
+                            bm.setNumCanUndo(Integer.parseInt(undos.getText().toString()));
+                            boardList.add(bm);
                             loaderAdapter.notifyDataSetChanged();
                             saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
                             makeCustomToastText(randomBoard.getTilesDimension(),getBaseContext());
