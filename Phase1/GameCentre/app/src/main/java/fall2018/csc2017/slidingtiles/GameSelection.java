@@ -56,9 +56,11 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
     private Account currentAccount;
     /**
      * State of whether user is a guest.
-     * State of whether user is at loading screen.
      */
     public static boolean IS_GUEST = false;
+    /**
+     * State of whether user is at loading screen.
+     */
     private boolean atLoadGameScreen = false;
     /**
      * Custom scroll view for displaying list of games
@@ -68,7 +70,6 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * Custom adapter for displaying list of games by hooking up to CustomScrollView
      */
     private LoaderAdapter loaderAdapter;
-    private long lastTimeClicked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +88,9 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         getCurrentAccountBoardList();
     }
 
+    /**
+     * Gets the current accounts' board list
+     */
     private void getCurrentAccountBoardList(){
         if(IS_GUEST) {
             boardList = new ArrayList<>();

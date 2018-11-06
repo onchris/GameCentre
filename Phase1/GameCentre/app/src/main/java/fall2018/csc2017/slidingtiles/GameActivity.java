@@ -178,7 +178,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     @Override
     protected void onPause() {
         super.onPause();
-        saveToFile(StartingActivity.TEMP_SAVE_FILENAME);
+        saveToFile(UtilityManager.TEMP_SAVE_FILENAME);
     }
     /**
      * Load the board manager from fileName.
