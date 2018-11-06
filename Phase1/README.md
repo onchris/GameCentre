@@ -43,6 +43,9 @@ Using Credentials".
     - You can adjust the board size and number of undo-steps as you
     would like
     - Board size maximum at 33 x 33
+    - Load an image puzzle to solve from a URL, e.g.
+    https://www.macleans.ca/wp-content/uploads/2010/06/U-of-T.jpg
+    - copy paste the URL where specified
 6. Play until solved, the scores are calculated from a maximum, bonus
 points if you win faster
 7. When the puzzle is solved, the app will go to the scoreboard where
