@@ -128,7 +128,7 @@ public class TileBuilder implements Tileable{
 
     @Override
     public LayerDrawable alignTilesDigits(LayerDrawable generatedLayerDrawable, DigitEnum digitEnum) {
-        if( digitEnum ==DigitEnum.DIGIT_ONES) {
+        if( digitEnum == DigitEnum.DIGIT_ONES) {
             generatedLayerDrawable.setLayerInset(1, columnWidth / 4, 0, 0, 30);
             generatedLayerDrawable.setLayerWidth(1, columnWidth / 2);
             return generatedLayerDrawable;
@@ -139,9 +139,9 @@ public class TileBuilder implements Tileable{
                 generatedLayerDrawable.setLayerWidth(i, columnWidth / 2 - 5);
                 generatedLayerDrawable.setLayerInset(i, i == 1 ? 0 : columnWidth/2, 0, 0, 30);
             }
-            else {
+            else if (digitEnum == DigitEnum.DIGIT_THOU){
                 generatedLayerDrawable.setLayerWidth(i, columnWidth / 3 - 5);
-                generatedLayerDrawable.setLayerInset(i, i == 1 ? 0 : columnWidth/3, 0, 0, 30);
+                generatedLayerDrawable.setLayerInset(i, i == 1 ? 0 : (i-1)*columnWidth/3, 0, 0, 30);
             }
         }
         return generatedLayerDrawable;
