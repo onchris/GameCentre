@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An abstract class to manage the lists of scores for display, orders user scores and game-wide
+ * A manager for the lists of scores to use in an adapter, orders user scores and game-wide
  * scores and prep lists of scores for display
  */
 abstract class ScoreManager {
@@ -28,6 +28,12 @@ abstract class ScoreManager {
         return displayGameScoresList;
     }
 
+    /**
+     * Sorts the lists of scores.
+     * @param username
+     * @param ctx
+     * @param score
+     */
     public ScoreManager(String username, Context ctx, Integer score){
         this.score = score;
         accountsList = UtilityManager.loadAccountList(ctx);
@@ -47,10 +53,20 @@ abstract class ScoreManager {
         }
         buildGameScoresList();
         buildDisplayGameScoresList();
-        buildDisplayUserScoresList();
     }
 
+    /**
+     * A method to populate and sort the GameScoresList with scores of all users playing the game.
+     */
     abstract void buildGameScoresList();
+
+    /**
+     * A method to prepare the GameScoresList into a list of String.
+     */
     abstract void buildDisplayGameScoresList();
+
+    /**
+     * A method to perpare the UserScoresList int a list of String.
+     */
     abstract void buildDisplayUserScoresList();
 }

@@ -39,7 +39,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="111dp"
-        android:text="Totally not a phishing login screen"
+        android:text="Welcome to Game Centre!"
         android:textAlignment="center"
         android:textSize="36sp" />
 
@@ -85,7 +85,7 @@
         android:layout_marginTop="402dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="207dp"
-        android:text="Remeber me"
+        android:text="Remember me"
         android:textAlignment="center" />
 
     <Button
