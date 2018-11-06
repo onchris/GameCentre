@@ -14,12 +14,14 @@ public class ImageResultReceiver extends ResultReceiver {
     private ImageView imageView;
     private Bitmap[][] bmArr;
     private ArrayList<Bitmap> bmList;
-    private boolean recIm, recImArr;
+    private boolean recIm, recImArr, recImInvalid;
+    private int row = 4, col = 4;
+
     public ImageResultReceiver(Handler handler, ImageView imageView) {
         super(handler);
         this.imageView = imageView;
     }
-    public void setmReceiver(ImageResultReceiver r){
+    public void setReceiver(ImageResultReceiver r){
         mReceiver = r;
     }
     private ArrayList<Bitmap> getBitmapList(final Bitmap[][] bArr){
@@ -53,12 +55,23 @@ public class ImageResultReceiver extends ResultReceiver {
     public boolean contentReceived(){
         return (recIm && recImArr);
     }
+    public boolean invalidImageLink(){
+        return recImInvalid;
+    }
+    public int getRow(){
+        return row;
+    }
+    public int getCol(){
+        return col;
+    }
 
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
         if (mReceiver != null) {
             switch(resultCode){
                 case 1:
+                    row = resultData.getIntegerArrayList("size").get(0);
+                    col = resultData.getIntegerArrayList("size").get(0);
                     Bitmap bm = resultData.getParcelable("image");
                     imageView.setImageBitmap(bm);
                     recIm = true;
@@ -68,6 +81,9 @@ public class ImageResultReceiver extends ResultReceiver {
                         bmList = getBitmapList(bmArr);
                         recImArr = true;
                     }
+                    break;
+                case 2:
+                    recImInvalid = true;
                     break;
                 default:
                     recImArr = false;

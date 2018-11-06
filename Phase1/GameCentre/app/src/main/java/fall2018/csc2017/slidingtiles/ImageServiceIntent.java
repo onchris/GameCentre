@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ImageServiceIntent extends IntentService {
     private Bundle bundle;
@@ -43,6 +44,7 @@ public class ImageServiceIntent extends IntentService {
             BitmapDrawable bitmap = (BitmapDrawable) d;
             bundle.putParcelable("image", bitmap.getBitmap());
             bundle.putSerializable("imagearray", bitmapSplitter(bitmap.getBitmap(),rows,columns));
+            bundle.putIntegerArrayList("size", new ArrayList<Integer>(){{add(rows);add(columns);}});
             intent.putExtra("splits", 16);
             rr.send(1, bundle);
         } catch (MalformedURLException e) {
