@@ -3,20 +3,24 @@
 ## Contact Information
 
 ### Janet Wang
-Email: jienet.wang@mail.utoronto.ca
-Phone: 613-890-0056
+- Email: jienet.wang@mail.utoronto.ca
+- Phone: 613-890-0056
+- in git log: jwangwangj
 
 ### Shixiu Lin
-Email: shixiu.lin@mail.utoronto.ca
-Phone: 647-571-2831
+- Email: shixiu.lin@mail.utoronto.ca
+- Phone: 647-571-2831
+- in git log: linshixi
 
 ### Kevin Li
-Email:kevin224li@gmail.com
-Phone:647-500-8215
+- Email:kevin224li@gmail.com
+- Phone:647-500-8215
+- in git log: likevi23, kevinli224
 
 ### Kangming Gu
-Email:km.gu@mail.utoronto.ca
-Phone:437-236-8666
+- Email:km.gu@mail.utoronto.ca
+- Phone:437-236-8666
+- in git log: RguEG
 
 ## Communication tools
 Facebook Messenger
