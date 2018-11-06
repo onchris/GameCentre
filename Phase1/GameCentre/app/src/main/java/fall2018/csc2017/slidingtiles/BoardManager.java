@@ -57,7 +57,9 @@ class BoardManager implements Serializable, Undoable {
     public int getNumCanUndo() {
         return numCanUndo;
     }
-
+    public void setNumCanUndo(int numCanUndo){
+        this.numCanUndo = numCanUndo;
+    }
     /**
      * Manage a board that has been pre-populated.
      * @param board the board
