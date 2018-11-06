@@ -11,12 +11,37 @@ import android.widget.Button;
 import java.util.ArrayList;
 
 public class TileBuilder implements Tileable{
+    /**
+     * Current BoardManager
+     */
     private final BoardManager boardManager;
+    /**
+     * How many rows/columns as well as the width of a single tile
+     */
     private final int rows, columns, columnWidth;
+    /**
+     * Array list of buttons to be created with.
+     */
     private final ArrayList<Button> tileButtons;
+    /**
+     * The current context this builder is in
+     */
     private Context currentContext;
+    /**
+     * Whether or not tiles will be using images
+     */
     private boolean useImages;
+    /**
+     * The set of images the tiles will be using if using images
+     */
     private ArrayList<Bitmap> imageSet;
+
+    /**
+     * Account constructor
+     * @param boardManager the current boardManager to be building with
+     * @param currentContext the current context
+     * @param columnWidth the width of which tiles will be adjusted to be built on
+     */
     public TileBuilder(BoardManager boardManager, Context currentContext, int columnWidth){
         this.boardManager = boardManager;
         this.tileButtons = new ArrayList<>();
@@ -25,13 +50,31 @@ public class TileBuilder implements Tileable{
         this.columns = boardManager.getBoard().numColumns;
         this.columnWidth = columnWidth;
     }
+
+    /**
+     * Sets whether or not to use images and set the image collections
+     * @param useImages whether or not images will be used
+     * @param imageSet the list of split images
+     */
     public void setUseImages(boolean useImages, ArrayList<Bitmap> imageSet){
         this.useImages = useImages;
         this.imageSet = imageSet;
     }
+
+    /**
+     * returns the list of buttons
+     * @return List of buttons regardless of it's state
+     */
     public ArrayList<Button> getTileButtons(){
         return tileButtons;
     }
+
+    /**
+     * Generates a normal tile's background
+     * @param isBlank whether or not the tile should be blank
+     * @param tile the tile to be generated.
+     * @return A drawable where buttons can set their background to
+     */
     @Override
     public Drawable generateBackground(boolean isBlank, Tile tile) {
         int tileId = tile.getId();
@@ -62,6 +105,13 @@ public class TileBuilder implements Tileable{
         return null;
     }
 
+    /**
+     * Generates a image tile's background
+     * @param isBlank whether or not the tile should be blank
+     * @param tile the tile to be generated.
+     * @param imageBitmap the image to set the tile with
+     * @return A drawable where buttons can set their background to
+     */
     @Override
     public Drawable generateImageBackground(boolean isBlank, Tile tile, @Nullable Bitmap imageBitmap) {
         if(isBlank)
@@ -77,6 +127,12 @@ public class TileBuilder implements Tileable{
         }
     }
 
+    /**
+     * Generates layers of drawables including background and digits
+     * @param digitEnum enum for digits to generate
+     * @param tileId the tile number to be genrated.
+     * @return A LayerDrawable where buttons can set their background to
+     */
     @Override
     public LayerDrawable generateTileLayers(DigitEnum digitEnum, int tileId) {
         Drawable bg = currentContext.getDrawable(R.drawable.bg_simplebg);
@@ -126,6 +182,12 @@ public class TileBuilder implements Tileable{
         return null;
     }
 
+    /**
+     * Aligns digits in their correct position
+     * @param generatedLayerDrawable the compiled drawables
+     * @param digitEnum enum for digits to generate
+     * @return A LayerDrawable where buttons can set their background to
+     */
     @Override
     public LayerDrawable alignTilesDigits(LayerDrawable generatedLayerDrawable, DigitEnum digitEnum) {
         if( digitEnum == DigitEnum.DIGIT_ONES) {
@@ -147,6 +209,9 @@ public class TileBuilder implements Tileable{
         return generatedLayerDrawable;
     }
 
+    /**
+     * Builds the tile buttons
+     */
     @Override
     public void createTileButtons() {
         Board board = boardManager.getBoard();

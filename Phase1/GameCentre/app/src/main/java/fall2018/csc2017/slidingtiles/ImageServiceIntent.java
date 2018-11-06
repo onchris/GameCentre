@@ -16,22 +16,45 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class ImageServiceIntent extends IntentService {
+    /**
+     * The bundle that this intent will be sending to a receiver
+     */
     private Bundle bundle;
+    /**
+     * The receiver that this intent will send information to
+     */
     private ResultReceiver rr;
+    /**
+     * The URL to be handled as an image
+     */
     private String url;
+    /**
+     * The dimensions of which images will be split proportionally
+     */
     private int rows, columns;
+
+    /**
+     * The required constructors for assigning worker's name.
+     */
     public ImageServiceIntent(String name) {
         super(name);
     }
     public ImageServiceIntent() {
         super("DisplayNotification");
     }
-
+    /**
+     * Initializes this intent service and creates an empty bundle
+     */
     @Override
     public void onCreate(){
         super.onCreate();
         bundle = new Bundle();
     }
+
+    /**
+     * The implementation of the functionality this service intent will handle
+     * @param intent the intent that is using this service intent
+     */
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         rr = intent.getParcelableExtra("receiver");
@@ -55,6 +78,14 @@ public class ImageServiceIntent extends IntentService {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Processes the image to multiple separate images
+     * @param bm the intent that is using this service intent
+     * @param rows the rows which the board is set to have
+     * @param columns the columns which the board is set to have
+     * @return the bitmap array which stores its corresponding images in order
+     */
     private Bitmap[][] bitmapSplitter(Bitmap bm, int rows, int columns){
         if(rows == 0 || columns == 0)
             return null;

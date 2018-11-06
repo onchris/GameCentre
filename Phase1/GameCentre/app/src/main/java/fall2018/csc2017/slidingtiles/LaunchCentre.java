@@ -38,7 +38,13 @@ public class LaunchCentre extends AppCompatActivity {
      * Current user's name
      */
     private static String currentUser;
+    /**
+     * The preferences that the device holder has information saved
+     */
     private SharedPreferences sharedPreferences;
+    /**
+     * The checkbox of which user can select to remember credentials upon restart
+     */
     private CheckBox rememberCheckbox;
 
     @Override

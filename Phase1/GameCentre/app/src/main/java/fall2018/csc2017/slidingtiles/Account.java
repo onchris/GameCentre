@@ -25,10 +25,12 @@ public class Account implements Serializable {
      */
     private ArrayList<BoardManager> boardList = new ArrayList<>();
     /**
-     * Account's statistics, number of puzzles solved and scores achieved in sliding tiles
+     * Account's scores as a list
      */
     private List<Integer> slidingGameScores = new ArrayList<>();
-
+    /**
+     * Account's statistics, number of puzzles solved and scores achieved in sliding tiles
+     */
     public int numSolved, highscore;
     /**
      * Account constructor
@@ -56,6 +58,10 @@ public class Account implements Serializable {
         return password;
     }
 
+    /**
+     * Gets this account's list of scores
+     * @return this account's list of scores
+     */
     public List<Integer> getSlidingGameScores() {
         return this.slidingGameScores;
     }

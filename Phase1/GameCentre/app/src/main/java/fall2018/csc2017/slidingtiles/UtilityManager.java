@@ -28,6 +28,11 @@ public final class UtilityManager {
      */
     public static final String ACCOUNTS_FILENAME = "account_file.ser";
 
+    /**
+     * Static function for loading a list of accounts
+     * @param ctx the current context
+     * @return list of accounts
+     */
     public static List<Account> loadAccountList(Context ctx){
         List<Account> returnList = new ArrayList<>();
         try {
@@ -72,6 +77,12 @@ public final class UtilityManager {
     {
         Toast.makeText(ctx, displayText, Toast.LENGTH_SHORT).show();
     }
+    /**
+     * Static function for saving boards to accounts
+     * @param ctx, the current context
+     * @param account the current account to be saved in
+     * @param boardList the list of boards that it will save
+     */
     public static void saveBoardsToAccounts(Context ctx, Account account, List<BoardManager> boardList){
         List<Account> accountList = new ArrayList<Account>();
         try {
@@ -99,6 +110,13 @@ public final class UtilityManager {
             Log.e("UM: saveBoardsToAccounts", "File contained unexpected data type: " + e.toString());
         }
     }
+    /**
+     * Generates a dialog based on parameters
+     * @param title the title the dialog will have
+     * @param message the message of the dialog will have
+     * @param ctx the context of which the dialog will display on
+     * @return An AlertDialog where it assembles all information provided
+     */
     public static AlertDialog alertDialogBuilder(String title, String message, Context ctx){
         AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         AlertDialog ad = builder.create();
