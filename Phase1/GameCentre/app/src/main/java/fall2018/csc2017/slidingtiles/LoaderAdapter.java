@@ -98,7 +98,6 @@ public class LoaderAdapter extends BaseAdapter {
             public void onClick(View view) {
                 long currTime = System.currentTimeMillis();
                 if (currTime - lastTimeClicked < ViewConfiguration.getDoubleTapTimeout()) {
-                    Log.e("Double click detection system 9000", "yeee");
                     deleteFromBoard(i, viewGroup.getContext());
                 }
                 lastTimeClicked = currTime;

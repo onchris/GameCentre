@@ -26,6 +26,7 @@ class BoardManager implements Serializable, Undoable {
      * The number of steps that users can undo.
      */
     private int numCanUndo = 3;
+    private long timeSpent = 0;
 
     /**
      * The steps for users to undo.
@@ -44,6 +45,14 @@ class BoardManager implements Serializable, Undoable {
 
     public ArrayList<Bitmap> getCustomImageSet() {
         return customImageSet;
+    }
+
+    public long getTimeSpent() {
+        return timeSpent;
+    }
+
+    public void setTimeSpent(long timeSpent) {
+        this.timeSpent = timeSpent;
     }
 
     public void setCustomImageSet(ArrayList<Bitmap> customImageSet) {
@@ -117,9 +126,7 @@ class BoardManager implements Serializable, Undoable {
     boolean isValidTap(int position) {
 
         int row = position / board.numColumns;
-//        int col = row * board.numColumns - 1 - position;
         int col = position - row*board.numColumns;
-        Log.e("arr", row +","+col+":"+board.numRows+","+board.numColumns);
         int blankId = board.numTiles();
         // Are any of the 4 the blank tile?
         Tile above = row == 0 ? null : board.getTile(row - 1, col);

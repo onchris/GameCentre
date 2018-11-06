@@ -1,6 +1,7 @@
 package fall2018.csc2017.slidingtiles;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 
@@ -18,6 +19,7 @@ public class MovementController {
     public void processTapMovement(Context context, int position, boolean display) {
         if (boardManager.isValidTap(position)) {
             boardManager.touchMove(position);
+
             if (boardManager.puzzleSolved()) {
                 Toast.makeText(context, "YOU WIN!", Toast.LENGTH_SHORT).show();
             }

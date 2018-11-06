@@ -118,7 +118,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
         else
             v.setText("Guest");
         chronometer = findViewById(R.id.chronometer);
+        Log.e("boardManagerGet", boardManager.getTimeSpent()+" start");
+
         startChronometer(chronometer);
+        chronometer.setBase(SystemClock.elapsedRealtime() - boardManager.getTimeSpent());
 
         // Add View to activity
         gridView = findViewById(R.id.grid);
@@ -242,6 +245,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
             makeCustomToastText("Auto-saved!", this);
         saveBoardsToAccounts(this, currentAccount, boardList);
     }
+
     public void onClickSaveBoard(View v){
         if(GameSelection.IS_GUEST)
             makeCustomToastText("Cannot save as guest!", this);
@@ -256,7 +260,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
 
     public void startChronometer(Chronometer chronometer){
         if (!isChmRunning){
-            chronometer.setBase(SystemClock.elapsedRealtime() - pauseTime);
             chronometer.start();
             isChmRunning = true;
         }
@@ -264,14 +267,16 @@ public class GameActivity extends AppCompatActivity implements Observer {
 
     public void pauseChronometer(Chronometer chronometer){
         if (isChmRunning){
-            chronometer.stop();
             pauseTime = SystemClock.elapsedRealtime() - chronometer.getBase();
+            chronometer.stop();
             isChmRunning = false;
         }
     }
 
     @Override
     public void onBackPressed() {
+        pauseChronometer(chronometer);
+        boardManager.setTimeSpent(pauseTime);
         onClickSaveBoard(getCurrentFocus(), false);
         timer.cancel();
         timerTask.cancel();
