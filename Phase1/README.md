@@ -63,7 +63,7 @@ of specified moves, and save their game play. Game will also autosave at
 preset time intervals.
 5. When the game is solved, player scores will be calculated
 automatically and be directed to the scoreboard
-- scores are calculated from a maximum of 1000 and deduct points by how
+    - scores are calculated from a maximum of 1000 and deduct points by how
 long it takes to solve the game and number of moves.
 6. The scoreboard will display the list of scores of all registered
 players from highest to lowest. If the user is a guest, the guest score
