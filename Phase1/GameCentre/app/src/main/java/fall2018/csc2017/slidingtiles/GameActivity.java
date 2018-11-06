@@ -89,7 +89,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
             timerTask.cancel();
             currentScore = -100;//TODO: remove, it's not a real score
             if(!GameSelection.IS_GUEST)
-                currentAccount.addToSlidingGameScores(10); //TODO: add the sliding game score
+                currentAccount.addToSlidingGameScores(currentScore); //TODO: add the sliding game score and needs to save to file
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             if(!GameSelection.IS_GUEST) {
