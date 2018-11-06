@@ -94,6 +94,10 @@ public class LaunchCentre extends AppCompatActivity {
         Account newAccount = new Account(regUsername, regPassword);
         if(regUsername.equals("Guest") || regUsername.equals("guest")){
             makeCustomToastText("Account name reserved for guests only!", getBaseContext());
+        } else if (regUsername.equals("") || regPassword.equals("")){
+            makeCustomToastText("Fields cannot be empty!", getBaseContext());
+        } else if (regUsername.length() < 3 || regPassword.length() < 3 ) {
+            makeCustomToastText("Fields cannot have less than 3 characters!", getBaseContext());
         }
         else if(!checkExistingAccount(newAccount)){
             accountsList.add(newAccount);
@@ -153,7 +157,7 @@ public class LaunchCentre extends AppCompatActivity {
      * Authenticates the user with it's corresponding login details input
      * @return whether if input credentials match
      */
-    public boolean authUser(){
+    private boolean authUser(){
         String username = userTextField.getText().toString();
         String password = passwordTextField.getText().toString();
         for(Account acc: accountsList)

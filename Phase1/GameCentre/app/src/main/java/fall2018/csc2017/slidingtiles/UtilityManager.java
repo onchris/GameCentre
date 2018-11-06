@@ -20,10 +20,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 public final class UtilityManager {
     /**
-     * The main save file.
-     */
-    public static final String SAVE_FILENAME = "save_file.ser";
-    /**
      * A temporary save file.
      */
     public static final String TEMP_SAVE_FILENAME = "save_file_tmp.ser";
@@ -33,7 +29,7 @@ public final class UtilityManager {
     public static final String ACCOUNTS_FILENAME = "account_file.ser";
 
     public static List<Account> loadAccountList(Context ctx){
-        List<Account> returnList = new ArrayList<Account>();
+        List<Account> returnList = new ArrayList<>();
         try {
             InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);
             if (inputStream != null) {

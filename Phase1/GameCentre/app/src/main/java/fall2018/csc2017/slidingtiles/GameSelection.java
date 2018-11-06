@@ -7,15 +7,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -177,7 +174,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                 final EditText undos = dialog.findViewById(R.id.text_undos);
                 final EditText etUrl = dialog.findViewById(R.id.et_Url);
                 final ImageResultReceiver resultReceiver = new ImageResultReceiver(new Handler(), imagePreview);
-                resultReceiver.setmReceiver(resultReceiver);
+                resultReceiver.setReceiver(resultReceiver);
                 loadImageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -189,8 +186,8 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 Integer.parseInt(columns.getText().toString()) < 3 )
                         {
                             makeCustomToastText("Rows/Columns cannot be lesser than 3!", v.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) > 33  ||
-                                Integer.parseInt(columns.getText().toString()) > 33 ) {
+                        } else if (Integer.parseInt(rows.getText().toString()) > 31  ||
+                                Integer.parseInt(columns.getText().toString()) > 31 ) {
                             makeCustomToastText("Dude stop you can't even see the board at this size", v.getContext());
                         }
                         else {
@@ -210,7 +207,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                         CheckBox useImage = dialog.findViewById(R.id.cb_useImage);
                         if(useImage.isChecked()){
                             if(resultReceiver.contentReceived()){
-                                Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()), Integer.parseInt(columns.getText().toString()));
+                                Board randomBoard = newRandomBoard(resultReceiver.getRow(), resultReceiver.getCol());
                                 BoardManager bm = new BoardManager(randomBoard);
                                 bm.setCustomImageSet(resultReceiver.getBitmapArrayList());
                                 bm.setUseImage(true);
@@ -219,7 +216,10 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
                                 makeCustomToastText(randomBoard.getTilesDimension(),getBaseContext());
                                 dialog.dismiss();
-                            }else{
+                            }else if (resultReceiver.invalidImageLink()){
+                                makeCustomToastText("Invalid image link, make sure to copy image link address directly!", view.getContext());
+                            }
+                            else{
                                 makeCustomToastText("You must wait for your image to finish downloading!", view.getContext());
                             }
                         }
@@ -231,8 +231,8 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 Integer.parseInt(columns.getText().toString()) < 3 )
                         {
                             makeCustomToastText("Rows/Columns cannot be lesser than 3!", view.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) > 33  ||
-                                Integer.parseInt(columns.getText().toString()) > 33 ) {
+                        } else if (Integer.parseInt(rows.getText().toString()) > 31  ||
+                                Integer.parseInt(columns.getText().toString()) > 31 ) {
                             makeCustomToastText("Dude stop you can't even see the board at this size", view.getContext());
                         }else {
                             Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()), Integer.parseInt(columns.getText().toString()));

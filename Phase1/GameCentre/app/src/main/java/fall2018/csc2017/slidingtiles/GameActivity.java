@@ -43,18 +43,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     private ArrayList<Button> tileButtons;
     /**
-     * The current user's username
+     * Interval in seconds for non-guest to auto-save;
      */
-    private String currentUsername;
-
-    /**
-     * Constants for swiping directions. Should be an enum, probably.
-     */
-    public static final int UP = 1;
-    public static final int DOWN = 2;
-    public static final int LEFT = 3;
-    public static final int RIGHT = 4;
-
     public static final int SAVE_INTERVAL = 10000;
 
     // Grid View and calculated column height and width based on device size
@@ -69,6 +59,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private Integer currentScore;
     private int numRows, numColumns;
     private final Context ctx = this;
+    private TileBuilder tileBuilder;
     public static ArrayList<Bitmap> IMAGE_SET;
 
     /**
@@ -77,7 +68,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     // Display
     public void display() {
-        updateTileButtons(boardManager.isUseImage());
+        updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         if (boardManager.puzzleSolved()) {
             timer.cancel();
@@ -97,6 +88,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
             tmp.putExtra("currentGame", "slidingTiles");
             tmp.putExtra("currentScore", currentScore.toString()); //TODO: pass the current score
             startActivity(tmp);
+            IMAGE_SET = null;
             finish();
         }
         undoButton = findViewById(R.id.UndoButton);
@@ -135,14 +127,14 @@ public class GameActivity extends AppCompatActivity implements Observer {
                                 this);
                         int displayWidth = gridView.getMeasuredWidth();
                         int displayHeight = gridView.getMeasuredHeight();
-
                         columnWidth = displayWidth / numColumns;
                         columnHeight = displayHeight / numRows;
-                        createTileButtons(ctx, boardManager.isUseImage());
+                        tileBuilder = new TileBuilder(boardManager, getBaseContext(), columnWidth);
+                        tileBuilder.createTileButtons();
+                        tileButtons = tileBuilder.getTileButtons();
                         display();
                     }
                 });
-
         timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -154,126 +146,13 @@ public class GameActivity extends AppCompatActivity implements Observer {
                 });
             }
         };
-        timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
-    }
-    public Drawable generateBackgroundTiles(int id, boolean blank, Tile t){
-        if(blank)
-        {
-            if(!t.hasBackground())
-                t.setBackground(getDrawable(R.drawable.bg_simplebg));
-            return getDrawable(R.drawable.bg_simplebg);
-        }
-        else if(id < 10){
-            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_ONES, id);
-            if(!t.hasBackground())
-                t.setBackground(ld);
-            return ld;
-        }
-        else if (id < 100){
-            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_TENS, id);
-            if(!t.hasBackground())
-                t.setBackground(ld);
-            return ld;
-        } else if (id < 1000)
-        {
-            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_THOU, id);
-            if(!t.hasBackground())
-                t.setBackground(ld);
-            return ld;
-        }
-        return null;
-    }
-    public enum DigitEnum
-    {
-        DIGIT_ONES, DIGIT_TENS, DIGIT_THOU
-    }
-    public LayerDrawable generateTileLayers(DigitEnum digitEnum, int id)
-    {
-        Drawable bg = getDrawable(R.drawable.bg_simplebg);
-        switch (digitEnum) {
-            case DIGIT_ONES:
-                int onesNumberPath = this.getResources().getIdentifier("ic_"+Integer.toString(id), "drawable", getPackageName());
-                Drawable onesDrawable = getDrawable(onesNumberPath);
-                LayerDrawable ld = new LayerDrawable(new Drawable[]{bg,onesDrawable});
-                ld.setLayerInset(1, columnWidth/4,0,0,30);
-                ld.setLayerWidth(1, columnWidth/2);
-                return ld;
-            case DIGIT_TENS:
-                String tensString = Integer.toString(id).substring(0,1);
-                String onesString = Integer.toString(id).substring(1);
-                int onesNumberPath2 = this.getResources().getIdentifier("ic_"+onesString, "drawable", getPackageName());
-                int tensNumberPath2 = this.getResources().getIdentifier("ic_"+tensString, "drawable", getPackageName());
-                Drawable onesDrawable2 = getDrawable(onesNumberPath2);
-                Drawable tensDrawable = getDrawable(tensNumberPath2);
-                LayerDrawable ld2 = new LayerDrawable(new Drawable[]{bg,tensDrawable, onesDrawable2});
-                ld2.setLayerWidth(1, columnWidth/2 - 5);
-                ld2.setLayerWidth(2, columnWidth/2 - 5);
-                ld2.setLayerInset(1,0,0,0,30);
-                ld2.setLayerInset(2, columnWidth/2,0,0,30);
-                return ld2;
-            case DIGIT_THOU:
-                String thouString3 = Integer.toString(id).substring(0,1);
-                String tensString3 = Integer.toString(id).substring(1,2);
-                String onesString3 = Integer.toString(id).substring(2);
-                int thouNumberPath3 = this.getResources().getIdentifier("ic_"+thouString3, "drawable", getPackageName());
-                int tensNumberPath3 = this.getResources().getIdentifier("ic_"+tensString3, "drawable", getPackageName());
-                int onesNumberPath3 = this.getResources().getIdentifier("ic_"+onesString3, "drawable", getPackageName());
-                Drawable onesDrawable3 = getDrawable(onesNumberPath3);
-                Drawable tensDrawable3 = getDrawable(tensNumberPath3);
-                Drawable thouDrawable3 = getDrawable(thouNumberPath3);
-                LayerDrawable ld3 = new LayerDrawable(new Drawable[]{bg,thouDrawable3,tensDrawable3, onesDrawable3});
-                ld3.setLayerWidth(1, columnWidth/3 - 5);
-                ld3.setLayerWidth(2, columnWidth/3 - 5);
-                ld3.setLayerWidth(3, columnWidth/3 - 5);
-                ld3.setLayerInset(1,0,0,0,30);
-                ld3.setLayerInset(2, columnWidth/3,0,0,30);
-                ld3.setLayerInset(3, 2*columnWidth/3,0,0,30);
-                return ld3;
-        }
-        return null;
-    }
-    public Drawable generateImageTiles(Tile t, @Nullable Bitmap b, boolean blank){
-        if(blank)
-        {
-            if(!t.hasBackground())
-                t.setBackground(getDrawable(R.drawable.bg_simplebg));
-            return getDrawable(R.drawable.bg_simplebg);
-        }else {
-            Drawable bg = new BitmapDrawable(getResources(), b);
-            if (!t.hasBackground())
-                t.setBackground(bg);
-            return bg;
-        }
-    }
-    /**
-     * Create the buttons for displaying the tiles.
-     *
-     * @param context the context
-     */
-    private void createTileButtons(Context context, boolean useImage) {
-        Board board = boardManager.getBoard();
-        numColumns = board.numColumns;
-        numRows = board.numRows;
-        tileButtons = new ArrayList<>();
-        for (int row = 0; row != numRows; row++) {
-            for (int col = 0; col != numColumns; col++) {
-                Button tmp = new Button(context);
-                if(useImage){
-                    tmp.setBackground(generateImageTiles(board.getTile(row,col), boardManager.getCustomImageSet().get(board.getTile(row,col).getId()-1), false));
-                }
-                else if(board.getTile(row,col).getId() < numColumns*numRows)
-                    tmp.setBackground(generateBackgroundTiles(board.getTile(row,col).getId(),false, board.getTile(row,col) ));
-                else
-                    tmp.setBackground(generateBackgroundTiles(board.getTile(row,col).getId(),true, board.getTile(row,col)));
-
-                this.tileButtons.add(tmp);
-            }
-        }
+        if(!GameSelection.IS_GUEST)
+            timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
     }
     /**
      * Update the backgrounds on the buttons to match the tiles.
      */
-    private void updateTileButtons(boolean useImage) {
+    private void updateTileButtons() {
         Board board = boardManager.getBoard();
         int count = 0;
         for(int row = 0; row != numRows; row++){
@@ -349,16 +228,12 @@ public class GameActivity extends AppCompatActivity implements Observer {
         });
     }
     public void onClickSaveBoard(View v, boolean isAutosave){
-        if(GameSelection.IS_GUEST)
-            makeCustomToastText("Cannot save as guest!", this);
-        else {
-            if (boardIndex != -1) {
-                boardList.set(boardIndex, boardManager);
-            }
-            saveBoardsToAccounts(this, currentAccount, boardList);
-            if (isAutosave)
-                makeCustomToastText("Auto-saved!", this);
+        if (boardIndex != -1) {
+            boardList.set(boardIndex, boardManager);
         }
+        if (isAutosave)
+            makeCustomToastText("Auto-saved!", this);
+        saveBoardsToAccounts(this, currentAccount, boardList);
     }
     public void onClickSaveBoard(View v){
         if(GameSelection.IS_GUEST)
@@ -376,6 +251,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
         onClickSaveBoard(getCurrentFocus(), false);
         timer.cancel();
         timerTask.cancel();
+        IMAGE_SET = null;
         super.onBackPressed();
         finish();
     }
