@@ -13,7 +13,7 @@
 - in git log: linshixi
 
 ### Kevin Li
-- Email:kevin224li@gmail.com
+- Email:kevinbobby.li@mail.utoronto.ca
 - Phone:647-500-8215
 - in git log: likevi23, kevinli224
 
