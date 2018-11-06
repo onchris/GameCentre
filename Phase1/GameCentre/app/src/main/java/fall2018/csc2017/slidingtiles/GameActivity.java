@@ -75,6 +75,15 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void display() {
         updateTileButtons();
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
+        checkGameIsOver();
+        undoButton = findViewById(R.id.UndoButton);
+        undoButton.setText("Undo:"+boardManager.getNumCanUndo());
+    }
+
+    /**
+     * A check if the board is solved and change to the scoreboard
+     */
+    private void checkGameIsOver() {
         if (boardManager.puzzleSolved()) {
             timer.cancel();
             timerTask.cancel();
@@ -96,9 +105,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
             IMAGE_SET = null;
             finish();
         }
-        undoButton = findViewById(R.id.UndoButton);
-        undoButton.setText("Undo:"+boardManager.getNumCanUndo());
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
