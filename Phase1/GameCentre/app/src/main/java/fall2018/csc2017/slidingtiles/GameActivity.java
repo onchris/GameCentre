@@ -32,6 +32,8 @@ import java.util.TimerTask;
 import static fall2018.csc2017.slidingtiles.UtilityManager.TEMP_SAVE_FILENAME;
 import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveScoresToAccounts;
+
 /**
  * The game activity.
  */
@@ -93,8 +95,9 @@ public class GameActivity extends AppCompatActivity implements Observer {
             boardManager.setTimeSpent(SystemClock.elapsedRealtime() - chronometer.getBase());
             int timeTaken = (int)boardManager.getTimeSpent() / 1000;
             currentScore = scoringSystem.calculateScore(movesTaken, timeTaken);
-            if(!GameSelection.IS_GUEST)
-                currentAccount.addToSlidingGameScores(currentScore); //TODO: add the sliding game score and needs to save to file
+            if(!GameSelection.IS_GUEST){
+                currentAccount.addToSlidingGameScores(currentScore);
+                saveScoresToAccounts(this, currentAccount, currentScore);}
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
             if(!GameSelection.IS_GUEST) {
