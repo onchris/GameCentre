@@ -21,6 +21,13 @@ abstract class ScoreManager {
     protected Integer score;
 
     /**
+     * Gets the current account of current user
+     */
+    public Account getCurrentAccount() {
+        return currentAccount;
+    }
+
+    /**
      * Gets the User's score list for display
      * @return List<String> of the user's scores
      */

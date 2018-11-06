@@ -26,17 +26,28 @@ public class ScoreBoard extends AppCompatActivity{
      */
     private Account currentAccount;
     /**
-     * Account list, to be loaded from local file
-     */
-    private List<Account> accountsList = new ArrayList<>();
-    /**
-     * Listview for showing the list of scores.
+     * ScoreManager to manage the scores for display.
      */
     private ScoreManager scoreManager;
+    /**
+     * ListView for the scores to be displayed
+     */
     private ListView scoreList;
+    /**
+     * Scores list for user scores for display with user's name
+     */
     private List<String> displayUserScoresList = new ArrayList<>();
+    /**
+     * Scores List for Game-wide scores for display with all pair
+     */
     private List<String> displayGameScoresList = new ArrayList<>();
+    /**
+     * TextView for the score from the most recently completed game
+     */
     private TextView currentScore;
+    /**
+     * A check for if the player is a guest
+     */
     private boolean IS_GUEST;
     private boolean IS_GLOBAL_SCOREBOARD;
     private Board board;
@@ -59,6 +70,7 @@ public class ScoreBoard extends AppCompatActivity{
 
         if(!getIntent().getStringExtra("currentUsername").equals("-1")) {
             IS_GUEST = false;
+            currentAccount = scoreManager.getCurrentAccount();
             board = (Board) getIntent().getSerializableExtra("board");
         } else {
             IS_GUEST = true;
@@ -82,7 +94,7 @@ public class ScoreBoard extends AppCompatActivity{
         changeScoreboardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.activity_main);
+                setContentView(R.layout.activity_score_board);
             }
         });
     }
@@ -92,7 +104,6 @@ public class ScoreBoard extends AppCompatActivity{
      * @param v the current view(Called by application)
      */
     public void changeScoreboardViewOnClick(View v) {
-        Button switchScoreboardView = findViewById(R.id.switchscoreboardview);
         scoreList = findViewById(R.id.scoreboard_list);
         if (IS_GLOBAL_SCOREBOARD) {
             ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, R.layout.activity_scorelist, displayUserScoresList);
