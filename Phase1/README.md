@@ -3,7 +3,7 @@
 ## The repo to clone:
 Use the following URL to clone the repo containing the GameCentre app:
     https://markus.teach.cs.toronto.edu/git/csc207-2018-09-reg/group_0552/
-How to clone the repo:
+### How to clone the repo:
 1. Install Android Studio if not already installed
 2. At the Android Studio welcome screen, select "Check out project from
 version control" and select Git from the dropdown menu.
@@ -26,8 +26,9 @@ open the folder Phase1 and select GameCentre, then press "OK")
     API 27 and create a Google Pixel 2 with API level 27 emulator.
     - You may be prompted that the specified SDK directory doesn't match
     Android Studio's SDK directory, select OK.
-5. Run the app (Run --> Run app), you will be prompted to select
+3. Run the app (Run --> Run app), you will be prompted to select
 deployment target. Select the Google Pixel phone.
+4. The app will be installed automatically onto the emulator
 
 ## What to click when running the app: (Getting to play SlidingTiles)
 1. Open the app from the phone's app drawer.
