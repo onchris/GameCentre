@@ -3,7 +3,11 @@ package fall2018.csc2017.slidingtiles;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -209,8 +213,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
                 boardManager = (BoardManager) input.readObject();
-                numRows = boardManager.getBoard().getNumRows();
-                numColumns = boardManager.getBoard().getNumColumns();
+                numRows = boardManager.getBoard().numRows;
+                numColumns = boardManager.getBoard().numColumns;
                 inputStream.close();
             }
         } catch (FileNotFoundException e) {
