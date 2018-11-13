@@ -135,7 +135,7 @@ public class LoaderAdapter extends BaseAdapter {
                 if(bm.isUseImage())
                     GameActivity.IMAGE_SET = bm.getCustomImageSet();
                 saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME, bm, ctx);
-                Intent tmp = new Intent(view.getContext(), GameActivity.class);
+                Intent tmp = new Intent(ctx, GameActivity.class);
                 tmp.putExtra("account", account);
                 tmp.putExtra("boardList", boardList);
                 tmp.putExtra("boardIndex", i);

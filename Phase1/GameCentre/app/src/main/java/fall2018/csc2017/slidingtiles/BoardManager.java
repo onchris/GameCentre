@@ -1,15 +1,14 @@
 package fall2018.csc2017.slidingtiles;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 
-import java.io.NotActiveException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -116,6 +115,33 @@ class BoardManager implements Serializable, Undoable {
         Collections.shuffle(tiles);
         this.board = new Board(tiles);
     }
+    private boolean puzzleSolvable(){
+        int columns = board.getNumColumns();
+        int rows = board.getNumRows();
+        int inversion = 0;
+        ArrayList<Integer> currentColumn = new ArrayList<>();
+        for(Tile t : this.board){
+            if(currentColumn.size()-1 < columns)
+                currentColumn.add(t.getId());
+
+        }
+        return true;
+    }
+    private int getRowInversions(ArrayList<Integer> intList){
+        int count = 0;
+        Set<Integer> checkedDigits = new HashSet<>();
+        int returnInt = 0;
+        while(count < intList.size()){
+            int current_digit = intList.get(count);
+            if(current_digit == 1)
+                checkedDigits.add(current_digit);
+            else{
+
+            }
+            count++;
+        }
+        return 1;
+    }
 
     /**
      * Return whether the tiles are in row-major order.
@@ -144,14 +170,14 @@ class BoardManager implements Serializable, Undoable {
      */
     boolean isValidTap(int position) {
 
-        int row = position / board.numColumns;
-        int col = position - row*board.numColumns;
+        int row = position / board.getNumColumns();
+        int col = position - row* board.getNumColumns();
         int blankId = board.numTiles();
         // Are any of the 4 the blank tile?
         Tile above = row == 0 ? null : board.getTile(row - 1, col);
-        Tile below = row == board.numRows - 1 ? null : board.getTile(row + 1, col);
+        Tile below = row == board.getNumRows() - 1 ? null : board.getTile(row + 1, col);
         Tile left = col == 0 ? null : board.getTile(row, col - 1);
-        Tile right = col == board.numColumns - 1 ? null : board.getTile(row, col + 1);
+        Tile right = col == board.getNumColumns() - 1 ? null : board.getTile(row, col + 1);
         return (below != null && below.getId() == blankId)
                 || (above != null && above.getId() == blankId)
                 || (left != null && left.getId() == blankId)
@@ -164,17 +190,17 @@ class BoardManager implements Serializable, Undoable {
      * @param position the position
      */
     void touchMove(int position) {
-        int row = position / board.numColumns;
-        int col = position - row*board.numColumns;
+        int row = position / board.getNumColumns();
+        int col = position - row* board.getNumColumns();
         int blankId = board.numTiles();
         if(isValidTap(position))
         {
             availableUndoSteps.push(row);
             availableUndoSteps.push(col);
             Tile above = row == 0 ? null : board.getTile(row - 1, col);
-            Tile below = row == board.numRows - 1 ? null : board.getTile(row + 1, col);
+            Tile below = row == board.getNumRows() - 1 ? null : board.getTile(row + 1, col);
             Tile left = col == 0 ? null : board.getTile(row, col - 1);
-            Tile right = col == board.numColumns - 1 ? null : board.getTile(row, col + 1);
+            Tile right = col == board.getNumColumns() - 1 ? null : board.getTile(row, col + 1);
             if(above != null && above.getId() == blankId)
             {
                 board.swapTiles(row, col, row-1, col);

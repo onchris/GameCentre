@@ -13,15 +13,9 @@ import java.util.List;
 public class Board extends Observable implements Serializable, Iterable<Tile> {
 
 
-    /**
-     * The number of rows.
-     */
-    public int numRows;
+    private int numRows;
 
-    /**
-     * The number of rows.
-     */
-    public int numColumns;
+    private int numColumns;
 
     /**
      * The tiles on the board in row-major order.
@@ -35,8 +29,8 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
      * @param tiles the tiles for the board
      */
     public Board(List<Tile> tiles) {
-        numRows = 4;
-        numColumns = 4;
+        setNumRows(4);
+        setNumColumns(4);
         this.tiles = new Tile[4][4];
         Iterator<Tile> iter = tiles.iterator();
         for (int row = 0; row != 4; row++) {
@@ -46,8 +40,8 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
         }
     }
     public Board(List<Tile> tiles, int rows, int columns){
-        numRows = rows;
-        numColumns = columns;
+        setNumRows(rows);
+        setNumColumns(columns);
         this.tiles = new Tile[rows][columns];
         Iterator<Tile> iter = tiles.iterator();
         for (int row = 0; row != rows; row++) {
@@ -128,5 +122,27 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
     public String getTilesDimension(){
         String returnString = tiles.length + "," + tiles[0].length;
         return returnString;
+    }
+
+    /**
+     * The number of rows.
+     */
+    public int getNumRows() {
+        return numRows;
+    }
+
+    public void setNumRows(int numRows) {
+        this.numRows = numRows;
+    }
+
+    /**
+     * The number of rows.
+     */
+    public int getNumColumns() {
+        return numColumns;
+    }
+
+    public void setNumColumns(int numColumns) {
+        this.numColumns = numColumns;
     }
 }
