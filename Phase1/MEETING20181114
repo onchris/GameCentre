@@ -1,0 +1,20 @@
+november 14 2018
+
+# What we need to do for phase 2
+- games being added:
+    - tilt game
+    - ultimate tictactoe
+- tests for everything
+    - sliding tiles
+    - ultimate tictactoe
+    - tilt game
+- think about design patterns for everything
+- javadocs for new games and unittests
+- walkthrough.pdf for presentation
+
+# before the next meeting (Sunday november 18)
+- chris: get the tilt game in before next meeting
+- sarah and janet: get tictactoe in before next meeting
+- kevin: start unittesting on sliding tiles
+    - add scoreboard button to the board so player can see the scoreboard from choosing the games
+- josh: make sliding tiles solvable??
