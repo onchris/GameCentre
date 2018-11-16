@@ -18,9 +18,9 @@ public class ScoreboardTest {
      */
     private List<Tile> makeTiles() {
         List<Tile> tiles = new ArrayList<>();
-        final int numTiles = Board.NUM_ROWS * Board.NUM_COLS;
+        final int numTiles = 4 * 4;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-            tiles.add(new Tile(tileNum + 1, tileNum));
+            tiles.add(new Tile(tileNum));
         }
 
         return tiles;

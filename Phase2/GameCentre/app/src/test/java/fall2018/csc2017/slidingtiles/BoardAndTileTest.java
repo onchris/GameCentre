@@ -1,9 +1,7 @@
 package fall2018.csc2017.slidingtiles;
 
+import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -15,84 +13,109 @@ import static org.junit.Assert.*;
 public class BoardAndTileTest {
 
     /** The board manager for testing. */
-    BoardManager boardManager;
+    private BoardManager board4x4, shuffledBoard4x4, board30x30, shuffledBoard30x30;
 
     /**
-     * Make a set of tiles that are in order.
-     * @return a set of tiles that are in order
+     * Make a set of tiles that are in order and out of order.
      */
-    private List<Tile> makeTiles() {
-        List<Tile> tiles = new ArrayList<>();
-        final int numTiles = Board.NUM_ROWS * Board.NUM_COLS;
-        for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-            tiles.add(new Tile(tileNum + 1, tileNum));
-        }
-
-        return tiles;
+    @Before
+    public void setUpCorrect(){
+        board4x4 = BoardSetup.setUp4x4Solved();
+        shuffledBoard4x4 = BoardSetup.setUp4x4Unsolved();
+        board30x30 = BoardSetup.setUp30x30Solved();
+        shuffledBoard30x30 = BoardSetup.setUp30x30Unsolved();
     }
 
     /**
-     * Make a solved Board.
+     * Shuffle first two tiles.
+     * @param b the board to be tested
      */
-    private void setUpCorrect() {
-        List<Tile> tiles = makeTiles();
-        Board board = new Board(tiles);
-        boardManager = new BoardManager(board);
+    public void swapFirstTwo(Board b){
+        assertEquals(1, b.getTile(0,0).getId());
+        assertEquals(2, b.getTile(0, 1).getId());
+        b.swapTiles(0,0,0,1);
+        assertEquals(2, b.getTile(0,0).getId());
+        assertEquals(1, b.getTile(0, 1).getId());
     }
 
     /**
-     * Shuffle a few tiles.
+     * Swaps the last two tiles in the specific board.
+     * @param b the board to be tested
      */
-    private void swapFirstTwoTiles() {
-        boardManager.getBoard().swapTiles(0, 0, 0, 1);
+    public void swapLastTwo(Board b){
+        assertEquals(b.getNumColumns()*b.getNumRows()-1,
+                b.getTile(b.getNumRows()-1, b.getNumColumns()-2).getId());
+        assertEquals(b.getNumColumns()*b.getNumRows(),
+                b.getTile(b.getNumRows()-1, b.getNumColumns()-1).getId());
+        b.swapTiles(b.getNumRows()-1, b.getNumColumns()-1, b.getNumRows()-1, b.getNumColumns()-2);
+        assertEquals(b.getNumColumns()*b.getNumRows(),
+                b.getTile(b.getNumRows()-1, b.getNumColumns()-2).getId());
+        assertEquals(b.getNumColumns()*b.getNumRows()-1,
+                b.getTile(b.getNumRows()-1, b.getNumColumns()-1).getId());
     }
 
     /**
-     * Test whether swapping two tiles makes a solved board unsolved.
+     * Test whether swapping two tiles makes a solved board unsolved for board size of 30
      */
     @Test
-    public void testIsSolved() {
-        setUpCorrect();
-        assertEquals(true, boardManager.puzzleSolved());
-        swapFirstTwoTiles();
-        assertEquals(false, boardManager.puzzleSolved());
+    public void test4x4IsSolved() {
+        assertTrue(board4x4.puzzleSolved());
+        swapFirstTwo(board4x4.getBoard());
+        assertFalse(board4x4.puzzleSolved());
+        assertFalse(shuffledBoard4x4.puzzleSolved());
     }
+
+    /**
+     * Test whether swapping two tiles makes a solved board unsolved for board size of 30
+     */
+    @Test
+    public void test30x30IsSolved() {
+        assertTrue(board30x30.puzzleSolved());
+        swapFirstTwo(board30x30.getBoard());
+        assertFalse(board30x30.puzzleSolved());
+        assertFalse(shuffledBoard30x30.puzzleSolved());
+    }
+
 
     /**
      * Test whether swapping the first two tiles works.
      */
     @Test
-    public void testSwapFirstTwo() {
-        setUpCorrect();
-        assertEquals(1, boardManager.getBoard().getTile(0, 0).getId());
-        assertEquals(2, boardManager.getBoard().getTile(0, 1).getId());
-        boardManager.getBoard().swapTiles(0, 0, 0, 1);
-        assertEquals(2, boardManager.getBoard().getTile(0, 0).getId());
-        assertEquals(1, boardManager.getBoard().getTile(0, 1).getId());
+    public void swapFirstTwo() {
+        swapFirstTwo(board4x4.getBoard());
+        swapFirstTwo(board30x30.getBoard());
     }
 
     /**
      * Test whether swapping the last two tiles works.
      */
     @Test
-    public void testSwapLastTwo() {
-        setUpCorrect();
-        assertEquals(15, boardManager.getBoard().getTile(3, 2).getId());
-        assertEquals(16, boardManager.getBoard().getTile(3, 3).getId());
-        boardManager.getBoard().swapTiles(3, 3, 3, 2);
-        assertEquals(16, boardManager.getBoard().getTile(3, 2).getId());
-        assertEquals(15, boardManager.getBoard().getTile(3, 3).getId());
+    public void swapLastTwo(){
+        swapLastTwo(board4x4.getBoard());
+        swapLastTwo(board30x30.getBoard());
     }
 
     /**
-     * Test whether isValidHelp works.
+     * Test whether isValidTap works.
      */
     @Test
     public void testIsValidTap() {
-        setUpCorrect();
-        assertEquals(true, boardManager.isValidTap(11));
-        assertEquals(true, boardManager.isValidTap(14));
-        assertEquals(false, boardManager.isValidTap(10));
+        assertTrue(board4x4.isValidTap(11));
+        assertTrue(board4x4.isValidTap(14));
+        assertFalse(board4x4.isValidTap(10));
+    }
+    @Test
+    public void testUndo(){
+        assertNotEquals(0, board4x4.getNumCanUndo());
+        board4x4.setNumCanUndo(1);
+        assertTrue(board4x4.isValidTap(14));
+        assertFalse(board4x4.canUndo());
+        board4x4.touchMove(14);
+        assertFalse(board4x4.isValidTap(14));
+        assertTrue(board4x4.canUndo());
+        swapFirstTwo(board4x4.getBoard());
+        board4x4.undo();
+        assertFalse(board4x4.canUndo());
     }
 }
 

@@ -46,8 +46,8 @@ public class TileBuilder implements Tileable{
         this.boardManager = boardManager;
         this.tileButtons = new ArrayList<>();
         this.currentContext = currentContext;
-        this.rows = boardManager.getBoard().numRows;
-        this.columns = boardManager.getBoard().numColumns;
+        this.rows = boardManager.getBoard().getNumRows();
+        this.columns = boardManager.getBoard().getNumColumns();
         this.columnWidth = columnWidth;
     }
 

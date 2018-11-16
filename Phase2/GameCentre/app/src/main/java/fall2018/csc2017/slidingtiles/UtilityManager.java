@@ -183,8 +183,7 @@ public final class UtilityManager {
             tiles.add(new Tile(tileNum));
         }
         Collections.shuffle(tiles);
-        Board b = new Board(tiles, rows, columns);
-        return b;
+        return new Board(tiles, rows, columns);
     }
 
 }

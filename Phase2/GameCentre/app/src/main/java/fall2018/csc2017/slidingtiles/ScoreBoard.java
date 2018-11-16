@@ -138,7 +138,7 @@ public class ScoreBoard extends AppCompatActivity{
                     tmp.putExtra("account", -1);
                     startActivity(tmp);
                 } else {
-                    BoardManager bm = new BoardManager(newRandomBoard(board.numRows,board.numColumns));
+                    BoardManager bm = new BoardManager(newRandomBoard(board.getNumRows(), board.getNumColumns()));
                     saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME, bm, v.getContext());
                     Intent tmp = new Intent(v.getContext(), GameActivity.class);
                     currentAccount.getBoardList().add(bm);
