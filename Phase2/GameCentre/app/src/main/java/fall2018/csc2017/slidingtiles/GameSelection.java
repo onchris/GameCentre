@@ -295,11 +295,15 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         }
     }
 
+    /**
+     * On click function for Ultimate Tic Tac Toe game selection button
+     * @param v the current view(Called by application)
+     */
     public void ultTTTGameButtonOnClick(View v) {
         if(IS_GUEST){
             //saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
             Intent tmp = new Intent(this, UltimateTTTGameActivity.class);
-            this.startActivity(tmp);
+            startActivity(tmp);
         } else {
             setContentView(R.layout.activity_loadedgamelist);
             gameListDisplay = findViewById(R.id.scrollable_loadablegames);

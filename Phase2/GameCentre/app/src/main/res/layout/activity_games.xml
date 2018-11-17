@@ -67,5 +67,5 @@
         android:layout_marginEnd="36dp"
         android:onClick="ultTTTGameButtonOnClick"
         android:text="Button"
-        tools:srcCompat="@drawable/ult_icon" />
+        android:src="@drawable/ult_icon" />
 </RelativeLayout>
