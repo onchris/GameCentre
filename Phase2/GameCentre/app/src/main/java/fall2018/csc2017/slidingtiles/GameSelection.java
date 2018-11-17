@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import UltimateTTT.UltimateTTTGameActivity;
+
 import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
 import static fall2018.csc2017.slidingtiles.UtilityManager.alertDialogBuilder;
 import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
@@ -292,6 +294,24 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
             atLoadGameScreen = true;
         }
     }
+
+    public void ultTTTGameButtonOnClick(View v) {
+        if(IS_GUEST){
+            //saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
+            Intent tmp = new Intent(this, UltimateTTTGameActivity.class);
+            this.startActivity(tmp);
+        } else {
+            setContentView(R.layout.activity_loadedgamelist);
+            gameListDisplay = findViewById(R.id.scrollable_loadablegames);
+            loaderAdapter = new LoaderAdapter(boardList, this);
+            loaderAdapter.account = currentAccount;
+
+            gameListDisplay.setAdapter(loaderAdapter);
+            atLoadGameScreen = true;
+        }
+    }
+
+
     /**
      * On click function for SlidingTile game selection button
      * @param v the current view(Called by application)

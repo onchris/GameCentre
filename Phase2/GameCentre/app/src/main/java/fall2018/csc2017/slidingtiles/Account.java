@@ -29,6 +29,7 @@ public class Account implements Serializable {
      * Account's scores as a list
      */
     private List<Integer> slidingGameScores = new ArrayList<>();
+    private List<Integer> ultimateTTTscores = new ArrayList<>();
 
     /**
      * Account constructor
@@ -50,6 +51,10 @@ public class Account implements Serializable {
      */
     public String getUsername() {
         return username;
+    }
+
+    public List<Integer> getUltimateTTTscores() {
+        return ultimateTTTscores;
     }
 
     /**
