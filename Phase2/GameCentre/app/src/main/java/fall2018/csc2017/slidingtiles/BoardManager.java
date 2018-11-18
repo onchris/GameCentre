@@ -52,11 +52,26 @@ class BoardManager implements Serializable, Undoable {
      */
     public BoardManager() {
         List<Tile> tiles = new ArrayList<>();
+        int checkSolvable = 0; int count = 0;
         int numTiles = 4 * 4;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
             tiles.add(new Tile(tileNum));
         }
         Collections.shuffle(tiles);
+        while(true){
+            for (int tileNum = 0; tileNum != numTiles; tileNum++) {
+                for (int x = tileNum; x != numTiles; x++) {
+                    if(tiles.get(tileNum).getId() > tiles.get(x).getId()){
+                        count++;
+                    }
+                }
+                checkSolvable += count;
+                count = 0;
+            }
+            if(checkSolvable % 2 != 1){
+                break;
+            }else {Collections.shuffle(tiles); checkSolvable = 0;}
+        }
         this.board = new Board(tiles);
     }
 
