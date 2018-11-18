@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ObstacleDodger.TiltGameActivity;
 import UltimateTTT.UltimateTTTGameActivity;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
@@ -72,18 +73,18 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * Custom adapter for displaying list of games by hooking up to CustomScrollView
      */
     private LoaderAdapter loaderAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
         currentUserTextView = findViewById(R.id.text_loggedas);
-        if(!getIntent().getStringExtra("currentUser").equals("-1")) {
+        if (!getIntent().getStringExtra("currentUser").equals("-1")) {
             currentUsername = getIntent().getStringExtra("currentUser");
             currentUserTextView.setText(currentUsername);
             currentAccount = getCurrentAccount(currentUsername);
             IS_GUEST = false;
-        }
-        else {
+        } else {
             currentUserTextView.setText("Guest");
             IS_GUEST = true;
         }
@@ -93,28 +94,28 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
     /**
      * Gets the current accounts' board list
      */
-    private void getCurrentAccountBoardList(){
-        if(IS_GUEST) {
+    private void getCurrentAccountBoardList() {
+        if (IS_GUEST) {
             boardList = new ArrayList<>();
-        }
-        else {
+        } else {
             boardList = currentAccount.getBoardList();
         }
     }
+
     /**
      * Gets the account by iterating through the accounts file and set to currentAccount
+     *
      * @param accountName the account to search for
      */
-    private Account getCurrentAccount(String accountName){
+    private Account getCurrentAccount(String accountName) {
         try {
             InputStream inputStream = this.openFileInput(ACCOUNTS_FILENAME);
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
                 List<Account> accountList = (ArrayList<Account>) input.readObject();
                 inputStream.close();
-                for(Account account: accountList)
-                {
-                    if(account.getUsername().equals(accountName))
+                for (Account account : accountList) {
+                    if (account.getUsername().equals(accountName))
                         return account;
                 }
             }
@@ -127,18 +128,22 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         }
         return null;
     }
+
     /**
      * On click function for the new game button
+     *
      * @param v the current view(Called by application)
      */
-    public void newGameButtonOnClick(View v){
+    public void newGameButtonOnClick(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         popup.setOnMenuItemClickListener(this);
         popup.inflate(R.menu.menu_sliding_difficulty);
         popup.show();
     }
+
     /**
      * Handles the function when a menu item is chosen
+     *
      * @param menuItem the menu item that user clicks on
      * @return whether the user successfully chose an item in the menu
      */
@@ -148,27 +153,27 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         LayoutInflater inflater = this.getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_slidingdifficulty, null));
         final Dialog dialog = builder.create();
-        switch (menuItem.getItemId()){
+        switch (menuItem.getItemId()) {
             case R.id.item1:
-                Board randomBoard3 = newRandomBoard(3,3);
+                Board randomBoard3 = newRandomBoard(3, 3);
                 boardList.add(new BoardManager(randomBoard3));
                 loaderAdapter.notifyDataSetChanged();
                 saveBoardsToAccounts(this, currentAccount, boardList);
-                makeCustomToastText(menuItem.toString(),getBaseContext());
+                makeCustomToastText(menuItem.toString(), getBaseContext());
                 return true;
             case R.id.item2:
-                Board randomBoard4 = newRandomBoard(4,4);
+                Board randomBoard4 = newRandomBoard(4, 4);
                 boardList.add(new BoardManager(randomBoard4));
                 loaderAdapter.notifyDataSetChanged();
                 saveBoardsToAccounts(this, currentAccount, boardList);
-                makeCustomToastText(menuItem.toString(),getBaseContext());
+                makeCustomToastText(menuItem.toString(), getBaseContext());
                 return true;
             case R.id.item3:
-                Board randomBoard5 = newRandomBoard(5,5);
+                Board randomBoard5 = newRandomBoard(5, 5);
                 boardList.add(new BoardManager(randomBoard5));
                 loaderAdapter.notifyDataSetChanged();
                 saveBoardsToAccounts(this, currentAccount, boardList);
-                makeCustomToastText(menuItem.toString(),getBaseContext());
+                makeCustomToastText(menuItem.toString(), getBaseContext());
                 return true;
             case R.id.item4:
                 dialog.show();
@@ -184,19 +189,17 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                 loadImageButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(rows.getText().toString().equals("") ||
+                        if (rows.getText().toString().equals("") ||
                                 columns.getText().toString().equals("") ||
-                                undos.getText().toString().equals("")){
+                                undos.getText().toString().equals("")) {
                             makeCustomToastText("Fields must not be empty!", v.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) < 3  ||
-                                Integer.parseInt(columns.getText().toString()) < 3 )
-                        {
+                        } else if (Integer.parseInt(rows.getText().toString()) < 3 ||
+                                Integer.parseInt(columns.getText().toString()) < 3) {
                             makeCustomToastText("Rows/Columns cannot be lesser than 3!", v.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) > 31  ||
-                                Integer.parseInt(columns.getText().toString()) > 31 ) {
+                        } else if (Integer.parseInt(rows.getText().toString()) > 31 ||
+                                Integer.parseInt(columns.getText().toString()) > 31) {
                             makeCustomToastText("Dude stop you can't even see the board at this size", v.getContext());
-                        }
-                        else {
+                        } else {
                             String url = etUrl.getText().toString();
                             Intent imageIntent = new Intent(v.getContext(), ImageServiceIntent.class);
                             imageIntent.putExtra("receiver", resultReceiver);
@@ -211,8 +214,8 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                     @Override
                     public void onClick(View view) {
                         CheckBox useImage = dialog.findViewById(R.id.cb_useImage);
-                        if(useImage.isChecked()){
-                            if(resultReceiver.contentReceived()){
+                        if (useImage.isChecked()) {
+                            if (resultReceiver.contentReceived()) {
                                 Board randomBoard = newRandomBoard(resultReceiver.getRow(), resultReceiver.getCol());
                                 BoardManager bm = new BoardManager(randomBoard);
                                 bm.setCustomImageSet(resultReceiver.getBitmapArrayList());
@@ -221,27 +224,24 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                                 boardList.add(bm);
                                 loaderAdapter.notifyDataSetChanged();
                                 saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
-                                makeCustomToastText(randomBoard.getTilesDimension(),getBaseContext());
+                                makeCustomToastText(randomBoard.getTilesDimension(), getBaseContext());
                                 dialog.dismiss();
-                            }else if (resultReceiver.invalidImageLink()){
+                            } else if (resultReceiver.invalidImageLink()) {
                                 makeCustomToastText("Invalid image link, make sure to copy image link address directly!", view.getContext());
-                            }
-                            else{
+                            } else {
                                 makeCustomToastText("You must wait for your image to finish downloading!", view.getContext());
                             }
-                        }
-                        else if(rows.getText().toString().equals("") ||
+                        } else if (rows.getText().toString().equals("") ||
                                 columns.getText().toString().equals("") ||
-                                undos.getText().toString().equals("")){
+                                undos.getText().toString().equals("")) {
                             makeCustomToastText("Fields must not be empty!", view.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) < 3  ||
-                                Integer.parseInt(columns.getText().toString()) < 3 )
-                        {
+                        } else if (Integer.parseInt(rows.getText().toString()) < 3 ||
+                                Integer.parseInt(columns.getText().toString()) < 3) {
                             makeCustomToastText("Rows/Columns cannot be lesser than 3!", view.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) > 31  ||
-                                Integer.parseInt(columns.getText().toString()) > 31 ) {
+                        } else if (Integer.parseInt(rows.getText().toString()) > 31 ||
+                                Integer.parseInt(columns.getText().toString()) > 31) {
                             makeCustomToastText("Dude stop you can't even see the board at this size", view.getContext());
-                        }else {
+                        } else {
                             Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()),
                                     Integer.parseInt(columns.getText().toString()));
                             BoardManager bm = new BoardManager(randomBoard);
@@ -249,7 +249,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                             boardList.add(bm);
                             loaderAdapter.notifyDataSetChanged();
                             saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
-                            makeCustomToastText(randomBoard.getTilesDimension(),getBaseContext());
+                            makeCustomToastText(randomBoard.getTilesDimension(), getBaseContext());
                             dialog.dismiss();
                         }
                     }
@@ -258,13 +258,15 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         }
         return false;
     }
+
     /**
      * Generates a new random board with sizes based on parameters passed in
-     * @param rows the new game's row properties
+     *
+     * @param rows    the new game's row properties
      * @param columns the new game's columns properties
      * @return A random board with specified dimensions
      */
-    private Board newRandomBoard(int rows, int columns){
+    private Board newRandomBoard(int rows, int columns) {
         List<Tile> tiles = new ArrayList<>();
         int numTiles = rows * columns;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
@@ -274,14 +276,16 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         Board b = new Board(tiles, rows, columns);
         return b;
     }
+
     /**
      * On click function for SlidingTile game selection button
+     *
      * @param v the current view(Called by application)
      */
     public void slidingGameButtonOnClick(View v) {
-        if(IS_GUEST){
+        if (IS_GUEST) {
             saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,
-                    new BoardManager(newRandomBoard(4,4)), this);
+                    new BoardManager(newRandomBoard(4, 4)), this);
             Intent tmp = new Intent(this, GameActivity.class);
             this.startActivity(tmp);
         } else {
@@ -297,10 +301,11 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
 
     /**
      * On click function for Ultimate Tic Tac Toe game selection button
+     *
      * @param v the current view(Called by application)
      */
     public void ultTTTGameButtonOnClick(View v) {
-        if(IS_GUEST){
+        if (IS_GUEST) {
             //saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
             Intent tmp = new Intent(this, UltimateTTTGameActivity.class);
             startActivity(tmp);
@@ -315,12 +320,23 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         }
     }
 
+    /**
+     * On click function for Obstacle Dodger game selection button
+     *
+     * @param v the current view(Called by application)
+     */
+    public void obDodgerGameButtonOnClick(View v) {
+        Intent tmp = new Intent(this, TiltGameActivity.class);
+        startActivity(tmp);
+    }
+
 
     /**
      * On click function for SlidingTile game selection button
+     *
      * @param v the current view(Called by application)
      */
-    public void resetOnClick(View v){
+    public void resetOnClick(View v) {
         final Context ctx = this;
         AlertDialog ad = alertDialogBuilder(null, "There is no going back, son", ctx);
         ad.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
@@ -339,7 +355,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         });
         TextView titleText = new TextView(this);
         titleText.setText("Delete all games?");
-        titleText.setPadding(10,10,10,10);
+        titleText.setPadding(10, 10, 10, 10);
         titleText.setTextSize(30);
         titleText.setGravity(Gravity.CENTER);
         ad.setCustomTitle(titleText);
@@ -352,19 +368,19 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * instead of login screen, vice versa.
      */
     @Override
-    public void onBackPressed(){
-        if(atLoadGameScreen) {
+    public void onBackPressed() {
+        if (atLoadGameScreen) {
             atLoadGameScreen = false;
             setContentView(R.layout.activity_games);
             currentUserTextView = findViewById(R.id.text_loggedas);
             currentUserTextView.setText(currentUsername);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
+
     @Override
-    public void onRestart(){
+    public void onRestart() {
         super.onRestart();
         finish();
         startActivity(getIntent());
