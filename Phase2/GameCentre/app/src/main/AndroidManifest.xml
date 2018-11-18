@@ -20,6 +20,7 @@
         <activity android:name="fall2018.csc2017.slidingtiles.GameSelection"></activity>
         <activity android:name="fall2018.csc2017.slidingtiles.ScoreBoard"></activity>
         <activity android:name="UltimateTTT.UltimateTTTGameActivity"></activity>
+        <activity android:name="ObstacleDodger.TiltGameActivity"></activity>
         <service android:name=".ImageServiceIntent"></service>
     </application>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
