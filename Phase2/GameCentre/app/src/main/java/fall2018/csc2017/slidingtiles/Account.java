@@ -30,6 +30,7 @@ public class Account implements Serializable {
      */
     private List<Integer> slidingGameScores = new ArrayList<>();
     private List<Integer> ultimateTTTscores = new ArrayList<>();
+    private List<Integer> obstacleDodgerScores = new ArrayList<>();
 
     /**
      * Account constructor
@@ -55,6 +56,10 @@ public class Account implements Serializable {
 
     public List<Integer> getUltimateTTTscores() {
         return ultimateTTTscores;
+    }
+
+    public List<Integer> getObstacleDodgerScores() {
+        return obstacleDodgerScores;
     }
 
     /**
@@ -123,9 +128,11 @@ public class Account implements Serializable {
     }
 
     /**
-     * Sort the user's SlidingTiles in reverse order from highest to lowest
+     * Sort the user's score lists in reverse order from highest to lowest
      */
     public void sortSlidingGameScores() {
         Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
+        Collections.sort(this.ultimateTTTscores, Collections.<Integer>reverseOrder());
+        Collections.sort(this.obstacleDodgerScores, Collections.<Integer>reverseOrder());
     }
 }
