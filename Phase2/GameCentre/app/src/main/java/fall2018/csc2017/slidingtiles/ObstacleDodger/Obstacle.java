@@ -1,4 +1,4 @@
-package ObstacleDodger;
+package fall2018.csc2017.slidingtiles.ObstacleDodger;
 
 /*
 Adapted from:
@@ -29,7 +29,7 @@ public class Obstacle implements GameObject {
     public Obstacle(int rectHeight, int color, int startX, int startY, int playerGap) {
         this.color = color;
         rectangle = new Rect(0, startY, startX, startY + rectHeight);
-        rectangle2 = new Rect(startX + playerGap, startY, Constants.SCREEN_WIDTH, startY + rectHeight);
+        rectangle2 = new Rect(startX + playerGap, startY, ObUtilityManager.getScreenWidth(), startY + rectHeight);
     }
 
     public boolean playerCollide(RectPlayer player) {
