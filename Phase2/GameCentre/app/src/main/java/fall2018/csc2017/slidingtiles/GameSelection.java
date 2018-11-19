@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ObstacleDodger.TiltGameActivity;
-import UltimateTTT.UltimateTTTGameActivity;
+import fall2018.csc2017.slidingtiles.ObstacleDodger.TiltGameActivity;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltimateTTTGameActivity;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
 import static fall2018.csc2017.slidingtiles.UtilityManager.alertDialogBuilder;
@@ -341,8 +341,22 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * @param v the current view(Called by application)
      */
     public void obDodgerGameButtonOnClick(View v) {
-        Intent tmp = new Intent(this, TiltGameActivity.class);
-        startActivity(tmp);
+//        Intent tmp = new Intent(this, TiltGameActivity.class);
+//        startActivity(tmp);
+
+        if (IS_GUEST) {
+            //saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
+            Intent tmp = new Intent(this, TiltGameActivity.class);
+            startActivity(tmp);
+        } else {
+            setContentView(R.layout.activity_loadedgamelist);
+            gameListDisplay = findViewById(R.id.scrollable_loadablegames);
+            loaderAdapter = new LoaderAdapter(boardList, this);
+            loaderAdapter.account = currentAccount;
+
+            gameListDisplay.setAdapter(loaderAdapter);
+            atLoadGameScreen = true;
+        }
     }
 
 
