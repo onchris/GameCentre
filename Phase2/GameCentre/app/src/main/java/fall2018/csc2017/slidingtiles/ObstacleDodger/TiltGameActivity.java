@@ -5,6 +5,7 @@ Adapted from:
 https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
  */
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -25,9 +26,8 @@ public class TiltGameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //TODO: restart the game
-//        super.onBackPressed();
-        this.finish();
+        int pid = android.os.Process.myPid();
+        android.os.Process.killProcess(pid);
     }
 
     @Override
