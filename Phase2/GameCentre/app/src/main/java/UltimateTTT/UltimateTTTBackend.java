@@ -13,46 +13,48 @@ public class UltimateTTTBackend {
 //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
 
 
-    private boolean turn;       //true for player1. false for player2
-    private String global_winner;
+    private String winner;
+    private String globalWinner;
+    private int currentActiveBlock = Integer.MAX_VALUE; //In Board?
+    private int nextActiveBlock = Integer.MAX_VALUE;
+    private boolean[] disabledBlocks = new boolean[9];
     private int score[];
+    private int currentCell;
+    private StringBuilder usedCells;
+    private String resetCells;
+    private String buttonPressed;
+    private boolean isP1Turn;       //true for player1. false for player2
+    private String resetBlockColor;
+
     private int boardStatus[][][];
     private int no_terms[];
     private ArrayList<String> result;
-    private int currentActiveBlock;
-    private int nextActiveBlock;
-    private String buttonPressed;
-    private StringBuilder used_cells;
+
     private Stack<JSONObject> history;
-    private boolean[] disabledBlocks;
-    private String winner;
-    private int currentCell;
-    private String reset_cells;
-    private String reset_block_color;
 
     public UltimateTTTBackend() {
         initialize();
     }
 
     private void initialize() {
-        turn = true;
-        buttonPressed = "Reset";
-        global_winner = "None";
         winner = "None";
+        globalWinner = "None";
         score = new int[2];
+        score[0] = 0;           //Score of player 1
+        score[1] = 0;           //Score of player 2
+        currentCell = Integer.MAX_VALUE;            //initial value
+        usedCells = new StringBuilder("");
+        resetCells = "All";
+        buttonPressed = null;
+        isP1Turn = true;
+        resetBlockColor = "None"; //TODO: is this like tile?
+
+        boardStatus = new int[9][3][3]; //Making ultTTTBoard
         no_terms = new int[9];
         result = new ArrayList<>();
-        used_cells = new StringBuilder("");
-        reset_cells = "All";
-        reset_block_color = "None";
-        boardStatus = new int[9][3][3];
-        disabledBlocks = new boolean[9];
-        currentCell = Integer.MAX_VALUE;            //initial value
-        currentActiveBlock = Integer.MAX_VALUE;    //initial value
-        nextActiveBlock = Integer.MAX_VALUE;       //if next active block is disabled.
-        buttonPressed = null;
         history = new Stack<>();
 
+        //put in UltTTTboard
         for (int i = 0; i < 9; i++)
             for (int j = 0; j < 3; j++)
                 for (int k = 0; k < 3; k++)
@@ -60,9 +62,6 @@ public class UltimateTTTBackend {
 
         Arrays.fill(no_terms, 0);
         Arrays.fill(disabledBlocks, false);
-
-        score[0] = 0;           //Score of player 1
-        score[1] = 0;           //Score of player 2
     }
 
     private void updateScore(int num) {
@@ -70,14 +69,14 @@ public class UltimateTTTBackend {
     }
 
     private void updateTurn() {
-        turn = !turn;
+        isP1Turn = !isP1Turn;
     }
 
     public JSONObject execute(int cell_number) {
         int row, column;
         JSONObject curr_state;
 
-        reset_cells = new String();
+        resetCells = new String();
         currentActiveBlock = getBlockNumber(cell_number);
         buttonPressed = getButtonPressed(cell_number);
         if (buttonPressed.equals("Reset")) {
@@ -95,7 +94,7 @@ public class UltimateTTTBackend {
         row = getRowNumber(cell_number);
         column = getColumnNumber(cell_number);
 
-        used_cells.append(cell_number + "::::");
+        usedCells.append(cell_number + "::::");
         updateBoard(currentActiveBlock, row, column);
         no_terms[currentActiveBlock]++;
 
@@ -115,7 +114,7 @@ public class UltimateTTTBackend {
         if (!winner.equals("None"))
             result.add(winner);
 
-        global_winner = findGlobalWinner();
+        globalWinner = findGlobalWinner();
         curr_state = toJson();
         updateTurn();
         updateHistory(curr_state);
@@ -146,7 +145,7 @@ public class UltimateTTTBackend {
 
     private void updateBoard(int blockNumber, int row, int column) {
         if (blockNumber >= 0 && blockNumber <= 8)
-            if (turn)
+            if (isP1Turn)
                 boardStatus[blockNumber][row][column] = 0;
             else
                 boardStatus[blockNumber][row][column] = 1;
@@ -207,7 +206,8 @@ public class UltimateTTTBackend {
             initialize();
             return;
         }
-        turn = !turn;
+
+        isP1Turn = !isP1Turn;
         previous_move = history.peek();
         current_values = UltimateTTTInfoManager.parseJson(current_move);
         previous_values = UltimateTTTInfoManager.parseJson(previous_move);
@@ -215,21 +215,21 @@ public class UltimateTTTBackend {
         currentActiveBlock = Integer.parseInt((String) previous_values.get("CurrentActiveBlock"));
         winner = (String) current_values.get("CurrentWinner");
         pre_nab = (String) current_values.get("CurrentActiveBlock");
-        reset_cells = (String) current_values.get("CurrentCell");
-        reset_block_color = (String) current_values.get("NextActiveBlock");
-        used_cells_raw_string_array = used_cells.toString().split("::::");
-        used_cells = new StringBuilder();
+        resetCells = (String) current_values.get("CurrentCell");
+        resetBlockColor = (String) current_values.get("NextActiveBlock");
+        used_cells_raw_string_array = usedCells.toString().split("::::");
+        usedCells = new StringBuilder();
         for (int i = 0; i < used_cells_raw_string_array.length; i++)
-            if (!used_cells_raw_string_array[i].equals(reset_cells))
-                used_cells.append(used_cells_raw_string_array[i] + "::::");
+            if (!used_cells_raw_string_array[i].equals(resetCells))
+                usedCells.append(used_cells_raw_string_array[i] + "::::");
         score[0] = Integer.parseInt((String) previous_values.get("ScoreP1"));
         score[1] = Integer.parseInt((String) previous_values.get("ScoreP2"));
 
         // boardstatus is a 3D array.
         System.out.println("Print it" + pre_nab);
         boardStatus[Integer.parseInt(pre_nab)]
-                [getRowNumber(Integer.parseInt(reset_cells))]
-                [getColumnNumber(Integer.parseInt(reset_cells))] = -1;
+                [getRowNumber(Integer.parseInt(resetCells))]
+                [getColumnNumber(Integer.parseInt(resetCells))] = -1;
         if (!winner.equals("None")) {
             disabledBlocks[Integer.parseInt(pre_nab)] = false;
             result.remove(0);
@@ -255,14 +255,14 @@ public class UltimateTTTBackend {
             jsonObject.put("CurrentCell", currentCell);
             jsonObject.put("NextActiveBlock", nextActiveBlock);
             jsonObject.put("CurrentWinner", winner);
-            jsonObject.put("GlobalWinner", global_winner);
+            jsonObject.put("GlobalWinner", globalWinner);
             jsonObject.put("Turn", getTurn());
             jsonObject.put("DisableBlock", getDisableBlockString());
-            jsonObject.put("DisableList", used_cells);
-            jsonObject.put("ResetList", reset_cells);
+            jsonObject.put("DisableList", usedCells);
+            jsonObject.put("ResetList", resetCells);
             jsonObject.put("ScoreP1", score[0]);
             jsonObject.put("ScoreP2", score[1]);
-            jsonObject.put("ResetBlockColor", reset_block_color);
+            jsonObject.put("ResetBlockColor", resetBlockColor);
             jsonObject.put("ButtonPressed", buttonPressed);
         } catch (JSONException jsonException) {
             System.out.println("Exception in converting to JSON");
@@ -318,7 +318,7 @@ public class UltimateTTTBackend {
     }
 
     private String getTurn() {
-        if (turn)
+        if (isP1Turn)
             return "Player 1";
         return "Player 2";
     }

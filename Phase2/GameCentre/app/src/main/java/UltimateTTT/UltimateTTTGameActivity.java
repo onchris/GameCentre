@@ -23,46 +23,11 @@ import fall2018.csc2017.slidingtiles.GameSelection;
 import fall2018.csc2017.slidingtiles.R;
 import fall2018.csc2017.slidingtiles.ScoreBoard;
 
+import fall2018.csc2017.slidingtiles.UtilityManager;
+
 public class UltimateTTTGameActivity extends AppCompatActivity implements View.OnClickListener
-    //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+        //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
 {
-    public class UserResponse
-    {
-        int currentCell;
-        int currentActiveBlock;
-        int scoreP1;
-        int scoreP2;
-        int nextActiveBlock;
-        String winner;
-        String global_winner;
-        String turn;
-        String reset_cells;
-        String used_cells_raw_string;
-        String used_cells[];
-        String buttonPressed;
-        String disableBlock;
-        String reset_block_color;
-
-        UserResponse(Map result)
-        {
-            winner = (String) result.get("CurrentWinner");
-            global_winner = (String) result.get("GlobalWinner");
-            currentCell = Integer.parseInt((String) result.get("CurrentCell"));
-            currentActiveBlock = Integer.parseInt((String) result.get("CurrentActiveBlock"));
-            nextActiveBlock = Integer.parseInt((String) result.get("NextActiveBlock"));
-            used_cells_raw_string = (String) result.get("DisableList");
-            disableBlock = (String) result.get("DisableBlock");
-            used_cells = used_cells_raw_string.split("::::");
-            reset_cells = (String) result.get("ResetList");
-            scoreP1 = Integer.parseInt((String) result.get("ScoreP1"));
-            scoreP2 = Integer.parseInt((String) result.get("ScoreP2"));
-            buttonPressed = (String) result.get("ButtonPressed");
-            turn = (String) result.get("Turn");
-            reset_block_color = (String)result.get("ResetBlockColor");
-        }
-    }
-
-
     TextView scoreP1;
     TextView scoreP2;
     ImageButton breset;
@@ -71,13 +36,13 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
     private ImageButton[] ImageButtons;
     private TableLayout tables[];
     private Account currentAccount;
+    private boolean IS_GUEST = false;
 
     String P1Name;
     String P2Name;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         Intent i;
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -87,7 +52,8 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         i = getIntent();
         bind();
         initialize();
-        if (GameSelection.IS_GUEST){
+        if (GameSelection.IS_GUEST) {
+            IS_GUEST = true;
             P1Name = "Guest1";
             P2Name = "Guest2";
         } else {
@@ -164,16 +130,14 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
     }
 
 
-    private void initialize()
-    {
+    private void initialize() {
         scoreP1.setText("0");
         scoreP2.setText("0");
-        for (ImageButton ImageButton : ImageButtons)
-        {
+        for (ImageButton ImageButton : ImageButtons) {
             ImageButton.setOnClickListener(this);
             ImageButton.setBackgroundResource(R.drawable.ult_clearimage);
         }
-        for(TableLayout tableLayout : tables)
+        for (TableLayout tableLayout : tables)
             tableLayout.setBackgroundColor(Color.BLACK);
         breset.setOnClickListener(this);
         breset.setEnabled(true);
@@ -181,164 +145,139 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         bundo.setEnabled(true);
     }
 
-    private void enableAll()
-    {
+    private void enableAll() {
         for (android.widget.ImageButton ImageButton : ImageButtons) ImageButton.setEnabled(true);
     }
 
-    private void disableAll()
-    {
+    private void disableAll() {
         for (ImageButton ImageButton : ImageButtons) ImageButton.setEnabled(false);
     }
 
-    private void enable(int id)
-    {
+    private void enable(int id) {
         ImageButtons[id].setEnabled(true);
     }
 
-    private void disable(int id)
-    {
+    private void disable(int id) {
         ImageButtons[id].setEnabled(false);
     }
 
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         int index;
         ImageButton curr_button;
-        curr_button = (ImageButton) findViewById(v.getId());
+        curr_button = findViewById(v.getId());
         index = getIndex(curr_button);
         runFrontEnd(index);
     }
 
-    public void runFrontEnd(int index)
-    {
+    public void runFrontEnd(int index) {
         JSONObject response;
-        Map result;
         response = backend.execute(index);
-        result = UltimateTTTInfoManager.parseJson(response);
-        UserResponse userResponse = new UserResponse(result);
-        operate(userResponse);
+        UltTTTBoardManager ultTTTBoardManager = new UltTTTBoardManager(UltimateTTTInfoManager.parseJson(response));
+        if (!IS_GUEST) {
+            UtilityManager.saveUltimateTTTUltTTTBoardManager(this, currentAccount, currentAccount.getUltimateTTTList());
+        }
+        operate(ultTTTBoardManager);
     }
 
-    private void operate(UserResponse userResponse)
-    {
-        if(userResponse.buttonPressed.equals("Reset"))
-        {
+    private void operate(UltTTTBoardManager ultTTTBoardManager) {
+        if (ultTTTBoardManager.buttonPressed.equals("Reset")) {
             initialize();
             enableAll();
             return;
-        }
-        else if(userResponse.buttonPressed.equals("Undo"))
-        {
-            if(userResponse.reset_cells.equals("All"))
+        } else if (ultTTTBoardManager.buttonPressed.equals("Undo")) {
+            if (ultTTTBoardManager.resetCells.equals("All"))
                 initialize();
-            else
-            {
-                ImageButtons[Integer.parseInt(userResponse.reset_cells)].
+            else {
+                ImageButtons[Integer.parseInt(ultTTTBoardManager.resetCells)].
                         setBackgroundResource(R.drawable.ult_clearimage);
             }
-            if(!userResponse.reset_block_color.equals("None"))
-            {
-                if(Integer.parseInt(userResponse.reset_block_color) != Integer.MAX_VALUE)
-                    tables[Integer.parseInt(userResponse.reset_block_color)].
+            if (!ultTTTBoardManager.resetBlockColor.equals("None")) {
+                if (Integer.parseInt(ultTTTBoardManager.resetBlockColor) != Integer.MAX_VALUE)
+                    tables[Integer.parseInt(ultTTTBoardManager.resetBlockColor)].
                             setBackgroundColor(Color.BLACK);
             }
         }
-        if(userResponse.buttonPressed.equals("GameButton"))
-        {
-            if (userResponse.turn.equals("Player 1"))
-            {
-                ImageButtons[userResponse.currentCell].setBackgroundResource(R.drawable.ult_cross);
-            }
-            else
-            {
-                ImageButtons[userResponse.currentCell].setBackgroundResource(R.drawable.ult_o);
+        if (ultTTTBoardManager.buttonPressed.equals("GameButton")) {
+            if (ultTTTBoardManager.isP1Turn.equals("Player 1")) {
+                ImageButtons[ultTTTBoardManager.currentCell].setBackgroundResource(R.drawable.ult_cross);
+            } else {
+                ImageButtons[ultTTTBoardManager.currentCell].setBackgroundResource(R.drawable.ult_o);
             }
         }
-        changeTableColor(userResponse.nextActiveBlock, userResponse.currentActiveBlock ,
-                userResponse.turn, userResponse.buttonPressed);
+        changeTableColor(ultTTTBoardManager.nextActiveBlock, ultTTTBoardManager.currentActiveBlock,
+                ultTTTBoardManager.isP1Turn, ultTTTBoardManager.buttonPressed);
         disableAll();
-        enableBlock(userResponse.nextActiveBlock);
-        disableWinnerBlocks(userResponse.disableBlock);
-        disableUsedCells(userResponse.used_cells);
-        setText(scoreP1,Integer.toString(userResponse.scoreP1));
-        setText(scoreP2,Integer.toString(userResponse.scoreP2));
+        enableBlock(ultTTTBoardManager.nextActiveBlock);
+        disableWinnerBlocks(ultTTTBoardManager.disableBlock);
+        disableUsedCells(ultTTTBoardManager.usedCells);
+        setText(scoreP1, Integer.toString(ultTTTBoardManager.scoreP1));
+        setText(scoreP2, Integer.toString(ultTTTBoardManager.scoreP2));
 
-        if(userResponse.winner.equals("Player 1"))
-            showToast(P1Name+" won this round");
-        else if(userResponse.winner.equals("Player 2"))
-            showToast(P2Name+" won this round");
+        if (ultTTTBoardManager.winner.equals("Player 1"))
+            showToast(P1Name + " won this round");
+        else if (ultTTTBoardManager.winner.equals("Player 2"))
+            showToast(P2Name + " won this round");
 
-        if(!userResponse.global_winner.equals("None"))
-            gameOver(userResponse.global_winner);
+        if (!ultTTTBoardManager.globalWinner.equals("None"))
+            gameOver(ultTTTBoardManager.globalWinner);
     }
 
     private void changeTableColor(int nextActiveBlock, int currentActiveBlock, String player,
-                                  String buttonPressed)
-    {
+                                  String buttonPressed) {
         int color;
-        if(player.equals("Player 1"))
+        if (player.equals("Player 1"))
             color = Color.GREEN;
         else
             color = Color.RED;
 
-        if(player.equals("Player 1") && buttonPressed.equals("Undo"))
+        if (player.equals("Player 1") && buttonPressed.equals("Undo"))
             color = Color.RED;
-        else if(player.equals("Player 2") && buttonPressed.equals("Undo"))
+        else if (player.equals("Player 2") && buttonPressed.equals("Undo"))
             color = Color.GREEN;
 
 
-        if(currentActiveBlock!=Integer.MAX_VALUE)
+        if (currentActiveBlock != Integer.MAX_VALUE)
             tables[currentActiveBlock].setBackgroundColor(Color.BLACK);
-        if(nextActiveBlock!=Integer.MAX_VALUE)
+        if (nextActiveBlock != Integer.MAX_VALUE)
             tables[nextActiveBlock].setBackgroundColor(color);
     }
 
-    private void setText(TextView tv, String s)
-    {
+    private void setText(TextView tv, String s) {
         tv.setText(s);
     }
 
-    private void disableUsedCells(String[] used_cells)
-    {
-        for (String used_cell : used_cells)
-        {
+    private void disableUsedCells(String[] used_cells) {
+        for (String used_cell : used_cells) {
             try {
                 disable(Integer.parseInt(used_cell));
-            } catch (NumberFormatException e)
-            {
+            } catch (NumberFormatException e) {
 
             }
         }
     }
 
-    private void disableWinnerBlocks(String disableBlock)
-    {
-        for(int i=0;i<disableBlock.length();i++)
-            disableBlock(disableBlock.charAt(i)-48);
+    private void disableWinnerBlocks(String disableBlock) {
+        for (int i = 0; i < disableBlock.length(); i++)
+            disableBlock(disableBlock.charAt(i) - 48);
     }
 
-    private void enableBlock(int nextActiveBlock)
-    {
-        if(nextActiveBlock!=Integer.MAX_VALUE)
-            for(int i = nextActiveBlock * 9; i < (nextActiveBlock + 1) * 9; i++)
+    private void enableBlock(int nextActiveBlock) {
+        if (nextActiveBlock != Integer.MAX_VALUE)
+            for (int i = nextActiveBlock * 9; i < (nextActiveBlock + 1) * 9; i++)
                 enable(i);
-        else
-        {
+        else {
             enableAll();
         }
     }
 
-    private void disableBlock(int id)
-    {
-        for(int i=id*9;i<(id+1)*9;i++)
+    private void disableBlock(int id) {
+        for (int i = id * 9; i < (id + 1) * 9; i++)
             disable(i);
     }
 
-    private void gameOver(String global_winner)
-    {
+    private void gameOver(String global_winner) {
         disableAll();
         AlertDialog ad = new AlertDialog.Builder(UltimateTTTGameActivity.this)
                 .setTitle("WINNER!!!")
@@ -365,34 +304,29 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         ad.setCanceledOnTouchOutside(false);
     }
 
-    private String getGlobalWinnerName(String global_winner)
-    {
-        if(global_winner.equals("Player 1"))
-            return P1Name+" wins";
-        else if(global_winner.equals("Player 2"))
-            return P2Name+" wins";
-        else if(global_winner.equals("Drawn"))
+    private String getGlobalWinnerName(String global_winner) {
+        if (global_winner.equals("Player 1"))
+            return P1Name + " wins";
+        else if (global_winner.equals("Player 2"))
+            return P2Name + " wins";
+        else if (global_winner.equals("Drawn"))
             return "Match Drawn";
         return "None";
     }
 
-    private void showToast(String winner)
-    {
+    private void showToast(String winner) {
         Toast.makeText(UltimateTTTGameActivity.this, winner, Toast.LENGTH_SHORT).show();
     }
 
-    private int getIndex(ImageButton b)
-    {
-        for(int i=0;i<ImageButtons.length;i++)
-        {
-            if(ImageButtons[i].equals(b))
-            {
+    private int getIndex(ImageButton b) {
+        for (int i = 0; i < ImageButtons.length; i++) {
+            if (ImageButtons[i].equals(b)) {
                 return i;
             }
         }
-        if(b.equals(breset))
+        if (b.equals(breset))
             return 100;
-        if(b.equals(bundo))
+        if (b.equals(bundo))
             return 200;
         return -1;
     }
