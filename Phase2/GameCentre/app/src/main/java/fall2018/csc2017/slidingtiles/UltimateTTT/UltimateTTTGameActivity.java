@@ -23,8 +23,11 @@ import fall2018.csc2017.slidingtiles.ScoreBoard;
 
 import fall2018.csc2017.slidingtiles.UtilityManager;
 
+/**
+ * Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+ */
+
 public class UltimateTTTGameActivity extends AppCompatActivity implements View.OnClickListener
-        //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
 {
     TextView scoreP1;
     TextView scoreP2;
