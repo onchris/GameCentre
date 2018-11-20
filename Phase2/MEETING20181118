@@ -1,0 +1,20 @@
+meeting notes: november 18 2018
+
+# things we worked on and found
+- trying to find a way to refactor ultimateTTT
+- getting on back pressed to work in obstacle dodger
+    - currently crashes when choosing any game
+
+# things to do
+- Obstacle dodger
+    - Need to add scores to scoreboard
+	- add array list to accounts
+	- append high score of gameplays to account scores
+
+- UltimateTTT:
+    - Save and initialize save instead of new game
+    - Scores (Win/Loss)
+
+- Tests for UTTT and Ob Dodger
+- Refactor/Java docs
+- Presentation
