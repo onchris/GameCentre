@@ -27,7 +27,7 @@ public class LoaderAdapter extends BaseAdapter {
     /**
      * The list of boards that this adapter will handle
      */
-    private ArrayList<BoardManager> boardList;
+    private ArrayList<BoardManager> boardList = new ArrayList<>(); //TODO: refactor loaderAdapter to be generic?
     /**
      * The current context the adapter will show in
      */

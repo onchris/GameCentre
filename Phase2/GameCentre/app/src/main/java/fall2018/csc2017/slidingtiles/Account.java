@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import UltimateTTT.UltTTTBoardManager;
+import UltimateTTT.UltimateTTTGameActivity;
+
 /**
  * The account of the user.
  */
@@ -25,6 +28,8 @@ public class Account implements Serializable {
      * Account's saved games
      */
     private ArrayList<BoardManager> boardList = new ArrayList<>();
+    private ArrayList<UltTTTBoardManager> ultimateTTTList = new ArrayList<>();
+    //TODO: this seems wrong, I just want to show the list of boards without making a new adapter
     /**
      * Account's scores as a list
      */
@@ -89,6 +94,10 @@ public class Account implements Serializable {
         return boardList;
     }
 
+    public ArrayList<UltTTTBoardManager> getUltimateTTTList() {
+        return ultimateTTTList;
+    }
+
     /**
      * Sets this account's list of sliding game's boards
      *
@@ -106,6 +115,10 @@ public class Account implements Serializable {
     public void addToBoardList(BoardManager board) {
         if (!boardList.contains(board))
             boardList.add(board);
+    }
+
+    public void setUltimateTTTList(ArrayList<UltTTTBoardManager> ultTTTUserResponses) {
+        this.ultimateTTTList = ultTTTUserResponses;
     }
 
     /**

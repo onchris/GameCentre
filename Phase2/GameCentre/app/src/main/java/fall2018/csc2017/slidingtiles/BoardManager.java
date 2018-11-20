@@ -12,7 +12,7 @@ import java.util.Stack;
 /**
  * Manage a board, including swapping tiles, checking for a win, and managing taps.
  */
-class BoardManager implements Serializable, Undoable {
+public class BoardManager implements Serializable, Undoable { //TODO: want to save ultimate TTT states as board manager possibly?
 
     /**
      * The board being managed.

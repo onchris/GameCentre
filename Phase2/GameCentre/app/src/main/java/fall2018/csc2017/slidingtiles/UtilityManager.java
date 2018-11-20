@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import UltimateTTT.UltTTTBoardManager;
+import UltimateTTT.UltimateTTTGameActivity;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public final class UtilityManager {
@@ -142,6 +145,33 @@ public final class UtilityManager {
             Log.e("UM: saveScoresToAccounts", "Can not read file: " + e.toString());
         } catch (ClassNotFoundException e) {
             Log.e("UM: saveScoresToAccounts", "File contained unexpected data type: " + e.toString());
+        }
+    }
+    public static void saveUltimateTTTUltTTTBoardManager(Context ctx, Account account, List<UltTTTBoardManager> userResponses){
+        List<Account> accountList = new ArrayList<Account>();
+        try {
+            InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);
+            if (inputStream != null) {
+                ObjectInputStream input = new ObjectInputStream(inputStream);
+                accountList = (List<Account>) input.readObject();
+                inputStream.close();
+            }
+            for(Account acc:accountList)
+            {
+                if(acc.equals(account)){
+                    acc.setUltimateTTTList((ArrayList<UltTTTBoardManager>) userResponses);
+                }
+            }
+            ObjectOutputStream outputStream =
+                    new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
+            outputStream.writeObject(accountList);
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            Log.e("UM: saveBoardsToAccounts", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("UM: saveBoardsToAccounts", "Can not read file: " + e.toString());
+        } catch (ClassNotFoundException e) {
+            Log.e("UM: saveBoardsToAccounts", "File contained unexpected data type: " + e.toString());
         }
     }
 
