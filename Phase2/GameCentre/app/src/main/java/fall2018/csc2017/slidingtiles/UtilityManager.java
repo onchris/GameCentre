@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import UltimateTTT.UltTTTBoardManager;
-import UltimateTTT.UltimateTTTGameActivity;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTBoardManager;
 
 import static android.content.Context.MODE_PRIVATE;
 

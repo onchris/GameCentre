@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import UltimateTTT.UltTTTBoardManager;
-import UltimateTTT.UltimateTTTGameActivity;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTBoardManager;
 
 /**
  * The account of the user.
@@ -29,7 +28,6 @@ public class Account implements Serializable {
      */
     private ArrayList<BoardManager> boardList = new ArrayList<>();
     private ArrayList<UltTTTBoardManager> ultimateTTTList = new ArrayList<>();
-    //TODO: this seems wrong, I just want to show the list of boards without making a new adapter
     /**
      * Account's scores as a list
      */
