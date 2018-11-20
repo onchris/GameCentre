@@ -1,4 +1,4 @@
-package UltimateTTT;
+package fall2018.csc2017.slidingtiles.UltimateTTT;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,8 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
-
-import java.util.Map;
 
 import fall2018.csc2017.slidingtiles.Account;
 import fall2018.csc2017.slidingtiles.GameSelection;
@@ -63,69 +61,68 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         }
     }
 
-    private void bind()
-    {
-        scoreP1 = (TextView)findViewById(R.id.textView3);
-        scoreP2 = (TextView)findViewById(R.id.textView4);
+    private void bind() {
+        scoreP1 = findViewById(R.id.textView3);
+        scoreP2 = findViewById(R.id.textView4);
         backend = new UltimateTTTBackend();
-        breset = (ImageButton)findViewById(R.id.imageButton4);
-        bundo = (ImageButton)findViewById(R.id.imageButton3);
+        breset = findViewById(R.id.imageButton4);
+        bundo = findViewById(R.id.imageButton3);
         ImageButtons =
                 new ImageButton[]{
-                        (ImageButton) findViewById(R.id.b00), (ImageButton) findViewById(R.id.b01),
-                        (ImageButton) findViewById(R.id.b02), (ImageButton) findViewById(R.id.b03),
-                        (ImageButton) findViewById(R.id.b04), (ImageButton) findViewById(R.id.b05),
-                        (ImageButton) findViewById(R.id.b06), (ImageButton) findViewById(R.id.b07),
-                        (ImageButton) findViewById(R.id.b08), (ImageButton) findViewById(R.id.b09),
-                        (ImageButton) findViewById(R.id.b10), (ImageButton) findViewById(R.id.b11),
-                        (ImageButton) findViewById(R.id.b12), (ImageButton) findViewById(R.id.b13),
-                        (ImageButton) findViewById(R.id.b14), (ImageButton) findViewById(R.id.b15),
-                        (ImageButton) findViewById(R.id.b16), (ImageButton) findViewById(R.id.b17),
-                        (ImageButton) findViewById(R.id.b18), (ImageButton) findViewById(R.id.b19),
-                        (ImageButton) findViewById(R.id.b20), (ImageButton) findViewById(R.id.b21),
-                        (ImageButton) findViewById(R.id.b22), (ImageButton) findViewById(R.id.b23),
-                        (ImageButton) findViewById(R.id.b24), (ImageButton) findViewById(R.id.b25),
-                        (ImageButton) findViewById(R.id.b26), (ImageButton) findViewById(R.id.b27),
-                        (ImageButton) findViewById(R.id.b28), (ImageButton) findViewById(R.id.b29),
-                        (ImageButton) findViewById(R.id.b30), (ImageButton) findViewById(R.id.b31),
-                        (ImageButton) findViewById(R.id.b32), (ImageButton) findViewById(R.id.b33),
-                        (ImageButton) findViewById(R.id.b34), (ImageButton) findViewById(R.id.b35),
-                        (ImageButton) findViewById(R.id.b36), (ImageButton) findViewById(R.id.b37),
-                        (ImageButton) findViewById(R.id.b38), (ImageButton) findViewById(R.id.b39),
-                        (ImageButton) findViewById(R.id.b40), (ImageButton) findViewById(R.id.b41),
-                        (ImageButton) findViewById(R.id.b42), (ImageButton) findViewById(R.id.b43),
-                        (ImageButton) findViewById(R.id.b44), (ImageButton) findViewById(R.id.b45),
-                        (ImageButton) findViewById(R.id.b46), (ImageButton) findViewById(R.id.b47),
-                        (ImageButton) findViewById(R.id.b48), (ImageButton) findViewById(R.id.b49),
-                        (ImageButton) findViewById(R.id.b50), (ImageButton) findViewById(R.id.b51),
-                        (ImageButton) findViewById(R.id.b52), (ImageButton) findViewById(R.id.b53),
-                        (ImageButton) findViewById(R.id.b54), (ImageButton) findViewById(R.id.b55),
-                        (ImageButton) findViewById(R.id.b56), (ImageButton) findViewById(R.id.b57),
-                        (ImageButton) findViewById(R.id.b58), (ImageButton) findViewById(R.id.b59),
-                        (ImageButton) findViewById(R.id.b60), (ImageButton) findViewById(R.id.b61),
-                        (ImageButton) findViewById(R.id.b62), (ImageButton) findViewById(R.id.b63),
-                        (ImageButton) findViewById(R.id.b64), (ImageButton) findViewById(R.id.b65),
-                        (ImageButton) findViewById(R.id.b66), (ImageButton) findViewById(R.id.b67),
-                        (ImageButton) findViewById(R.id.b68), (ImageButton) findViewById(R.id.b69),
-                        (ImageButton) findViewById(R.id.b70), (ImageButton) findViewById(R.id.b71),
-                        (ImageButton) findViewById(R.id.b72), (ImageButton) findViewById(R.id.b73),
-                        (ImageButton) findViewById(R.id.b74), (ImageButton) findViewById(R.id.b75),
-                        (ImageButton) findViewById(R.id.b76), (ImageButton) findViewById(R.id.b77),
-                        (ImageButton) findViewById(R.id.b78), (ImageButton) findViewById(R.id.b79),
-                        (ImageButton) findViewById(R.id.b80)
+                        findViewById(R.id.b00), findViewById(R.id.b01),
+                        findViewById(R.id.b02), findViewById(R.id.b03),
+                        findViewById(R.id.b04), findViewById(R.id.b05),
+                        findViewById(R.id.b06), findViewById(R.id.b07),
+                        findViewById(R.id.b08), findViewById(R.id.b09),
+                        findViewById(R.id.b10), findViewById(R.id.b11),
+                        findViewById(R.id.b12), findViewById(R.id.b13),
+                        findViewById(R.id.b14), findViewById(R.id.b15),
+                        findViewById(R.id.b16), findViewById(R.id.b17),
+                        findViewById(R.id.b18), findViewById(R.id.b19),
+                        findViewById(R.id.b20), findViewById(R.id.b21),
+                        findViewById(R.id.b22), findViewById(R.id.b23),
+                        findViewById(R.id.b24), findViewById(R.id.b25),
+                        findViewById(R.id.b26), findViewById(R.id.b27),
+                        findViewById(R.id.b28), findViewById(R.id.b29),
+                        findViewById(R.id.b30), findViewById(R.id.b31),
+                        findViewById(R.id.b32), findViewById(R.id.b33),
+                        findViewById(R.id.b34), findViewById(R.id.b35),
+                        findViewById(R.id.b36), findViewById(R.id.b37),
+                        findViewById(R.id.b38), findViewById(R.id.b39),
+                        findViewById(R.id.b40), findViewById(R.id.b41),
+                        findViewById(R.id.b42), findViewById(R.id.b43),
+                        findViewById(R.id.b44), findViewById(R.id.b45),
+                        findViewById(R.id.b46), findViewById(R.id.b47),
+                        findViewById(R.id.b48), findViewById(R.id.b49),
+                        findViewById(R.id.b50), findViewById(R.id.b51),
+                        findViewById(R.id.b52), findViewById(R.id.b53),
+                        findViewById(R.id.b54), findViewById(R.id.b55),
+                        findViewById(R.id.b56), findViewById(R.id.b57),
+                        findViewById(R.id.b58), findViewById(R.id.b59),
+                        findViewById(R.id.b60), findViewById(R.id.b61),
+                        findViewById(R.id.b62), findViewById(R.id.b63),
+                        findViewById(R.id.b64), findViewById(R.id.b65),
+                        findViewById(R.id.b66), findViewById(R.id.b67),
+                        findViewById(R.id.b68), findViewById(R.id.b69),
+                        findViewById(R.id.b70), findViewById(R.id.b71),
+                        findViewById(R.id.b72), findViewById(R.id.b73),
+                        findViewById(R.id.b74), findViewById(R.id.b75),
+                        findViewById(R.id.b76), findViewById(R.id.b77),
+                        findViewById(R.id.b78), findViewById(R.id.b79),
+                        findViewById(R.id.b80)
                 };
 
         tables =
                 new TableLayout[]{
-                        (TableLayout) findViewById(R.id.table0),
-                        (TableLayout) findViewById(R.id.table1),
-                        (TableLayout) findViewById(R.id.table2),
-                        (TableLayout) findViewById(R.id.table3),
-                        (TableLayout) findViewById(R.id.table4),
-                        (TableLayout) findViewById(R.id.table5),
-                        (TableLayout) findViewById(R.id.table6),
-                        (TableLayout) findViewById(R.id.table7),
-                        (TableLayout) findViewById(R.id.table8),
+                        findViewById(R.id.table0),
+                        findViewById(R.id.table1),
+                        findViewById(R.id.table2),
+                        findViewById(R.id.table3),
+                        findViewById(R.id.table4),
+                        findViewById(R.id.table5),
+                        findViewById(R.id.table6),
+                        findViewById(R.id.table7),
+                        findViewById(R.id.table8),
                 };
     }
 

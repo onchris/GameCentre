@@ -1,4 +1,4 @@
-package UltimateTTT;
+package fall2018.csc2017.slidingtiles.UltimateTTT;
 
 import java.util.Map;
 
