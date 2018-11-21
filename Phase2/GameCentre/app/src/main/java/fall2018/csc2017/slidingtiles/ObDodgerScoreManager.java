@@ -7,32 +7,26 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * A score manager for the sliding tiles game, populates and sorts the lists of scores.
- */
-public class SlidingTilesScoreManager extends ScoreManager {
+public class ObDodgerScoreManager extends ScoreManager {
 
     /**
-     * Sort the scores in a sliding tiles game
+     * Sort the scores in an obstacle dodger game
      * @param username
      * @param ctx
      * @param score
      */
-    public SlidingTilesScoreManager(String username, Context ctx, Integer score) {
+    public ObDodgerScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
-        userScores = currentAccount.getSlidingGameScores();
+        userScores = currentAccount.getObstacleDodgerScores();
         buildDisplayUserScoresList();
     }
 
-    /**
-     * Storing the game-wide scores in a List of Pair of user's score and username
-     */
     @Override
-    protected void buildGameScoresList() {
+    void buildGameScoresList() {
         Pair<Integer, String> p;
         if (gameScores.size() == 0) {
             for (Account account : accountsList) {
-                List<Integer> accountScores = account.getSlidingGameScores();
+                List<Integer> accountScores = account.getObstacleDodgerScores();
                 for (int i = 0; i <= accountScores.size() - 1; i++) {
                     p = new Pair<>(accountScores.get(i), account.getUsername());
                     gameScores.add(p);
@@ -55,11 +49,8 @@ public class SlidingTilesScoreManager extends ScoreManager {
         });
     }
 
-    /**
-     * A method to convert from a list of pairs to a list of strings for display
-     */
     @Override
-    protected void buildDisplayGameScoresList() {
+    void buildDisplayGameScoresList() {
         if (displayGameScoresList.size() == 0) {
             String sep = ":      ";
             for (int i = 0; i <= gameScores.size() - 1; i++) {
@@ -70,11 +61,8 @@ public class SlidingTilesScoreManager extends ScoreManager {
         }
     }
 
-    /**
-     * A method to convert the list of user's game scores into a list of strings for display
-     */
     @Override
-    protected void buildDisplayUserScoresList() {
+    void buildDisplayUserScoresList() {
         currentAccount.sortGameScores();
         if (displayUserScoresList.size() == 0) {
             String sep = ":      ";

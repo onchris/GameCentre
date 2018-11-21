@@ -175,9 +175,20 @@ public class Account implements Serializable {
     /**
      * Sort the user's score lists in reverse order from highest to lowest
      */
-    public void sortSlidingGameScores() {
+    public void sortGameScores() { //TODO: change the name!
         Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
         Collections.sort(this.ultimateTTTScores, Collections.<Integer>reverseOrder());
         Collections.sort(this.obstacleDodgerScores, Collections.<Integer>reverseOrder());
+    }
+
+    /**
+     * Add a score from a game of obstacle dodger to the list of user's scores if score is more than 0
+     * @param score
+     */
+    public void addToObDodgeGameScores(int score) { //TODO: combine with addToSlidingGameScores to make save easier
+        if (!(score == 0)) {
+            this.obstacleDodgerScores.add(score);
+        }
+        Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
     }
 }

@@ -12,7 +12,9 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-public class GameplayScene implements Scene {
+import java.util.Observable;
+
+public class GameplayScene extends Observable implements Scene {
 
     private Rect r = new Rect();
 
@@ -90,6 +92,8 @@ public class GameplayScene implements Scene {
             if (obstacleManager.playerCollide(player)) {
                 gameOver = true;
                 gameOverTime = System.currentTimeMillis();
+                setChanged();
+                notifyObservers(obstacleManager.getScore());
             }
         }
     }

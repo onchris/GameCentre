@@ -13,6 +13,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import fall2018.csc2017.slidingtiles.ObstacleDodger.TiltGameActivity;
+
 import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
 
@@ -57,27 +59,37 @@ public class ScoreBoard extends AppCompatActivity{
      * The board for the game
      */
     private Board board;
+    private String currentGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score_board);
         scoreList = findViewById(R.id.scoreboard_list);
+
+        currentGame = getIntent().getStringExtra("currentGame");
+
         addChangeScoreboardViewButton();
         addNewGameButtonListener();
 
-        if (getIntent().getStringExtra("currentGame").equals("slidingTiles")) {
+        if (currentGame.equals("slidingTiles")) {
             scoreManager = new SlidingTilesScoreManager(getIntent().getStringExtra("currentUsername"),
+                    scoreList.getContext(),
+                    Integer.parseInt(getIntent().getStringExtra("currentScore")));
+        } else if (currentGame.equals("obDodger")) {
+            scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"), //TODO: make this for obstacledodger
                     scoreList.getContext(),
                     Integer.parseInt(getIntent().getStringExtra("currentScore")));
         }
         displayGameScoresList = scoreManager.getDisplayGameScoresList();
         displayUserScoresList = scoreManager.getDisplayUserScoresList();
 
-        if(!getIntent().getStringExtra("currentUsername").equals("-1")) {
+        if(!GameSelection.IS_GUEST) {
             IS_GUEST = false;
             currentAccount = scoreManager.getCurrentAccount();
-            board = (Board) getIntent().getSerializableExtra("board");
+            if (getIntent().hasExtra("board")) { //TODO: board???
+                board = (Board) getIntent().getSerializableExtra("board");
+            }
         } else {
             IS_GUEST = true;
         }
@@ -133,29 +145,48 @@ public class ScoreBoard extends AppCompatActivity{
      * A button to allow the user to begin a new game of what they just played
      */
     private void addNewGameButtonListener() {
-        Button newGameButton = findViewById(R.id.button_new_game);
-        newGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(IS_GUEST){
-                    saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,
-                            new BoardManager(), v.getContext());
-                    Intent tmp = new Intent(v.getContext(), GameActivity.class);
-                    tmp.putExtra("account", -1);
-                    startActivity(tmp);
-                } else {
-                    BoardManager bm = new BoardManager(newRandomBoard(board.getNumRows(), board.getNumColumns()));
-                    saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME, bm, v.getContext());
-                    Intent tmp = new Intent(v.getContext(), GameActivity.class);
-                    currentAccount.getBoardList().add(bm);
-                    tmp.putExtra("account", currentAccount);
-                    tmp.putExtra("boardList", currentAccount.getBoardList());
-                    tmp.putExtra("boardIndex", currentAccount.getBoardList().indexOf(bm));
-                    startActivity(tmp);
+        if (currentGame.equals("slidingTiles")) {
+            Button newGameButton = findViewById(R.id.button_new_game);
+            newGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(IS_GUEST){
+                        saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,
+                                new BoardManager(), v.getContext());
+                        Intent tmp = new Intent(v.getContext(), GameActivity.class);
+                        tmp.putExtra("account", -1);
+                        startActivity(tmp);
+                    } else {
+                        BoardManager bm = new BoardManager(newRandomBoard(board.getNumRows(), board.getNumColumns()));
+                        saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME, bm, v.getContext());
+                        Intent tmp = new Intent(v.getContext(), GameActivity.class);
+                        currentAccount.getBoardList().add(bm);
+                        tmp.putExtra("account", currentAccount);
+                        tmp.putExtra("boardList", currentAccount.getBoardList());
+                        tmp.putExtra("boardIndex", currentAccount.getBoardList().indexOf(bm));
+                        startActivity(tmp);
+                    }
+                    finish();
                 }
-                finish();
-            }
-        });
+            });
+        } else if (currentGame.equals("obDodger")) {
+            Button newGameButton = findViewById(R.id.button_new_game);
+            newGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(IS_GUEST){
+                        Intent tmp = new Intent(v.getContext(), TiltGameActivity.class);
+                        tmp.putExtra("account", -1);
+                        startActivity(tmp);
+                    } else {
+                        Intent tmp = new Intent(v.getContext(), TiltGameActivity.class);
+                        tmp.putExtra("account", currentAccount);
+                        startActivity(tmp);
+                    }
+                    finish();
+                }
+            });
+        }
     }
 
     /**

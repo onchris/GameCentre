@@ -57,11 +57,9 @@ abstract class ScoreManager {
             for(Account account: accountsList) {
                 if(account.getUsername().equals(username)) {
                     currentAccount = account;
-                    userScores = currentAccount.getSlidingGameScores();
                     break;
                 }
             }
-            buildDisplayUserScoresList();
         } else {
             IS_GUEST = true;
         }
