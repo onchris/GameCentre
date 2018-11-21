@@ -2,7 +2,6 @@ package fall2018.csc2017.slidingtiles;
 
 import android.content.Context;
 import android.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
 

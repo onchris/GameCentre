@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
-
 public interface Tileable {
     enum DigitEnum
     {

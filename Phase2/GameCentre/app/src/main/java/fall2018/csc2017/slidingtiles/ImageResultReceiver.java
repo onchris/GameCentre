@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.widget.ImageView;
-import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Iterator;
 
