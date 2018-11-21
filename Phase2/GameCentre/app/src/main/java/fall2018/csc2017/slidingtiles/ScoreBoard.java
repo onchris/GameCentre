@@ -49,7 +49,13 @@ public class ScoreBoard extends AppCompatActivity{
      * A check for if the player is a guest
      */
     private boolean IS_GUEST;
+    /**
+     * A check for if the scoreboard is global
+     */
     private boolean IS_GLOBAL_SCOREBOARD;
+    /**
+     * The board for the game
+     */
     private Board board;
 
     @Override

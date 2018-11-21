@@ -12,6 +12,11 @@ import android.view.WindowManager;
 
 public class TiltGameActivity extends AppCompatActivity {
 
+    /**
+     * Current user's account
+     */
+    private Account currentAccount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
