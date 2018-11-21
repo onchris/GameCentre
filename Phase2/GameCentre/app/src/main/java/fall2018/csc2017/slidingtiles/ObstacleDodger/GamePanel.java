@@ -137,4 +137,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawBitmap(overlay, canvas.getWidth() - bgr.getWidth(), 0, null);
     }
 
+    public SceneManager getManager() {
+        return manager;
+    }
 }

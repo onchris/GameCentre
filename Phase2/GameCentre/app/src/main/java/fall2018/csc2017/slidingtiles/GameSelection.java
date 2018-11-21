@@ -341,21 +341,16 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * @param v the current view(Called by application)
      */
     public void obDodgerGameButtonOnClick(View v) {
-//        Intent tmp = new Intent(this, TiltGameActivity.class);
-//        startActivity(tmp);
 
         if (IS_GUEST) {
             //saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
             Intent tmp = new Intent(this, TiltGameActivity.class);
             startActivity(tmp);
         } else {
-            setContentView(R.layout.activity_loadedgamelist);
-            gameListDisplay = findViewById(R.id.scrollable_loadablegames);
-            loaderAdapter = new LoaderAdapter(boardList, this);
-            loaderAdapter.account = currentAccount;
 
-            gameListDisplay.setAdapter(loaderAdapter);
-            atLoadGameScreen = true;
+            Intent tmp = new Intent(v.getContext(), TiltGameActivity.class);
+            tmp.putExtra("account", currentAccount);
+            startActivity(tmp);
         }
     }
 

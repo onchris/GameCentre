@@ -80,4 +80,7 @@ public class ObstacleManager {
         canvas.drawText("" + score, 50, 50 + paint.descent() - paint.ascent(), paint);
     }
 
+    public int getScore() {
+        return score;
+    }
 }

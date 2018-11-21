@@ -30,4 +30,10 @@ public class SceneManager {
     public void draw(Canvas canvas) {
         scenes.get(ACTIVE_SCENE).draw(canvas);
     }
+
+    public GameplayScene getGamePlayScene() {   //not the best way to do this probably...
+        if (scenes.get(ACTIVE_SCENE) instanceof GameplayScene)
+            return (GameplayScene) scenes.get(ACTIVE_SCENE);
+        return null;
+    }
 }
