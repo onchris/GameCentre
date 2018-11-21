@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class TiltGameActivity extends AppCompatActivity {
+import fall2018.csc2017.slidingtiles.Account;
+
+public class ObGameActivity extends AppCompatActivity {
 
     /**
      * Current user's account
