@@ -7,7 +7,6 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
 
 import android.graphics.Canvas;
 import android.view.MotionEvent;
-
 import java.util.ArrayList;
 
 public class SceneManager {
@@ -29,5 +28,11 @@ public class SceneManager {
 
     public void draw(Canvas canvas) {
         scenes.get(ACTIVE_SCENE).draw(canvas);
+    }
+
+    public GameplayScene getGamePlayScene() {   //not the best way to do this probably...
+        if (scenes.get(ACTIVE_SCENE) instanceof GameplayScene)
+            return (GameplayScene) scenes.get(ACTIVE_SCENE);
+        return null;
     }
 }

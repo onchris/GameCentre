@@ -2,7 +2,6 @@ package fall2018.csc2017.slidingtiles;
 
 import android.content.Context;
 import android.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,11 +57,9 @@ abstract class ScoreManager {
             for(Account account: accountsList) {
                 if(account.getUsername().equals(username)) {
                     currentAccount = account;
-                    userScores = currentAccount.getSlidingGameScores();
                     break;
                 }
             }
-            buildDisplayUserScoresList();
         } else {
             IS_GUEST = true;
         }

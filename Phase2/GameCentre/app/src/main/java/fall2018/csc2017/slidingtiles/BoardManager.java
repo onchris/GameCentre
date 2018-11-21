@@ -1,7 +1,6 @@
 package fall2018.csc2017.slidingtiles;
 
 import android.graphics.Bitmap;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,8 +63,10 @@ public class BoardManager implements Serializable, Undoable { //TODO: want to sa
         }
         Collections.shuffle(tiles);
         while(true){
-            for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-                for (int x = tileNum; x != numTiles; x++) {
+            for (int tileNum = 0; tileNum < numTiles; tileNum++) {
+                if(tiles.get(tileNum).getId() == numTiles){continue;}
+                for (int x = tileNum + 1; x < numTiles; x++) {
+                    if(tiles.get(tileNum).getId() == numTiles){continue;}
                     if(tiles.get(tileNum).getId() > tiles.get(x).getId()){
                         count++;
                     }
@@ -73,7 +74,7 @@ public class BoardManager implements Serializable, Undoable { //TODO: want to sa
                 checkSolvable += count;
                 count = 0;
             }
-            if(checkSolvable % 2 != 1){
+            if(checkSolvable % 2 == 0){
                 break;
             }else {Collections.shuffle(tiles); checkSolvable = 0;}
         }

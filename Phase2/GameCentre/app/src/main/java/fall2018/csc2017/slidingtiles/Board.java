@@ -1,14 +1,11 @@
 package fall2018.csc2017.slidingtiles;
 
-import android.util.ArraySet;
 
 import java.util.Observable;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The sliding tiles board.
@@ -161,31 +158,4 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
         this.numColumns = numColumns;
     }
 
-    /**
-     * Return true if the board is solvable.
-     * @return true if the board is solvable
-     */
-    public boolean isSolvable(){
-        int rowCheck = getNumColumns();
-        Set<Integer> occurenceSet = new ArraySet<>();
-        Iterator<Tile> tileIterator = iterator();
-        int inversions = 0;
-        while(tileIterator.hasNext()){
-            int id = tileIterator.next().getId();
-            if(id != getNumColumns() * getNumRows()) {
-                for (int i = 1; i < id; i++) {
-                    if (!occurenceSet.contains(i)) {
-                        inversions++;
-                        occurenceSet.add(i);
-                    }
-                }
-            }
-        }
-        if(inversions % 2 == 0){
-
-        } else {
-
-        }
-        return false;
-    }
 }
