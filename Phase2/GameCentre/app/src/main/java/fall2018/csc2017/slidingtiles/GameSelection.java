@@ -276,7 +276,9 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         Collections.shuffle(tiles);
         while(true){
             for (int tileNum = 0; tileNum < numTiles; tileNum++) {
+                if(tiles.get(tileNum).getId() == 9){continue;}
                 for (int x = tileNum + 1; x < numTiles; x++) {
+                    if(tiles.get(tileNum).getId() == 9){continue;}
                     if(tiles.get(tileNum).getId() > tiles.get(x).getId()){
                         count++;
                     }
@@ -285,7 +287,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
                 count = 0;
             }
             if(checkSolvable % 2 == 0){
-              break;
+                break;
             }else {Collections.shuffle(tiles); checkSolvable = 0;}
         }
         Board b = new Board(tiles, rows, columns);
