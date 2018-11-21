@@ -14,9 +14,9 @@ public class SlidingTilesScoreManager extends ScoreManager {
 
     /**
      * Sort the scores in a sliding tiles game
-     * @param username
-     * @param ctx
-     * @param score
+     * @param username username of the player
+     * @param ctx context of the activity
+     * @param score score of the last game
      */
     public SlidingTilesScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);

@@ -182,13 +182,11 @@ public class Account implements Serializable {
     }
 
     /**
-     * Add a score from a game of obstacle dodger to the list of user's scores if score is more than 0
+     * Add a score from a game of obstacle dodger to the list of user's scores
      * @param score
      */
     public void addToObDodgeGameScores(int score) { //TODO: combine with addToSlidingGameScores to make save easier
-        if (!(score == 0)) {
-            this.obstacleDodgerScores.add(score);
-        }
+        this.obstacleDodgerScores.add(score);
         Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
     }
 }
