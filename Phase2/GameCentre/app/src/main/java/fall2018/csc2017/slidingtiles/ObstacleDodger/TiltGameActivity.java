@@ -15,7 +15,7 @@ public class TiltGameActivity extends AppCompatActivity {
     /**
      * Current user's account
      */
-    private Account currentAccount;
+    //private Account currentAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
