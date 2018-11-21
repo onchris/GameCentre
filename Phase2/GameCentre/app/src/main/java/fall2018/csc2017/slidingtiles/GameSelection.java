@@ -274,21 +274,11 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
             tiles.add(new Tile(tileNum));
         }
         Collections.shuffle(tiles);
-        while(true){
-            for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-                for (int x = tileNum; x != numTiles; x++) {
-                    if(tiles.get(tileNum).getId() > tiles.get(x).getId()){
-                        count++;
-                    }
-                }
-                checkSolvable += count;
-                count = 0;
-            }
-            if(checkSolvable % 2 != 1){
-              break;
-            }else {Collections.shuffle(tiles); checkSolvable = 0;}
-        }
         Board b = new Board(tiles, rows, columns);
+        while(true){
+            if(b.isSolvable() == false){Collections.shuffle(tiles);b = new Board(tiles, rows, columns);;}
+            else{break;}
+        }
         return b;
     }
 
