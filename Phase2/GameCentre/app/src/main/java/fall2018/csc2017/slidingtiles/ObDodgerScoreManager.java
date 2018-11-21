@@ -17,8 +17,10 @@ public class ObDodgerScoreManager extends ScoreManager {
      */
     public ObDodgerScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
-        userScores = currentAccount.getObstacleDodgerScores();
-        buildDisplayUserScoresList();
+        if (!username.equals("-1")) {
+            userScores = currentAccount.getObstacleDodgerScores();
+            buildDisplayUserScoresList();
+        }
     }
 
     @Override
