@@ -65,9 +65,9 @@ public class BoardManager implements Serializable, Undoable { //TODO: want to sa
         Collections.shuffle(tiles);
         while(true){
             for (int tileNum = 0; tileNum < numTiles; tileNum++) {
-                if(tiles.get(tileNum).getId() == 9){continue;}
+                if(tiles.get(tileNum).getId() == numTiles){continue;}
                 for (int x = tileNum + 1; x < numTiles; x++) {
-                    if(tiles.get(tileNum).getId() == 9){continue;}
+                    if(tiles.get(tileNum).getId() == numTiles){continue;}
                     if(tiles.get(tileNum).getId() > tiles.get(x).getId()){
                         count++;
                     }
