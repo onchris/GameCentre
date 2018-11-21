@@ -166,7 +166,6 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
      * @return true if the board is solvable
      */
     public boolean isSolvable(){
-        int rowCheck = getNumColumns();
         Set<Integer> occurenceSet = new ArraySet<>();
         Iterator<Tile> tileIterator = iterator();
         int inversions = 0;
@@ -182,9 +181,7 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
             }
         }
         if(inversions % 2 == 0){
-
-        } else {
-
+            return true;
         }
         return false;
     }

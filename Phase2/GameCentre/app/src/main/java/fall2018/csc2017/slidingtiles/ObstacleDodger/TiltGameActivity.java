@@ -29,6 +29,11 @@ public class TiltGameActivity extends AppCompatActivity implements Observer {
      */
     private Account currentAccount;
 
+    /**
+     * Current user's account
+     */
+    //private Account currentAccount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
