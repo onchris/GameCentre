@@ -343,12 +343,10 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
     public void obDodgerGameButtonOnClick(View v) {
 
         if (IS_GUEST) {
-            //saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
             Intent tmp = new Intent(this, TiltGameActivity.class);
             startActivity(tmp);
         } else {
-
-            Intent tmp = new Intent(v.getContext(), TiltGameActivity.class);
+            Intent tmp = new Intent(this, TiltGameActivity.class);
             tmp.putExtra("account", currentAccount);
             startActivity(tmp);
         }

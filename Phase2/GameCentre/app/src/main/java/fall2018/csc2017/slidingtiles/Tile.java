@@ -13,21 +13,24 @@ public class Tile implements Comparable<Tile>, Serializable {
     /**
      * The background id to find the tile image.
      */
-
     private transient Drawable background;
 
     /**
      * The unique id.
      */
     private int id;
+
+    /**
+     * A check if the tile has a background
+     */
+    private transient boolean hasBackground;
+
     /**
      * A Tile with id and background. The background may not have a corresponding image.
      *
      * @param id         the id
      * @param background the background
      */
-    private transient boolean hasBackground;
-
     public Tile(int id, Drawable background) {
         this.id = id;
         this.background = background;
@@ -52,6 +55,9 @@ public class Tile implements Comparable<Tile>, Serializable {
         return background;
     }
 
+    /**
+     * Set the background of the tile.
+     */
     public void setBackground(Drawable bg) {
         this.background = bg;
         this.hasBackground = true;
@@ -66,6 +72,11 @@ public class Tile implements Comparable<Tile>, Serializable {
         return id;
     }
 
+    /**
+     * Return if the tile has a background.
+     *
+     * @return true if the tile has a background
+     */
     public boolean hasBackground() {
         return hasBackground;
     }

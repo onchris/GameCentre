@@ -20,6 +20,8 @@ public class SlidingTilesScoreManager extends ScoreManager {
      */
     public SlidingTilesScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
+        userScores = currentAccount.getSlidingGameScores();
+        buildDisplayUserScoresList();
     }
 
     /**
@@ -74,7 +76,7 @@ public class SlidingTilesScoreManager extends ScoreManager {
     @Override
     protected void buildDisplayUserScoresList() {
         currentAccount.sortGameScores();
-        if (displayGameScoresList.size() == 0) {
+        if (displayUserScoresList.size() == 0) {
             String sep = ":      ";
             for (int i = 0; i <= userScores.size() - 1; i++) {
                 Integer score = userScores.get(i);

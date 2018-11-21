@@ -15,9 +15,14 @@ import java.util.Set;
  */
 public class Board extends Observable implements Serializable, Iterable<Tile> {
 
-
+    /**
+     * The number of rows.
+     */
     private int numRows;
 
+    /**
+     * The number of columns.
+     */
     private int numColumns;
 
     /**
@@ -42,6 +47,7 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
             }
         }
     }
+
     public Board(List<Tile> tiles, int rows, int columns){
         setNumRows(rows);
         setNumColumns(columns);
@@ -128,27 +134,37 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
     }
 
     /**
-     * The number of rows.
+     * Get the number of rows.
      */
     public int getNumRows() {
         return numRows;
     }
 
+    /**
+     * Set the number of rows.
+     */
     public void setNumRows(int numRows) {
         this.numRows = numRows;
     }
 
     /**
-     * The number of rows.
+     * Get the number of columns.
      */
     public int getNumColumns() {
         return numColumns;
     }
 
+    /**
+     * Set the number of columns.
+     */
     public void setNumColumns(int numColumns) {
         this.numColumns = numColumns;
     }
 
+    /**
+     * Return true if the board is solvable.
+     * @return true if the board is solvable
+     */
     public boolean isSolvable(){
         int rowCheck = getNumColumns();
         Set<Integer> occurenceSet = new ArraySet<>();

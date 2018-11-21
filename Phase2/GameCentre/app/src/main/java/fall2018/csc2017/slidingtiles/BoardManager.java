@@ -29,12 +29,17 @@ public class BoardManager implements Serializable, Undoable { //TODO: want to sa
      */
     private int moves = 0;
 
+    /**
+     * The time that users have taken.
+     */
     private long timeSpent = 0;
 
     /**
      * The steps for users to undo.
      */
     private Stack<Integer> availableUndoSteps = new Stack<>();
+
+    
     private transient ArrayList<Bitmap> customImageSet;
     private transient boolean useImage;
 

@@ -17,6 +17,8 @@ public class ObDodgerScoreManager extends ScoreManager {
      */
     public ObDodgerScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
+        userScores = currentAccount.getObstacleDodgerScores();
+        buildDisplayUserScoresList();
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ObDodgerScoreManager extends ScoreManager {
     @Override
     void buildDisplayUserScoresList() {
         currentAccount.sortGameScores();
-        if (displayGameScoresList.size() == 0) {
+        if (displayUserScoresList.size() == 0) {
             String sep = ":      ";
             for (int i = 0; i <= userScores.size() - 1; i++) {
                 Integer score = userScores.get(i);

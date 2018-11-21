@@ -24,15 +24,28 @@ public class Account implements Serializable {
      */
     private String password;
     /**
-     * Account's saved games
+     * Account's saved sliding tile games
      */
     private ArrayList<BoardManager> boardList = new ArrayList<>();
-    private ArrayList<UltTTTBoardManager> ultimateTTTList = new ArrayList<>();
+
     /**
-     * Account's scores as a list
+     * Account's saved ultimate tic tac toe games
+     */
+    private ArrayList<UltTTTBoardManager> ultimateTTTList = new ArrayList<>();
+
+    /**
+     * Account's sliding tile games' scores as a list
      */
     private List<Integer> slidingGameScores = new ArrayList<>();
-    private List<Integer> ultimateTTTscores = new ArrayList<>();
+
+    /**
+     * Account's ultimate tic tac toe games' scores as a list
+     */
+    private List<Integer> ultimateTTTScores = new ArrayList<>();
+
+    /**
+     * Account's obstacle dodger games' scores as a list
+     */
     private List<Integer> obstacleDodgerScores = new ArrayList<>();
 
     /**
@@ -57,10 +70,20 @@ public class Account implements Serializable {
         return username;
     }
 
-    public List<Integer> getUltimateTTTscores() {
-        return ultimateTTTscores;
+    /**
+     * Gets this account's list of scores for ultimate tic tac toe games
+     *
+     * @return this account's list of scores for ultimate tic tac toe games
+     */
+    public List<Integer> getUltimateTTTScores() {
+        return ultimateTTTScores;
     }
 
+    /**
+     * Gets this account's list of scores for obstacle dodger games
+     *
+     * @return this account's list of scores for obstacle dodger games
+     */
     public List<Integer> getObstacleDodgerScores() {
         return obstacleDodgerScores;
     }
@@ -92,6 +115,11 @@ public class Account implements Serializable {
         return boardList;
     }
 
+    /**
+     * Gets this account's list of ultimate tic tac toe game's boards
+     *
+     * @return the ArrayList of UltTTTBoards
+     */
     public ArrayList<UltTTTBoardManager> getUltimateTTTList() {
         return ultimateTTTList;
     }
@@ -115,6 +143,11 @@ public class Account implements Serializable {
             boardList.add(board);
     }
 
+    /**
+     * Sets this account's list of ultimate tic tac toe game's boards
+     *
+     * @param ultTTTUserResponses the board to be replaced with
+     */
     public void setUltimateTTTList(ArrayList<UltTTTBoardManager> ultTTTUserResponses) {
         this.ultimateTTTList = ultTTTUserResponses;
     }
@@ -128,6 +161,7 @@ public class Account implements Serializable {
     public boolean equals(Account account) {
         return account.getUsername().equals(this.getUsername());
     }
+
     /**
      * Add a score from a game of sliding tiles to the list of the user's scores
      *
@@ -143,12 +177,18 @@ public class Account implements Serializable {
      */
     public void sortGameScores() { //TODO: change the name!
         Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
-        Collections.sort(this.ultimateTTTscores, Collections.<Integer>reverseOrder());
+        Collections.sort(this.ultimateTTTScores, Collections.<Integer>reverseOrder());
         Collections.sort(this.obstacleDodgerScores, Collections.<Integer>reverseOrder());
     }
 
+    /**
+     * Add a score from a game of obstacle dodger to the list of user's scores if score is more than 0
+     * @param score
+     */
     public void addToObDodgeGameScores(int score) { //TODO: combine with addToSlidingGameScores to make save easier
-        this.obstacleDodgerScores.add(score);
+        if (!(score == 0)) {
+            this.obstacleDodgerScores.add(score);
+        }
         Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
     }
 }

@@ -23,6 +23,10 @@ import static fall2018.csc2017.slidingtiles.UtilityManager.saveObDodgerScoresToA
 public class TiltGameActivity extends AppCompatActivity implements Observer {
 
     private GamePanel gamePanel;
+
+    /**
+     * Current user's account
+     */
     private Account currentAccount;
 
     @Override
