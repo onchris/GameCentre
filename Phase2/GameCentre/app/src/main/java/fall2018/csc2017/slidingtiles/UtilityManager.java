@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +14,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTBoardManager;
 
 import static android.content.Context.MODE_PRIVATE;

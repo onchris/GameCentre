@@ -7,7 +7,6 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
 
 import android.graphics.Canvas;
 import android.view.MotionEvent;
-
 import java.util.ArrayList;
 
 public class SceneManager {
