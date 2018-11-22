@@ -13,7 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import fall2018.csc2017.slidingtiles.ObstacleDodger.TiltGameActivity;
+import fall2018.csc2017.slidingtiles.ObstacleDodger.ObGameActivity;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
@@ -175,11 +175,11 @@ public class ScoreBoard extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     if(IS_GUEST){
-                        Intent tmp = new Intent(v.getContext(), TiltGameActivity.class);
+                        Intent tmp = new Intent(v.getContext(), ObGameActivity.class);
                         tmp.putExtra("account", -1);
                         startActivity(tmp);
                     } else {
-                        Intent tmp = new Intent(v.getContext(), TiltGameActivity.class);
+                        Intent tmp = new Intent(v.getContext(), ObGameActivity.class);
                         tmp.putExtra("account", currentAccount);
                         startActivity(tmp);
                     }
