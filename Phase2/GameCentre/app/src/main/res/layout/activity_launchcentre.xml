@@ -17,7 +17,7 @@
         android:layout_marginTop="254dp"
         android:layout_marginEnd="22dp"
         android:ems="10"
-        android:hint="Username"
+        android:hint="@string/username"
         android:inputType="textPersonName" />
 
     <EditText
@@ -29,7 +29,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginBottom="281dp"
         android:ems="10"
-        android:hint="Password"
+        android:hint="@string/password"
         android:inputType="textPassword" />
 
     <TextView
@@ -39,7 +39,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="111dp"
-        android:text="Welcome to Game Centre!"
+        android:text="@string/welcome_text"
         android:textAlignment="center"
         android:textSize="36sp" />
 
@@ -53,7 +53,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:text="Username"
+        android:text="@string/username"
         android:textAlignment="viewStart"
         android:textSize="24sp" />
 
@@ -69,7 +69,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="6dp"
-        android:text="Password"
+        android:text="@string/password"
         android:textAlignment="viewStart"
         android:textSize="24sp" />
 
@@ -85,7 +85,7 @@
         android:layout_marginTop="402dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="207dp"
-        android:text="Remember me"
+        android:text="@string/remember_me"
         android:textAlignment="center" />
 
     <Button
@@ -100,7 +100,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="205dp"
-        android:text="Login User"
+        android:text="@string/login_user"
         android:onClick="loginButtonOnClick"/>
 
     <Button
@@ -111,7 +111,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="15dp"
         android:layout_marginBottom="70dp"
-        android:text="Register Using Credentials"
+        android:text="@string/register"
         android:onClick="registerButtonOnClick"/>
 
     <Button
@@ -124,7 +124,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="70dp"
-        android:text="Login as Guest"
+        android:text="@string/login_as_guest"
         android:onClick="guestButtonOnClick"/>
 
     <TextView

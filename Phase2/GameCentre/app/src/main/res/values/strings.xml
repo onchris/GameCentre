@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Game Centre</string>
+    <string name="score">Score:</string>
+    <string name="try_again">Try Again</string>
+    <string name="game_selection">Game Selection</string>
+    <string name="scoreboard">Scoreboard!</string>
+    <string name="change_scoreboard">Change Scoreboard</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="welcome_text">Welcome to Game Centre!</string>
+    <string name="remember_me">Remember me</string>
+    <string name="login_user">Login User</string>
+    <string name="register">Register Using Credentials</string>
+    <string name="login_as_guest">Login as Guest</string>
 </resources>

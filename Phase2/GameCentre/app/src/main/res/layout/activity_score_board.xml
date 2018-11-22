@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
         android:fontFamily="sans-serif"
-        android:text="Scoreboard!"
+        android:text="@string/scoreboard"
         android:textSize="36sp"
         android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
         android:layout_marginTop="1dp"
         android:layout_marginBottom="20dp"
         android:onClick="gameSelectionButtonOnClick"
-        android:text="Game Selection"/>
+        android:text="@string/game_selection"/>
 
     <Button
         android:id="@+id/button_new_game"
@@ -53,7 +53,7 @@
         android:layout_marginEnd="-44dp"
         android:layout_marginBottom="20dp"
         android:onClick="newGameButtonOnClick"
-        android:text="Try Again" />
+        android:text="@string/try_again" />
 
     <TextView
         android:id="@+id/yourscore"
@@ -63,7 +63,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:text="Score: "
+        android:text="@string/score"
         android:textSize="24sp" />
 
     <TextView
@@ -89,7 +89,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="-8dp"
         android:onClick="changeScoreboardViewOnClick"
-        android:text="Change Scoreboard" />
+        android:text="@string/change_scoreboard" />
 
 
 </RelativeLayout>
