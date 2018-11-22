@@ -1,0 +1,26 @@
+Meeting november 21, 2018
+# what is done:
+- obstacle dodger has a scoreboard
+
+# what needs to be done:
+- fix the obstacle dodger bug
+    - try again for the guest scoreboard allows the guest to replay
+    continuously
+- still need to refactor sliding tiles and ultimate tic tac toe
+- need scoreboard and save scores to account for ultTTT
+- fix layout for launch centre
+- address FEEDBACK from phase 1
+    - split up functionality in launchcenter
+    - access scoreboard from game selection
+    - Use the most abstract version of a class when declaring a field
+    (see feedback)
+    - authentication (checkingexistingaccount) could be offloaded to an
+    authentication class for logging in and creating accounts.
+    - also this comment: One thing to note is that typically android
+    stores static strings inside a resource file, the reason they do
+    this is 1. for organization, and 2. for localization (i.e. easy
+    translations), obviously translations isn't something you need to
+    worry about, but it's good practice to follow conventions."
+        - referring to the hardcoded strings in the activity layout files
+        for Scoreboard, Launch centre, etc.
+- javadocs, unitests, design patterns etc.
