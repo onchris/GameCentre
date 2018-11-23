@@ -3,7 +3,6 @@ package fall2018.csc2017.slidingtiles;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
 
 public class PreferenceManager {
     /**
@@ -23,28 +22,56 @@ public class PreferenceManager {
         preferences = currentActivity.getPreferences(Context.MODE_PRIVATE);
         editor = preferences.edit();
     }
-
+    /**
+     * Stores a String by a retrievable key which associates with the specified string
+     * @param key the key where it's value will assign to.
+     * @param value the value to be assigned to the key and stored
+     */
     public void storeString(String key, String value){
         editor.putString(key, value);
         editor.apply();
     }
+    /**
+     * Retrieves a String based on the key, if not found, defaultNotFound would be returned
+     * @param key the key where it's value will be retrieved from
+     * @param defaultNotFound the default value when key is not found in SharedPreferences
+     * @return the String that is associated with the specified key, or defaultNotFound if None.
+     */
     public String retrieveString(String key, String defaultNotFound){
         return preferences.getString(key, defaultNotFound);
     }
-
-    public void storeBool(String key, Boolean value){
+    /**
+     * Storing a boolean by a retrievable key which associates with the specified boolean
+     * @param key the key where it's value will assign to.
+     * @param value the value to be assigned to the key and stored
+     */
+    public void storeBool(String key, boolean value){
         editor.putBoolean(key, value);
         editor.apply();
     }
+    /**
+     * Retrieves a boolean based on the key, if not found, defaultNotFound would be returned
+     * @param key the key where it's value will be retrieved from
+     * @param defaultNotFound the default value when key is not found in SharedPreferences
+     * @return the boolean that is associated with the specified key, or defaultNotFound if None.
+     */
     public boolean retrieveBool(String key, boolean defaultNotFound){
         return preferences.getBoolean(key, defaultNotFound);
     }
-
-    public void storeLoginData(String username, String password, Boolean rememberMe){
+    /**
+     * Stores login data associated with the login screen
+     * @param username the username of the login screen.
+     * @param password the password of the login screen.
+     * @param rememberMe the checkbox of the login screen, checked means true
+     */
+    public void storeLoginData(String username, String password, boolean rememberMe){
         storeBool("remember", true);
         storeString("previousUser", username);
         storeString("previousPass", password);
     }
+    /**
+     * Removes login data associated with the login screen.
+     */
     public void wipeLoginData(){
         editor.remove("remember");
         editor.remove("previousUser");

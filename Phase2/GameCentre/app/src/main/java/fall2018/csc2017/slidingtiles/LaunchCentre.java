@@ -1,8 +1,6 @@
 package fall2018.csc2017.slidingtiles;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -58,7 +56,7 @@ public class LaunchCentre extends AppCompatActivity {
         userTextField = findViewById(R.id.text_username);
         passwordTextField = findViewById(R.id.text_password);
         rememberCheckbox = findViewById(R.id.cb_remember);
-        retrievePrefs();
+        setWidgetPreferences();
     }
     /**
      * Saves current list of accounts to fileName
@@ -137,17 +135,9 @@ public class LaunchCentre extends AppCompatActivity {
         }
     }
     /**
-     * Stores username, password, and "remember me" checkbox's state using prefs
+     * Set username and password text to retrieved preferences.
      */
-    private void rememberPrefStore(){
-        preferenceManager.storeBool("remember", true);
-        preferenceManager.storeString("previousUser", currentUser);
-        preferenceManager.storeString("previousPass", passwordTextField.getText().toString());
-    }
-    /**
-     * Retrieves username, password, and "remember me" checkbox's state using prefs
-     */
-    private void retrievePrefs(){
+    private void setWidgetPreferences(){
         rememberCheckbox.setChecked(preferenceManager.retrieveBool("remember", false));
         userTextField.setText(preferenceManager.retrieveString("previousUser", ""));
         passwordTextField.setText(preferenceManager.retrieveString("previousPass", ""));
