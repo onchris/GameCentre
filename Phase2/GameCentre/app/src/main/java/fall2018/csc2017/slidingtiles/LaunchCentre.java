@@ -39,23 +39,24 @@ public class LaunchCentre extends AppCompatActivity {
      */
     private static String currentUser;
     /**
-     * The preferences that the device holder has information saved
-     */
-    private SharedPreferences sharedPreferences;
-    /**
      * The checkbox of which user can select to remember credentials upon restart
      */
     private CheckBox rememberCheckbox;
+    /**
+     * The PreferenceManager that handles preferences retrieving and storing
+     */
+    private PreferenceManager preferenceManager;
+    private AccountManager accountManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launchcentre);
         accountsList = loadAccountList(this);
+        preferenceManager = new PreferenceManager(this);
         addPasswordOnKeyListener();
         userTextField = findViewById(R.id.text_username);
         passwordTextField = findViewById(R.id.text_password);
-        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         rememberCheckbox = findViewById(R.id.cb_remember);
         retrievePrefs();
     }
@@ -122,7 +123,11 @@ public class LaunchCentre extends AppCompatActivity {
         if(authUser()) {
             makeCustomToastText("Login successful!", getBaseContext());
             if(rememberCheckbox.isChecked())
-                rememberPrefStore();
+                preferenceManager.storeLoginData(currentUser,
+                        passwordTextField.getText().toString(),
+                        true);
+            else
+                preferenceManager.wipeLoginData();
             Intent tmp = new Intent(v.getContext(), GameSelection.class);
             tmp.putExtra("currentUser", currentUser);
             startActivity(tmp);
@@ -135,19 +140,17 @@ public class LaunchCentre extends AppCompatActivity {
      * Stores username, password, and "remember me" checkbox's state using prefs
      */
     private void rememberPrefStore(){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("remember", true);
-        editor.putString("previousUser", currentUser);
-        editor.putString("previousPass", passwordTextField.getText().toString());
-        editor.apply();
+        preferenceManager.storeBool("remember", true);
+        preferenceManager.storeString("previousUser", currentUser);
+        preferenceManager.storeString("previousPass", passwordTextField.getText().toString());
     }
     /**
      * Retrieves username, password, and "remember me" checkbox's state using prefs
      */
     private void retrievePrefs(){
-        rememberCheckbox.setChecked(sharedPreferences.getBoolean("remember", false));
-        userTextField.setText(sharedPreferences.getString("previousUser", ""));
-        passwordTextField.setText(sharedPreferences.getString("previousPass", ""));
+        rememberCheckbox.setChecked(preferenceManager.retrieveBool("remember", false));
+        userTextField.setText(preferenceManager.retrieveString("previousUser", ""));
+        passwordTextField.setText(preferenceManager.retrieveString("previousPass", ""));
     }
     /**
      * On click function for the guest button
