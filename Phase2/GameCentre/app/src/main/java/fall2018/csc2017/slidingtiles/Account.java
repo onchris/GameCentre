@@ -165,17 +165,17 @@ public class Account implements Serializable {
     /**
      * Add a score from a game of sliding tiles to the list of the user's scores
      *
-     * @param score
+     * @param score the score to add to sliding games
      */
     public void addToSlidingGameScores(int score) {
         this.slidingGameScores.add(score);
-        Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
+        sortGameScores();
     }
 
     /**
      * Sort the user's score lists in reverse order from highest to lowest
      */
-    public void sortGameScores() { //TODO: change the name!
+    public void sortGameScores() {
         Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
         Collections.sort(this.ultimateTTTScores, Collections.<Integer>reverseOrder());
         Collections.sort(this.obstacleDodgerScores, Collections.<Integer>reverseOrder());
@@ -183,10 +183,10 @@ public class Account implements Serializable {
 
     /**
      * Add a score from a game of obstacle dodger to the list of user's scores
-     * @param score
+     * @param score the score to add to sliding games
      */
     public void addToObDodgeGameScores(int score) { //TODO: combine with addToSlidingGameScores to make save easier
         this.obstacleDodgerScores.add(score);
-        Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
+        sortGameScores();
     }
 }
