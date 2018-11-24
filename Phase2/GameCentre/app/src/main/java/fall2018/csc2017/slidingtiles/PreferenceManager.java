@@ -3,6 +3,9 @@ package fall2018.csc2017.slidingtiles;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 public class PreferenceManager {
     /**
@@ -13,6 +16,8 @@ public class PreferenceManager {
      * SharedPreferences that handles retrieving preferences
      */
     private SharedPreferences preferences;
+    private EditText userField, passwordField;
+    private CheckBox rememberCheckBox;
 
     /**
      * PreferenceManager Constructor, instantiates preferences and it's editor
@@ -21,7 +26,20 @@ public class PreferenceManager {
     public PreferenceManager(Activity currentActivity){
         preferences = currentActivity.getPreferences(Context.MODE_PRIVATE);
         editor = preferences.edit();
+        Log.e("currentact", currentActivity.getLocalClassName() + "");
+        if(currentActivity.getLocalClassName().equals("LaunchCentre")) {
+            userField = currentActivity.findViewById(R.id.text_username);
+            passwordField = currentActivity.findViewById(R.id.text_password);
+            rememberCheckBox = currentActivity.findViewById(R.id.cb_remember);
+        }
     }
+
+    public void setWidgetPreferences(){
+        userField.setText(retrieveString("previousUser", ""));
+        passwordField.setText(retrieveString("previousPass", ""));
+        rememberCheckBox.setChecked(retrieveBool("remember", false));
+    }
+
     /**
      * Stores a String by a retrievable key which associates with the specified string
      * @param key the key where it's value will assign to.

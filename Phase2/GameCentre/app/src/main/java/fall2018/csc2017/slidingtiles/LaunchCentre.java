@@ -58,7 +58,7 @@ public class LaunchCentre extends AppCompatActivity {
         userTextField = findViewById(R.id.text_username);
         passwordTextField = findViewById(R.id.text_password);
         rememberCheckbox = findViewById(R.id.cb_remember);
-        setWidgetPreferences();
+        preferenceManager.setWidgetPreferences();
     }
     /**
      * Password field can directly login using the Enter button
@@ -112,14 +112,6 @@ public class LaunchCentre extends AppCompatActivity {
         else{
             makeCustomToastText("Wrong credentials, please try again!", getBaseContext());
         }
-    }
-    /**
-     * Set username and password text to retrieved preferences.
-     */
-    private void setWidgetPreferences(){
-        rememberCheckbox.setChecked(preferenceManager.retrieveBool("remember", false));
-        userTextField.setText(preferenceManager.retrieveString("previousUser", ""));
-        passwordTextField.setText(preferenceManager.retrieveString("previousPass", ""));
     }
     /**
      * On click function for the guest button
