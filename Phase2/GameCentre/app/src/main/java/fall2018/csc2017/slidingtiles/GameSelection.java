@@ -77,6 +77,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      */
     private LoaderAdapter loaderAdapter;
     private AccountManager accountManager;
+    private DialogManager dialogManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +94,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
             IS_GUEST = true;
         }
         boardList = accountManager.getCurrentAccountBoardList(currentAccount, IS_GUEST);
+        dialogManager = new DialogManager(this);
     }
 
     /**
@@ -101,10 +103,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * @param v the current view(Called by application)
      */
     public void newGameButtonOnClick(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.menu_sliding_difficulty);
-        popup.show();
+        dialogManager.createDialog(R.menu.menu_sliding_difficulty, v, this);
     }
 
     /**
@@ -115,114 +114,9 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      */
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.dialog_slidingdifficulty, null));
-        final Dialog dialog = builder.create();
-        switch (menuItem.getItemId()) {
-            case R.id.item1:
-                Board randomBoard3 = newRandomBoard(3, 3);
-                boardList.add(new BoardManager(randomBoard3));
-                loaderAdapter.notifyDataSetChanged();
-                saveBoardsToAccounts(this, currentAccount, boardList);
-                makeCustomToastText(menuItem.toString(), getBaseContext());
-                return true;
-            case R.id.item2:
-                Board randomBoard4 = newRandomBoard(4, 4);
-                boardList.add(new BoardManager(randomBoard4));
-                loaderAdapter.notifyDataSetChanged();
-                saveBoardsToAccounts(this, currentAccount, boardList);
-                makeCustomToastText(menuItem.toString(), getBaseContext());
-                return true;
-            case R.id.item3:
-                Board randomBoard5 = newRandomBoard(5, 5);
-                boardList.add(new BoardManager(randomBoard5));
-                loaderAdapter.notifyDataSetChanged();
-                saveBoardsToAccounts(this, currentAccount, boardList);
-                makeCustomToastText(menuItem.toString(), getBaseContext());
-                return true;
-            case R.id.item4:
-                dialog.show();
-                Button confirmButton = dialog.findViewById(R.id.button_confirm_difficulty);
-                Button loadImageButton = dialog.findViewById(R.id.button_loadImage);
-                final ImageView imagePreview = dialog.findViewById(R.id.iv_preview);
-                final EditText rows = dialog.findViewById(R.id.text_row);
-                final EditText columns = dialog.findViewById(R.id.text_column);
-                final EditText undos = dialog.findViewById(R.id.text_undos);
-                final EditText etUrl = dialog.findViewById(R.id.et_Url);
-                final ImageResultReceiver resultReceiver = new ImageResultReceiver(new Handler(), imagePreview);
-                resultReceiver.setReceiver(resultReceiver);
-                loadImageButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (rows.getText().toString().equals("") ||
-                                columns.getText().toString().equals("") ||
-                                undos.getText().toString().equals("")) {
-                            makeCustomToastText("Fields must not be empty!", v.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) < 3 ||
-                                Integer.parseInt(columns.getText().toString()) < 3) {
-                            makeCustomToastText("Rows/Columns cannot be lesser than 3!", v.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) > 31 ||
-                                Integer.parseInt(columns.getText().toString()) > 31) {
-                            makeCustomToastText("Dude stop you can't even see the board at this size", v.getContext());
-                        } else {
-                            String url = etUrl.getText().toString();
-                            Intent imageIntent = new Intent(v.getContext(), ImageServiceIntent.class);
-                            imageIntent.putExtra("receiver", resultReceiver);
-                            imageIntent.putExtra("url", url);
-                            imageIntent.putExtra("rows", Integer.parseInt(rows.getText().toString()));
-                            imageIntent.putExtra("columns", Integer.parseInt(columns.getText().toString()));
-                            startService(imageIntent);
-                        }
-                    }
-                });
-                confirmButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        CheckBox useImage = dialog.findViewById(R.id.cb_useImage);
-                        if (useImage.isChecked()) {
-                            if (resultReceiver.contentReceived()) {
-                                Board randomBoard = newRandomBoard(resultReceiver.getRow(), resultReceiver.getCol());
-                                BoardManager bm = new BoardManager(randomBoard);
-                                bm.setCustomImageSet(resultReceiver.getBitmapArrayList());
-                                bm.setUseImage(true);
-                                bm.setNumCanUndo(Integer.parseInt(undos.getText().toString()));
-                                boardList.add(bm);
-                                loaderAdapter.notifyDataSetChanged();
-                                saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
-                                makeCustomToastText(randomBoard.getTilesDimension(), getBaseContext());
-                                dialog.dismiss();
-                            } else if (resultReceiver.invalidImageLink()) {
-                                makeCustomToastText("Invalid image link, make sure to copy image link address directly!", view.getContext());
-                            } else {
-                                makeCustomToastText("You must wait for your image to finish downloading!", view.getContext());
-                            }
-                        } else if (rows.getText().toString().equals("") ||
-                                columns.getText().toString().equals("") ||
-                                undos.getText().toString().equals("")) {
-                            makeCustomToastText("Fields must not be empty!", view.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) < 3 ||
-                                Integer.parseInt(columns.getText().toString()) < 3) {
-                            makeCustomToastText("Rows/Columns cannot be lesser than 3!", view.getContext());
-                        } else if (Integer.parseInt(rows.getText().toString()) > 31 ||
-                                Integer.parseInt(columns.getText().toString()) > 31) {
-                            makeCustomToastText("Dude stop you can't even see the board at this size", view.getContext());
-                        } else {
-                            Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()),
-                                    Integer.parseInt(columns.getText().toString()));
-                            BoardManager bm = new BoardManager(randomBoard);
-                            bm.setNumCanUndo(Integer.parseInt(undos.getText().toString()));
-                            boardList.add(bm);
-                            loaderAdapter.notifyDataSetChanged();
-                            saveBoardsToAccounts(getBaseContext(), currentAccount, boardList);
-                            makeCustomToastText(randomBoard.getTilesDimension(), getBaseContext());
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                return true;
-        }
-        return false;
+        dialogManager.setDialogLayout(R.layout.dialog_slidingdifficulty);
+        dialogManager.setupComponents(boardList, loaderAdapter, currentAccount);
+        return dialogManager.onMenuItemClick(menuItem);
     }
 
 
