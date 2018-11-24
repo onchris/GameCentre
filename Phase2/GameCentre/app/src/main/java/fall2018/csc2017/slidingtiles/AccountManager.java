@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -11,7 +12,7 @@ import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
 
 public class AccountManager {
     private final List<Account> accountsList;
-
+    private Account currentAccount;
     public AccountManager(List<Account> accountsList){
         this.accountsList = accountsList;
     }
@@ -25,7 +26,7 @@ public class AccountManager {
             return false;
         for(Account existingAccount: accountsList)
         {
-            if(existingAccount.getUsername() == username)
+            if(username.equals(existingAccount.getUsername()))
                 return true;
         }
         return false;
@@ -43,6 +44,25 @@ public class AccountManager {
             }
         }
         return false;
+    }
+
+    public Account getAccountFromUsername(String name){
+        for(Account acc: accountsList)
+        {
+            if(name.equals(acc.getUsername())){
+                return acc;
+            }
+        }
+        return null;
+    }
+    /**
+     * Gets the current accounts' board list
+     */
+    public List<BoardManager> getCurrentAccountBoardList(Account account, boolean guest){
+        List<BoardManager> bm;
+        bm = guest ? new ArrayList<BoardManager>() :
+                account != null ? account.getBoardList() : new ArrayList<BoardManager>();
+        return bm;
     }
 
     /**

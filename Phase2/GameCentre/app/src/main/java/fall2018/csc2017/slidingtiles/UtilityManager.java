@@ -203,14 +203,32 @@ public final class UtilityManager {
      * @param columns the new game's columns properties
      * @return A random board with specified dimensions
      */
-    public static Board newRandomBoard(int rows, int columns){
+    public static Board newRandomBoard(int rows, int columns) {
         List<Tile> tiles = new ArrayList<>();
         int numTiles = rows * columns;
+        int checkSolvable = 0; int count = 0;
         for (int tileNum = 0; tileNum != numTiles; tileNum++) {
             tiles.add(new Tile(tileNum));
         }
         Collections.shuffle(tiles);
-        return new Board(tiles, rows, columns);
+        while(true){
+            for (int tileNum = 0; tileNum < numTiles; tileNum++) {
+                if(tiles.get(tileNum).getId() == numTiles){continue;}
+                for (int x = tileNum + 1; x < numTiles; x++) {
+                    if(tiles.get(tileNum).getId() == numTiles){continue;}
+                    if(tiles.get(tileNum).getId() > tiles.get(x).getId()){
+                        count++;
+                    }
+                }
+                checkSolvable += count;
+                count = 0;
+            }
+            if(checkSolvable % 2 == 0){
+                break;
+            }else {Collections.shuffle(tiles); checkSolvable = 0;}
+        }
+        Board b = new Board(tiles, rows, columns);
+        return b;
     }
 
     /**

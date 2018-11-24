@@ -28,12 +28,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fall2018.csc2017.slidingtiles.ObstacleDodger.TiltGameActivity;
+//import fall2018.csc2017.slidingtiles.ObstacleDodger.TiltGameActivity;
+import fall2018.csc2017.slidingtiles.ObstacleDodger.ObGameActivity;
 import fall2018.csc2017.slidingtiles.UltimateTTT.UltimateTTTGameActivity;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
 import static fall2018.csc2017.slidingtiles.UtilityManager.alertDialogBuilder;
+import static fall2018.csc2017.slidingtiles.UtilityManager.loadAccountList;
 import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
 
@@ -52,7 +55,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
     /**
      * Current user's board list
      */
-    public ArrayList<BoardManager> boardList;
+    public List<BoardManager> boardList;
     /**
      * Current user's account
      */
@@ -73,60 +76,23 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * Custom adapter for displaying list of games by hooking up to CustomScrollView
      */
     private LoaderAdapter loaderAdapter;
-
+    private AccountManager accountManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
+        accountManager = new AccountManager(loadAccountList(this));
         currentUserTextView = findViewById(R.id.text_loggedas);
         if (!getIntent().getStringExtra("currentUser").equals("-1")) {
             currentUsername = getIntent().getStringExtra("currentUser");
             currentUserTextView.setText(currentUsername);
-            currentAccount = getCurrentAccount(currentUsername);
+            currentAccount = accountManager.getAccountFromUsername(currentUsername);
             IS_GUEST = false;
         } else {
             currentUserTextView.setText("Guest");
             IS_GUEST = true;
         }
-        getCurrentAccountBoardList();
-    }
-
-    /**
-     * Gets the current accounts' board list
-     */
-    private void getCurrentAccountBoardList() {
-        if (IS_GUEST) {
-            boardList = new ArrayList<>();
-        } else {
-            boardList = currentAccount.getBoardList();
-        }
-    }
-
-    /**
-     * Gets the account by iterating through the accounts file and set to currentAccount
-     *
-     * @param accountName the account to search for
-     */
-    private Account getCurrentAccount(String accountName) {
-        try {
-            InputStream inputStream = this.openFileInput(ACCOUNTS_FILENAME);
-            if (inputStream != null) {
-                ObjectInputStream input = new ObjectInputStream(inputStream);
-                List<Account> accountList = (ArrayList<Account>) input.readObject();
-                inputStream.close();
-                for (Account account : accountList) {
-                    if (account.getUsername().equals(accountName))
-                        return account;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        } catch (ClassNotFoundException e) {
-            Log.e("login activity", "File contained unexpected data type: " + e.toString());
-        }
-        return null;
+        boardList = accountManager.getCurrentAccountBoardList(currentAccount, IS_GUEST);
     }
 
     /**
@@ -259,40 +225,6 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         return false;
     }
 
-    /**
-     * Generates a new random board with sizes based on parameters passed in
-     *
-     * @param rows    the new game's row properties
-     * @param columns the new game's columns properties
-     * @return A random board with specified dimensions
-     */
-    private Board newRandomBoard(int rows, int columns) {
-        List<Tile> tiles = new ArrayList<>();
-        int numTiles = rows * columns;
-        int checkSolvable = 0; int count = 0;
-        for (int tileNum = 0; tileNum != numTiles; tileNum++) {
-            tiles.add(new Tile(tileNum));
-        }
-        Collections.shuffle(tiles);
-        while(true){
-            for (int tileNum = 0; tileNum < numTiles; tileNum++) {
-                if(tiles.get(tileNum).getId() == numTiles){continue;}
-                for (int x = tileNum + 1; x < numTiles; x++) {
-                    if(tiles.get(tileNum).getId() == numTiles){continue;}
-                    if(tiles.get(tileNum).getId() > tiles.get(x).getId()){
-                        count++;
-                    }
-                }
-                checkSolvable += count;
-                count = 0;
-            }
-            if(checkSolvable % 2 == 0){
-                break;
-            }else {Collections.shuffle(tiles); checkSolvable = 0;}
-        }
-        Board b = new Board(tiles, rows, columns);
-        return b;
-    }
 
     /**
      * On click function for SlidingTile game selection button
@@ -308,7 +240,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         } else {
             setContentView(R.layout.activity_loadedgamelist);
             gameListDisplay = findViewById(R.id.scrollable_loadablegames);
-            loaderAdapter = new LoaderAdapter(boardList, this);
+            loaderAdapter = new LoaderAdapter((ArrayList<BoardManager>) boardList, this);
             loaderAdapter.account = currentAccount;
 
             gameListDisplay.setAdapter(loaderAdapter);
@@ -323,13 +255,13 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      */
     public void ultTTTGameButtonOnClick(View v) {
         if (IS_GUEST) {
-            //saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
+            saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
             Intent tmp = new Intent(this, UltimateTTTGameActivity.class);
             startActivity(tmp);
         } else {
             setContentView(R.layout.activity_loadedgamelist);
             gameListDisplay = findViewById(R.id.scrollable_loadablegames);
-            loaderAdapter = new LoaderAdapter(boardList/*TODO: make this an ultTTTgamelist*/, this);
+            loaderAdapter = new LoaderAdapter((ArrayList<BoardManager>) boardList/*TODO: make this an ultTTTgamelist*/, this);
             loaderAdapter.account = currentAccount;
 
             gameListDisplay.setAdapter(loaderAdapter);
@@ -344,10 +276,10 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      */
     public void obDodgerGameButtonOnClick(View v) {
         if (IS_GUEST) {
-            Intent tmp = new Intent(this, TiltGameActivity.class);
+            Intent tmp = new Intent(this, ObGameActivity.class);
             startActivity(tmp);
         } else {
-            Intent tmp = new Intent(this, TiltGameActivity.class);
+            Intent tmp = new Intent(this, ObGameActivity.class);
             tmp.putExtra("account", currentAccount);
             startActivity(tmp);
         }
