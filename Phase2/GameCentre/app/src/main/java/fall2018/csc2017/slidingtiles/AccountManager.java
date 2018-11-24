@@ -25,7 +25,7 @@ public class AccountManager {
             return false;
         for(Account existingAccount: accountsList)
         {
-            if(existingAccount.getUsername().equals(username))
+            if(existingAccount.getUsername() == username)
                 return true;
         }
         return false;
@@ -44,6 +44,14 @@ public class AccountManager {
         }
         return false;
     }
+
+    /**
+     * Creates a new account based on requirements
+     * @param username the username that the account to be created with
+     * @param password the password that associates to the account
+     * @param activity the activity this manager is in for toast messages
+     * @return A new account, null if invalid credentials or existing account
+     */
     public Account createNewAccount(String username, String password, Activity activity){
         Account account;
         if(username.equals("Guest") || username.equals("guest")){
@@ -54,6 +62,7 @@ public class AccountManager {
             makeCustomToastText("Fields cannot have less than 3 characters!", activity);
         } else if (!checkExistingUser(username)){
             account = new Account(username, password);
+            accountsList.add(account);
             return account;
         } else if (checkExistingUser(username))
         {

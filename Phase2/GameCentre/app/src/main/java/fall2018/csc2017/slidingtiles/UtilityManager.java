@@ -39,7 +39,7 @@ public final class UtilityManager {
             InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);
             if (inputStream != null) {
                 ObjectInputStream input = new ObjectInputStream(inputStream);
-                returnList = (ArrayList<Account>) input.readObject();
+                returnList = (List<Account>) input.readObject();
                 inputStream.close();
                 return returnList;
             }
