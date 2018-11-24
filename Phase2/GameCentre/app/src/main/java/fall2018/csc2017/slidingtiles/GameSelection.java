@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import fall2018.csc2017.slidingtiles.ObstacleDodger.TiltGameActivity;
+import fall2018.csc2017.slidingtiles.ObstacleDodger.ObGameActivity;
 import fall2018.csc2017.slidingtiles.UltimateTTT.UltimateTTTGameActivity;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
@@ -344,10 +344,10 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      */
     public void obDodgerGameButtonOnClick(View v) {
         if (IS_GUEST) {
-            Intent tmp = new Intent(this, TiltGameActivity.class);
+            Intent tmp = new Intent(this, ObGameActivity.class);
             startActivity(tmp);
         } else {
-            Intent tmp = new Intent(this, TiltGameActivity.class);
+            Intent tmp = new Intent(this, ObGameActivity.class);
             tmp.putExtra("account", currentAccount);
             startActivity(tmp);
         }
@@ -377,7 +377,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
             }
         });
         TextView titleText = new TextView(this);
-        titleText.setText("Delete all games?");
+        titleText.setText(R.string.delete_all_games);
         titleText.setPadding(10, 10, 10, 10);
         titleText.setTextSize(30);
         titleText.setGravity(Gravity.CENTER);
