@@ -3,7 +3,6 @@ package fall2018.csc2017.slidingtiles;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -11,8 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +42,9 @@ public class LaunchCentre extends AppCompatActivity {
      * The PreferenceManager that handles preferences retrieving and storing
      */
     private PreferenceManager preferenceManager;
+    /**
+     * The AccountManager that handles account related methods
+     */
     private AccountManager accountManager;
 
     @Override
@@ -51,26 +52,13 @@ public class LaunchCentre extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launchcentre);
         accountsList = loadAccountList(this);
+        accountManager = new AccountManager(accountsList);
         preferenceManager = new PreferenceManager(this);
         addPasswordOnKeyListener();
         userTextField = findViewById(R.id.text_username);
         passwordTextField = findViewById(R.id.text_password);
         rememberCheckbox = findViewById(R.id.cb_remember);
         setWidgetPreferences();
-    }
-    /**
-     * Saves current list of accounts to fileName
-     * @param fileName the name of the file
-     */
-    public void saveCredentialsToFile(String fileName){
-        try{
-            ObjectOutputStream outputStream =
-                    new ObjectOutputStream(this.openFileOutput(fileName, MODE_PRIVATE));
-            outputStream.writeObject(accountsList);
-            outputStream.close();
-        } catch (IOException e){
-            Log.e("Exception", "Credential write failed: " + e.toString());
-        }
     }
     /**
      * Password field can directly login using the Enter button
@@ -96,21 +84,9 @@ public class LaunchCentre extends AppCompatActivity {
     public void registerButtonOnClick(View v){
         String regUsername = userTextField.getText().toString();
         String regPassword = passwordTextField.getText().toString();
-        Account newAccount = new Account(regUsername, regPassword);
-        if(regUsername.equals("Guest") || regUsername.equals("guest")){
-            makeCustomToastText("Account name reserved for guests only!", getBaseContext());
-        } else if (regUsername.equals("") || regPassword.equals("")){
-            makeCustomToastText("Fields cannot be empty!", getBaseContext());
-        } else if (regUsername.length() < 3 || regPassword.length() < 3 ) {
-            makeCustomToastText("Fields cannot have less than 3 characters!", getBaseContext());
-        }
-        else if(!checkExistingAccount(newAccount)){
-            accountsList.add(newAccount);
-            saveCredentialsToFile(ACCOUNTS_FILENAME);
-            makeCustomToastText("Account creation successful!", getBaseContext());
-        }
-        else{
-            makeCustomToastText("Account already exists!", getBaseContext());
+        Account newAccount = accountManager.createNewAccount(regUsername, regPassword, this);
+        if(newAccount != null){
+            accountManager.saveCredentials(ACCOUNTS_FILENAME, this);
         }
     }
     /**
@@ -118,7 +94,10 @@ public class LaunchCentre extends AppCompatActivity {
      * @param v the current view(Called by application)
      */
     public void loginButtonOnClick(View v){
-        if(authUser()) {
+        String username = userTextField.getText().toString();
+        String password = passwordTextField.getText().toString();
+        if(accountManager.authenticateCredentials(username, password)) {
+            currentUser = username;
             makeCustomToastText("Login successful!", getBaseContext());
             if(rememberCheckbox.isChecked())
                 preferenceManager.storeLoginData(currentUser,
@@ -151,36 +130,5 @@ public class LaunchCentre extends AppCompatActivity {
         currentUser = "-1";
         tmp.putExtra("currentUser", currentUser);
         startActivity(tmp);
-    }
-    /**
-     * Authenticates the user with it's corresponding login details input
-     * @return whether if input credentials match
-     */
-    private boolean authUser(){
-        String username = userTextField.getText().toString();
-        String password = passwordTextField.getText().toString();
-        for(Account acc: accountsList)
-        {
-            if(username.equals(acc.getUsername())&& password.equals(acc.getPassword())){
-                currentUser = username;
-                return true;
-            }
-        }
-        return false;
-    }
-    /**
-     * Checks if account already exists
-     * @param account the account to be checked
-     * @return whether if account already exists
-     */
-    private boolean checkExistingAccount(Account account){
-        if(accountsList.isEmpty())
-            return false;
-        for(Account existingAccount: accountsList)
-        {
-            if(existingAccount.equals(account))
-                return true;
-        }
-        return false;
     }
 }
