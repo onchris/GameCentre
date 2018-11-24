@@ -29,7 +29,6 @@ public class PreferenceManager {
         this.currentActivity = currentActivity;
         preferences = currentActivity.getPreferences(Context.MODE_PRIVATE);
         editor = preferences.edit();
-        Log.e("currentact", currentActivity.getLocalClassName() + "");
         if(currentActivity.getLocalClassName().equals("LaunchCentre")) {
             userField = currentActivity.findViewById(R.id.text_username);
             passwordField = currentActivity.findViewById(R.id.text_password);
