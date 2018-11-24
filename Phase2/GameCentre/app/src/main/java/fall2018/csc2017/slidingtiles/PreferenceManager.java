@@ -15,15 +15,18 @@ public class PreferenceManager {
     /**
      * SharedPreferences that handles retrieving preferences
      */
+    private final Activity currentActivity;
     private SharedPreferences preferences;
     private EditText userField, passwordField;
     private CheckBox rememberCheckBox;
+
 
     /**
      * PreferenceManager Constructor, instantiates preferences and it's editor
      * @param currentActivity the currentActivity, accessing method getPreferences.
      */
     public PreferenceManager(Activity currentActivity){
+        this.currentActivity = currentActivity;
         preferences = currentActivity.getPreferences(Context.MODE_PRIVATE);
         editor = preferences.edit();
         Log.e("currentact", currentActivity.getLocalClassName() + "");
@@ -35,9 +38,11 @@ public class PreferenceManager {
     }
 
     public void setWidgetPreferences(){
-        userField.setText(retrieveString("previousUser", ""));
-        passwordField.setText(retrieveString("previousPass", ""));
-        rememberCheckBox.setChecked(retrieveBool("remember", false));
+        if(currentActivity.getLocalClassName().equals("LaunchCentre")) {
+            userField.setText(retrieveString("previousUser", ""));
+            passwordField.setText(retrieveString("previousPass", ""));
+            rememberCheckBox.setChecked(retrieveBool("remember", false));
+        }
     }
 
     /**
