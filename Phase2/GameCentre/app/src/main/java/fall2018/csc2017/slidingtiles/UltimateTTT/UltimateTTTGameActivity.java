@@ -88,7 +88,7 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
 
     public void runFrontEnd(int index) {
         JSONObject response;
-        response = connector.backend.execute(index);
+        response = connector.backend.executer.execute(index);
         ultTTTBoardManager = new UltTTTBoardManager(UltimateTTTInfoManager.parseJson(response), connector);
         if (!IS_GUEST) {
             UtilityManager.saveUltimateTTTUltTTTBoardManager(this, currentAccount, currentAccount.getUltimateTTTList());
