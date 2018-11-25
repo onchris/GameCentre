@@ -44,10 +44,6 @@ public class ScoreBoard extends AppCompatActivity{
      */
     private List<String> displayGameScoresList = new ArrayList<>();
     /**
-     * TextView for the score from the most recently completed game
-     */
-    private TextView currentScore;
-    /**
      * A check for if the player is a guest
      */
     private boolean IS_GUEST;
@@ -92,7 +88,10 @@ public class ScoreBoard extends AppCompatActivity{
             }
         }
 
-        currentScore = findViewById(R.id.lastscore);
+        /*
+          TextView for the score from the most recently completed game
+         */
+        TextView currentScore = findViewById(R.id.lastscore);
         currentScore.setText(getIntent().getStringExtra("currentScore"));
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,

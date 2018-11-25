@@ -7,15 +7,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class ObDodgerScoreManager extends ScoreManager {
+/**
+ * Object to manage the scores of the accounts for display
+ */
 
-    /**
-     * Sort the scores in an obstacle dodger game
-     * @param username
-     * @param ctx
-     * @param score
-     */
-    public ObDodgerScoreManager(String username, Context ctx, Integer score) {
+class ObDodgerScoreManager extends ScoreManager {
+
+    ObDodgerScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
         if (!username.equals("-1")) {
             userScores = currentAccount.getObstacleDodgerScores();
@@ -40,7 +38,7 @@ public class ObDodgerScoreManager extends ScoreManager {
                 p = new Pair<>(score, "Guest");
                 gameScores.add(p);
             } catch (NumberFormatException e) {
-                p = new Pair<>(-1, "Guest");
+                e.printStackTrace();
             }
         }
         Collections.sort(gameScores, new Comparator<Pair<Integer, String>>() {
