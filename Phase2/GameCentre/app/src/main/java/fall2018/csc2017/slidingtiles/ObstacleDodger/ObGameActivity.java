@@ -75,7 +75,7 @@ public class ObGameActivity extends AppCompatActivity implements Observer {
     public void update(Observable o, Object arg) {
         Integer score = (Integer) arg;
         Intent tmp = new Intent(this, ScoreBoard.class);
-        if (!GameSelection.IS_GUEST) {
+        if (currentAccount!=null) {
             currentAccount.addToObDodgeGameScores(score);
             saveObDodgerScoresToAccounts(this, currentAccount, score);
             tmp.putExtra("currentUsername", currentAccount.getUsername());
