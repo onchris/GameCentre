@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import java.util.Map;
 
@@ -98,9 +99,9 @@ public class UltTTTBoardManager {
         activity.setText(connector.scoreP2, Integer.toString(scoreP2));
 
         if (winner.equals("Player 1"))
-            activity.showToast(activity.P1Name + " won this round");
+            Toast.makeText(activity, activity.P1Name + " won this round", Toast.LENGTH_SHORT).show();
         else if (winner.equals("Player 2"))
-            activity.showToast(activity.P2Name + " won this round");
+            Toast.makeText(activity, activity.P2Name + " won this round", Toast.LENGTH_SHORT).show();
 
         if (!globalWinner.equals("None"))
             gameOver(globalWinner);
