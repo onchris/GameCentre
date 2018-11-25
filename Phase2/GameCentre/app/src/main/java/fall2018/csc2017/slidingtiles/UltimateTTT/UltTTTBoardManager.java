@@ -37,6 +37,7 @@ public class UltTTTBoardManager {
     private TableLayout tables[];
     private UltTTTConnector connector;
     private UltimateTTTGameActivity activity;
+    private UltTTTCellManager cellManager;
 
 
     UltTTTBoardManager(Map result, UltTTTConnector connector) {
@@ -61,13 +62,14 @@ public class UltTTTBoardManager {
         this.connector = connector;
         ImageButtons = connector.getImageButtons();
         tables = connector.getTables();
-        activity = (UltimateTTTGameActivity)connector.getActivity();
+        activity = (UltimateTTTGameActivity) connector.getActivity();
+        cellManager = new UltTTTCellManager(connector);
     }
 
     void operate() {
         if (buttonPressed.equals("Reset")) {
             activity.initialize();
-            activity.enableAll();
+            cellManager.enableAll();
             return;
         } else if (buttonPressed.equals("Undo")) {
             if (resetCells.equals("All"))
@@ -91,10 +93,10 @@ public class UltTTTBoardManager {
         }
         changeTableColor(nextActiveBlock, currentActiveBlock,
                 isP1Turn, buttonPressed);
-        activity.disableAll();
-        activity.enableBlock(nextActiveBlock);
-        activity.disableWinnerBlocks(disableBlock);
-        activity.disableUsedCells(usedCells);
+        cellManager.disableAll();
+        cellManager.enableBlock(nextActiveBlock);
+        cellManager.disableWinnerBlocks(disableBlock);
+        cellManager.disableUsedCells(usedCells);
         activity.setText(connector.scoreP1, Integer.toString(scoreP1));
         activity.setText(connector.scoreP2, Integer.toString(scoreP2));
 
@@ -128,7 +130,7 @@ public class UltTTTBoardManager {
     }
 
     private void gameOver(String global_winner) {
-        activity.disableAll();
+        cellManager.disableAll();
         AlertDialog ad = new AlertDialog.Builder(activity)
                 .setTitle("WINNER!!!")
                 .setMessage(activity.getGlobalWinnerName(global_winner))
@@ -137,7 +139,7 @@ public class UltTTTBoardManager {
                     public void onClick(DialogInterface dialog, int which) {
                         //Restart Game
                         activity.initialize();
-                        activity.enableAll();
+                        cellManager.enableAll();
                         connector.backend.execute(100);
                     }
                 })
