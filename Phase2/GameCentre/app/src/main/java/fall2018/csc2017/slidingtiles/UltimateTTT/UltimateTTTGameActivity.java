@@ -1,10 +1,7 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
@@ -12,14 +9,12 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import fall2018.csc2017.slidingtiles.Account;
 import fall2018.csc2017.slidingtiles.GameSelection;
 import fall2018.csc2017.slidingtiles.R;
-import fall2018.csc2017.slidingtiles.ScoreBoard;
 
 import fall2018.csc2017.slidingtiles.UtilityManager;
 
@@ -157,10 +152,6 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         else if (global_winner.equals("Drawn"))
             return "Match Drawn";
         return "None";
-    }
-
-    public void showToast(String winner) {
-        Toast.makeText(UltimateTTTGameActivity.this, winner, Toast.LENGTH_SHORT).show();
     }
 
     private int getIndex(ImageButton b) {
