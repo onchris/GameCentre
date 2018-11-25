@@ -9,7 +9,7 @@ import fall2018.csc2017.slidingtiles.R;
 
 public class UltTTTConnector {
 
-    public Activity activity;
+    public UltimateTTTGameActivity activity;
 
     TextView scoreP1;
     TextView scoreP2;
@@ -19,7 +19,7 @@ public class UltTTTConnector {
     private ImageButton[] ImageButtons;
     private TableLayout tables[];
 
-    UltTTTConnector(Activity activity) {
+    UltTTTConnector(UltimateTTTGameActivity activity) {
         this.activity = activity;
         bind();
     }
@@ -27,7 +27,7 @@ public class UltTTTConnector {
     private void bind() {
         scoreP1 = activity.findViewById(R.id.textView3);
         scoreP2 = activity.findViewById(R.id.textView4);
-        backend = new UltimateTTTBackend();
+        backend = new UltimateTTTBackend(activity);
         breset = activity.findViewById(R.id.imageButton4);
         bundo = activity.findViewById(R.id.imageButton3);
         ImageButtons =
@@ -100,4 +100,18 @@ public class UltTTTConnector {
     public Activity getActivity() {
         return activity;
     }
+
+    int getIndex(ImageButton b) {
+        for (int i = 0; i < ImageButtons.length; i++) {
+            if (ImageButtons[i].equals(b)) {
+                return i;
+            }
+        }
+        if (b.equals(breset))
+            return 100;
+        if (b.equals(bundo))
+            return 200;
+        return -1;
+    }
+
 }
