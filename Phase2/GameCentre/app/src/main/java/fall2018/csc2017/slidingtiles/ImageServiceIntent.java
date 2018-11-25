@@ -63,13 +63,24 @@ public class ImageServiceIntent extends IntentService {
         columns = intent.getIntExtra("columns", 0);
         try{
             InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, "shit");
+            Drawable d = Drawable.createFromStream(is, "drawable");
             BitmapDrawable bitmap = (BitmapDrawable) d;
-            bundle.putParcelable("image", bitmap.getBitmap());
-            bundle.putSerializable("imagearray", bitmapSplitter(bitmap.getBitmap(),rows,columns));
-            bundle.putIntegerArrayList("size", new ArrayList<Integer>(){{add(rows);add(columns);}});
-            intent.putExtra("splits", 16);
-            rr.send(1, bundle);
+            if(bitmap == null){
+                rr.send(2, null);
+            }
+            else if(rows == 0 && columns == 0) {
+                bundle.putParcelable("image", bitmap.getBitmap());
+                rr.send(3, bundle);
+            } else {
+                bundle.putParcelable("image", bitmap.getBitmap());
+                bundle.putSerializable("imagearray", bitmapSplitter(bitmap.getBitmap(), rows, columns));
+                bundle.putIntegerArrayList("size", new ArrayList<Integer>() {{
+                    add(rows);
+                    add(columns);
+                }});
+                intent.putExtra("splits", 16);
+                rr.send(1, bundle);
+            }
         } catch (MalformedURLException e) {
             rr.send(2,null);
             e.printStackTrace();
@@ -86,7 +97,7 @@ public class ImageServiceIntent extends IntentService {
      * @param columns the columns which the board is set to have
      * @return the bitmap array which stores its corresponding images in order
      */
-    private Bitmap[][] bitmapSplitter(Bitmap bm, int rows, int columns){
+    public static Bitmap[][] bitmapSplitter(Bitmap bm, int rows, int columns){
         if(rows == 0 || columns == 0)
             return null;
         Bitmap[][] bmArr = new Bitmap[rows][columns];

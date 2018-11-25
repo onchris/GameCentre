@@ -26,12 +26,12 @@ public class Account implements Serializable {
     /**
      * Account's saved sliding tile games
      */
-    private ArrayList<BoardManager> boardList = new ArrayList<>();
+    private List<BoardManager> boardList = new ArrayList<>();
 
     /**
      * Account's saved ultimate tic tac toe games
      */
-    private ArrayList<UltTTTBoardManager> ultimateTTTList = new ArrayList<>();
+    private List<UltTTTBoardManager> ultimateTTTList = new ArrayList<>();
 
     /**
      * Account's sliding tile games' scores as a list
@@ -112,7 +112,7 @@ public class Account implements Serializable {
      * @return the ArrayList of Boards
      */
     public ArrayList<BoardManager> getBoardList() {
-        return boardList;
+        return (ArrayList<BoardManager>) boardList;
     }
 
     /**
@@ -121,7 +121,7 @@ public class Account implements Serializable {
      * @return the ArrayList of UltTTTBoards
      */
     public ArrayList<UltTTTBoardManager> getUltimateTTTList() {
-        return ultimateTTTList;
+        return (ArrayList<UltTTTBoardManager>) ultimateTTTList;
     }
 
     /**

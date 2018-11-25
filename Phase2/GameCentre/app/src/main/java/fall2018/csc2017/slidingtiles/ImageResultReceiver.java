@@ -37,6 +37,10 @@ public class ImageResultReceiver extends ResultReceiver {
      * of changed dimensions after receiving an image
      */
     private int row = 4, col = 4;
+    /**
+     * Untouched, yet loaded bitmap awaiting for splitting
+     */
+    private Bitmap unprocessedBitmap;
 
     /**
      * The constructor for this ImageResultReceiver
@@ -59,7 +63,7 @@ public class ImageResultReceiver extends ResultReceiver {
      * @param bArr the bitmap Array that will be converted from
      * @return the converted array list of bitmaps
      */
-    private ArrayList<Bitmap> getBitmapList(final Bitmap[][] bArr){
+    public ArrayList<Bitmap> getBitmapList(final Bitmap[][] bArr){
         Iterator<Bitmap> bmIt = new Iterator<Bitmap>() {
             private int jIndex = 0, kIndex = 0;
             private int jLength = bArr.length, kLength = bArr[0].length;
@@ -84,6 +88,14 @@ public class ImageResultReceiver extends ResultReceiver {
         }
         return bList;
     }
+
+    /**
+     * Get the unprocessed bitmap for processing purpose
+     * @return a bitmap
+     */
+    public Bitmap getUnprocessedBitmap() {
+        return unprocessedBitmap;
+    }
     /**
      * Returns the array list of bitmaps
      * @return the array list of bitmaps
@@ -96,7 +108,7 @@ public class ImageResultReceiver extends ResultReceiver {
      * @return boolean whether or not this receiver has received contents
      */
     public boolean contentReceived(){
-        return (recIm && recImArr);
+        return (recIm || recImArr) ;
     }
     /**
      * Returns whether or not the sender has received invalid image png
@@ -144,6 +156,13 @@ public class ImageResultReceiver extends ResultReceiver {
                     break;
                 case 2:
                     recImInvalid = true;
+                    break;
+                case 3:
+                    Bitmap bm1 = resultData.getParcelable("image");
+                    imageView.setImageBitmap(bm1);
+                    unprocessedBitmap = bm1;
+                    recIm = true;
+                    recImArr = false;
                     break;
                 default:
                     recImArr = false;
