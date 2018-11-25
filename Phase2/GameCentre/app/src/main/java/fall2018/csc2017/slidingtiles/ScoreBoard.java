@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +81,8 @@ public class ScoreBoard extends AppCompatActivity{
         displayGameScoresList = scoreManager.getDisplayGameScoresList();
         displayUserScoresList = scoreManager.getDisplayUserScoresList();
 
-        IS_GUEST = GameSelection.IS_GUEST;
-        if(!GameSelection.IS_GUEST) {
+        IS_GUEST = getIntent().getStringExtra("currentUsername").equals("-1");
+        if(IS_GUEST) {
             currentAccount = scoreManager.getCurrentAccount();
             if (getIntent().hasExtra("board")) { //TODO: board???
                 board = (Board) getIntent().getSerializableExtra("board");
@@ -159,7 +160,7 @@ public class ScoreBoard extends AppCompatActivity{
                         Intent tmp = new Intent(v.getContext(), GameActivity.class);
                         currentAccount.getBoardList().add(bm);
                         tmp.putExtra("account", currentAccount);
-                        tmp.putExtra("boardList", currentAccount.getBoardList());
+                        tmp.putExtra("boardList", (Serializable) currentAccount.getBoardList());
                         tmp.putExtra("boardIndex", currentAccount.getBoardList().indexOf(bm));
                         startActivity(tmp);
                     }

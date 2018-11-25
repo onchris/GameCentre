@@ -109,19 +109,19 @@ public class Account implements Serializable {
     /**
      * Gets this account's list of sliding game's boards
      *
-     * @return the ArrayList of Boards
+     * @return the List of Boards
      */
-    public ArrayList<BoardManager> getBoardList() {
-        return (ArrayList<BoardManager>) boardList;
+    public List<BoardManager> getBoardList() {
+        return boardList;
     }
 
     /**
      * Gets this account's list of ultimate tic tac toe game's boards
      *
-     * @return the ArrayList of UltTTTBoards
+     * @return the List of UltTTTBoards
      */
-    public ArrayList<UltTTTBoardManager> getUltimateTTTList() {
-        return (ArrayList<UltTTTBoardManager>) ultimateTTTList;
+    public List<UltTTTBoardManager> getUltimateTTTList() {
+        return ultimateTTTList;
     }
 
     /**
@@ -129,7 +129,7 @@ public class Account implements Serializable {
      *
      * @param boardList the board to be replaced with
      */
-    public void setBoardList(ArrayList<BoardManager> boardList) {
+    public void setBoardList(List<BoardManager> boardList) {
         this.boardList = boardList;
     }
 
@@ -148,7 +148,7 @@ public class Account implements Serializable {
      *
      * @param ultTTTUserResponses the board to be replaced with
      */
-    public void setUltimateTTTList(ArrayList<UltTTTBoardManager> ultTTTUserResponses) {
+    public void setUltimateTTTList(List<UltTTTBoardManager> ultTTTUserResponses) {
         this.ultimateTTTList = ultTTTUserResponses;
     }
 
