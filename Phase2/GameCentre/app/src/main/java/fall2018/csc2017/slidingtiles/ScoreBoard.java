@@ -82,7 +82,7 @@ public class ScoreBoard extends AppCompatActivity{
         displayUserScoresList = scoreManager.getDisplayUserScoresList();
 
         IS_GUEST = getIntent().getStringExtra("currentUsername").equals("-1");
-        if(IS_GUEST) {
+        if(!IS_GUEST) {
             currentAccount = scoreManager.getCurrentAccount();
             if (getIntent().hasExtra("board")) { //TODO: board???
                 board = (Board) getIntent().getSerializableExtra("board");
