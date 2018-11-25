@@ -140,7 +140,7 @@ public class UltTTTBoardManager {
                         //Restart Game
                         activity.initialize();
                         cellManager.enableAll();
-                        connector.backend.execute(100);
+                        connector.backend.executer.execute(100);
                     }
                 })
                 .setNegativeButton("Main Menu", new DialogInterface.OnClickListener() {
