@@ -1,9 +1,19 @@
 package fall2018.csc2017.slidingtiles;
 
+import android.graphics.Bitmap;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -84,6 +94,8 @@ public class BoardAndTileTest {
     public void swapFirstTwo() {
         swapFirstTwo(board4x4.getBoard());
         swapFirstTwo(board30x30.getBoard());
+        board4x4.undo();
+        assertEquals(0 ,board4x4.getMoves());
     }
 
     /**
@@ -104,6 +116,10 @@ public class BoardAndTileTest {
         assertTrue(board4x4.isValidTap(14));
         assertFalse(board4x4.isValidTap(10));
     }
+
+    /**
+     * Tests undo logic.
+     */
     @Test
     public void testUndo(){
         assertNotEquals(0, board4x4.getNumCanUndo());
@@ -116,6 +132,72 @@ public class BoardAndTileTest {
         swapFirstTwo(board4x4.getBoard());
         board4x4.undo();
         assertFalse(board4x4.canUndo());
+    }
+
+    /**
+     * Tests whether or not Board is using image as tiles.
+     */
+    @Test
+    public void isUsingImage(){
+        assertFalse(board4x4.isUseImage());
+        assertFalse(board30x30.isUseImage());
+        board4x4.setUseImage(true);
+        assertTrue(board4x4.isUseImage());
+    }
+
+    /**
+     * Tests getter for image set where should be null
+     */
+    @Test
+    public void testNullImageSet(){
+        assertNull(board4x4.getCustomImageSet());
+        assertNull(board30x30.getCustomImageSet());
+        board4x4.setCustomImageSet(new ArrayList<Bitmap>());
+        assertNotNull(board4x4.getCustomImageSet());
+    }
+
+    @Test
+    public void getSetTimeSpent(){
+        assertEquals(0, board4x4.getTimeSpent());
+        board4x4.setTimeSpent(123);
+        assertNotNull(board4x4.getTimeSpent());
+    }
+
+
+    /**
+     * Test custom rule creation of board
+     */
+    @Test
+    public void customBoardCreation() {
+        List<Tile> tiles = new ArrayList<>();
+        final int numTiles = 6 * 7;
+        for (int tileNum = 0; tileNum != numTiles-1; tileNum++) {
+            tiles.add(new Tile(tileNum));
+        }
+        tiles.add(new Tile(6*7, null));
+        Board customBoard = new Board(tiles, 6, 7);
+        customBoard.getTile(5,5).setBackground(null);
+        assertTrue(customBoard.getTile(5,5).hasBackground());
+        BoardManager customBoardManager = new BoardManager(customBoard);
+        assertEquals("[1, 2, 3, 4, 5, 6, " +
+                "7, 8, 9, 10, 11, 12, " +
+                "13, 14, 15, 16, 17, 18, " +
+                "19, 20, 21, 22, 23, 24, " +
+                "25, 26, 27, 28, 29, 30, " +
+                "31, 32, 33, 34, 35, 36, " +
+                "37, 38, 39, 40, 41, 42]", tiles.toString());
+
+        assertEquals("Board{tiles=1, 2, 3, 4, 5, 6," +
+                " 7, 8, 9, 10, 11, 12," +
+                " 13, 14, 15, 16, 17, 18," +
+                " 19, 20, 21, 22, 23, 24," +
+                " 25, 26, 27, 28, 29, 30," +
+                " 31, 32, 33, 34, 35, 36," +
+                " 37, 38, 39, 40, 41, 42}", customBoardManager.getBoard().toString());
+        assertEquals("6x7", customBoard.getTilesDimension());
+        assertNull(customBoard.getTile(5,5).getBackground());
+        assertNull(customBoard.getTile(5,6).getBackground());
+        assertEquals(1, customBoard.getTile(5,5).compareTo(customBoard.getTile(5,6)));
     }
 }
 
