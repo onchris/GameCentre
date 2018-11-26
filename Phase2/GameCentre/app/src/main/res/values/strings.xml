@@ -13,4 +13,19 @@
     <string name="register">Register Using Credentials</string>
     <string name="login_as_guest">Login as Guest</string>
     <string name="delete_all_games">Delete all games?</string>
+    <string name="sliding_tiles">slidingTiles</string>
+    <string name="ob_dodger">obDodger</string>
+    <string name="ult_ttt">ultTTT</string>>
+    <string name="guest_name">Guest</string>
+    <string name="button">Button</string>
+    <string name="name_here">Name here</string>
+    <string name="logged_in_as">Logged in as:</string>
+    <string name="select_a_game">Select A Game!</string>
+    <string name="select_loaded_games">Select Loaded Games</string>
+    <string name="new_game">New Game</string>
+    <string name="delete_all">Delete All</string>
+    <string name="logged_in">Logged in:</string>
+    <string name="player">Player</string>
+    <string name="save">Save</string>
+    <string name="num_undo">Undo</string>
 </resources>
