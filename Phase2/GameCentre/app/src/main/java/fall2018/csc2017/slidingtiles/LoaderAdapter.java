@@ -98,7 +98,7 @@ public class LoaderAdapter extends BaseAdapter {
     private String getDifficulty(int i){
         BoardManager b = boardList.get(i);
         String returnString = b.getBoard().getTilesDimension();
-        String[] stringArray = returnString.split(",");
+        String[] stringArray = returnString.split("x");
         return stringArray[0] + "x" + stringArray[1];
     }
 
