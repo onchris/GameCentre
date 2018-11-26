@@ -51,7 +51,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 @SmallTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class LaunchCentreTest{
+public class LoginScreenTestAllComponents {
     /**
      * Activity that would be instantiated for assertions
      */
