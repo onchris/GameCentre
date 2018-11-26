@@ -85,7 +85,7 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 @SmallTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TileBuilderTest {
+public class SlidingTileTest {
     /**
      * BoardManager that sets up a nearly solved 4x4 board
      */
