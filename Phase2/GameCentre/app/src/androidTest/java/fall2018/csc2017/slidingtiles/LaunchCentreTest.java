@@ -41,9 +41,21 @@ import static org.junit.Assert.assertTrue;
 @SmallTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LaunchCentreTest{
+    /**
+     * Activity that would be instantiated for assertions
+     */
     private LaunchCentre activity;
+    /**
+     * Username/password fields for ViewInteractions used for View Actions
+     */
     private ViewInteraction usernameField, passwordField;
+    /**
+     * Obtains preferences from previous usage/tests
+     */
     private SharedPreferences sharedPreferences;
+    /**
+     * Custom isolated account lists specifically for testing
+     */
     private List<Account> testAccountList = new ArrayList<>();
 
     /**
