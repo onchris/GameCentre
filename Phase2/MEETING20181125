@@ -1,0 +1,13 @@
+Meeting: november 25, 2018
+# what was done:
+- fixed the obstacle dodger switching to scoreboard bug
+- refactoring ultimate tic tac toe
+
+# what needs to be done:
+- connecting ultttt to Game Selection for account holders
+    - set up loader adapter
+    - saving games
+    - set up scoreboard and scores
+- as always: unittesting, javadocs, walkthrough.pdf
+- look for android warnings
+# BEFORE THURSDAY
