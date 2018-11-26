@@ -89,7 +89,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
             int movesTaken = boardManager.getMoves();
             boardManager.setTimeSpent(SystemClock.elapsedRealtime() - chronometer.getBase());
             int timeTaken = (int)boardManager.getTimeSpent() / 1000;
-            Log.e(" wot", timeTaken + ":" + movesTaken );
             currentScore = scoringSystem.calculateScore(movesTaken, timeTaken);
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
@@ -121,7 +120,14 @@ public class GameActivity extends AppCompatActivity implements Observer {
         boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
         boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
         setContentView(R.layout.activity_main);
-        boardManager.setUseImage(IMAGE_SET!=null);
+        boolean useImage = IMAGE_SET != null;
+        if(boardManager == null)
+        {
+            boardManager = boardList.get(boardIndex);
+            numRows = boardManager != null? boardManager.getBoard().getNumRows(): 1;
+            numColumns = boardManager != null? boardManager.getBoard().getNumColumns(): 1;
+        }
+        boardManager.setUseImage(useImage);
         if(boardManager.isUseImage()){
             boardManager.setCustomImageSet(IMAGE_SET);
         }
@@ -132,8 +138,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
         else
             v.setText("Guest");
         chronometer = findViewById(R.id.chronometer);
-        Log.e("boardManagerGet", boardManager.getTimeSpent()+" start");
-
         startChronometer(chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime() - boardManager.getTimeSpent());
 
@@ -214,6 +218,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
+            boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
+            boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
+            boardManager = boardList.get(boardIndex);
+            numRows = boardManager != null? boardManager.getBoard().getNumRows(): 1;
+            numColumns = boardManager != null? boardManager.getBoard().getNumColumns() : 1;
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
         } catch (ClassNotFoundException e) {

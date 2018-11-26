@@ -20,10 +20,10 @@ public class MovementController {
             boardManager.touchMove(position);
 
             if (boardManager.puzzleSolved()) {
-                Toast.makeText(context, "YOU WIN!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.mc_win), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(context, "Invalid Tap", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.mc_invalid_tap), Toast.LENGTH_SHORT).show();
         }
     }
 }

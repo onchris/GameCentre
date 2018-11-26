@@ -1,0 +1,240 @@
+package fall2018.csc2017.slidingtiles;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.VectorDrawable;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.DataInteraction;
+import android.support.test.espresso.Espresso;
+import android.support.test.espresso.PerformException;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.ViewAssertion;
+import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.intent.rule.IntentsTestRule;
+import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.test.espresso.matcher.CursorMatchers;
+import android.support.test.espresso.matcher.ViewMatchers;
+import android.support.test.espresso.util.TreeIterables;
+import android.support.test.filters.MediumTest;
+import android.support.test.filters.SmallTest;
+import android.support.test.rule.ActivityTestRule;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.hamcrest.core.IsNot;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.junit.runners.MethodSorters;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
+
+import static android.content.Context.MODE_PRIVATE;
+import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.hasBackground;
+import static android.support.test.espresso.matcher.ViewMatchers.hasChildCount;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withResourceName;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagKey;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.*;
+
+@RunWith(JUnit4.class)
+@SmallTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class TileBuilderTest {
+    private BoardManager board4x4 = BoardSetup.setUp4x4Solved();
+    private TileBuilder tileBuilder;
+    private Activity activity;
+    @Rule
+    public IntentsTestRule<GameActivity> testRule = new IntentsTestRule<GameActivity>(GameActivity.class){
+
+        @Override
+        protected void beforeActivityLaunched() {
+            super.beforeActivityLaunched();
+            board4x4.touchMove(14);
+            saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,
+                    board4x4, InstrumentationRegistry.getTargetContext());
+        }
+
+        @Override
+        protected Intent getActivityIntent() {
+            Intent intent = new Intent();
+            List<BoardManager> boardManagerList = new ArrayList<>();
+            boardManagerList.add(board4x4);
+
+            intent.putExtra("account", new Account("123","123"));
+            intent.putExtra("boardIndex", 0);
+            intent.putExtra("boardList", (ArrayList)boardManagerList);
+
+            return intent;
+        }
+
+        @Override
+        protected void afterActivityLaunched() {
+            activity = getActivity();
+            super.afterActivityLaunched();
+
+        }
+    };
+
+    public ViewAction waitView(final int viewId, final long seconds)
+    {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isRoot();
+            }
+
+            @Override
+            public String getDescription() {
+                return "waiting";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                uiController.loopMainThreadUntilIdle();
+                final long startTime = System.currentTimeMillis();
+                final long endTime = startTime + seconds;
+                final Matcher<View> viewMatcher = withId(viewId);
+                do {
+                    for (View childView : TreeIterables.breadthFirstViewTraversal(view)) {
+                        if (viewMatcher.matches(childView)) {
+                            return;
+                        }
+                    }
+                    uiController.loopMainThreadForAtLeast(50);
+                }
+                while (System.currentTimeMillis() < endTime);
+            }
+        };
+    }
+
+    private static Matcher<View> checkTargetBackground(final Drawable targetBackground){
+        return new BoundedMatcher<View, Button>(Button.class) {
+            @Override
+            protected boolean matchesSafely(Button item) {
+                LayerDrawable convertedLayers = (LayerDrawable) item.getBackground();
+                boolean matching = false;
+                Bitmap targetBitmap = getBitmap(targetBackground);
+                for(int layer = 0; layer < convertedLayers.getNumberOfLayers(); layer++){
+                    if(convertedLayers.getDrawable(layer).getClass() == targetBackground.getClass()) {
+                        Bitmap comparisonBitmap = getBitmap(convertedLayers.getDrawable(layer));
+                        matching = comparisonBitmap.sameAs(targetBitmap);
+                        if(matching)
+                            return true;
+                    }
+                }
+                return matching;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Should match specific drawable background")
+                        .appendText(targetBackground.toString());
+            }
+
+            private Bitmap getBitmap(Drawable drawable) {
+                Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                        drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                drawable.draw(canvas);
+                return bitmap;
+            }
+        };
+    }
+
+
+    @Test
+    public void test1_setupBoardUnsolved() {
+        List<Account> accountsList = new ArrayList<>();
+        accountsList.add(new Account("123","123"));
+        try{
+            ObjectOutputStream outputStream =
+                    new ObjectOutputStream(activity.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
+            outputStream.writeObject(accountsList);
+            outputStream.close();
+        } catch (IOException e){
+        }
+        onView(withId(R.id.grid)).check(matches(isDisplayed())).check(matches(hasChildCount(16)));
+        onData(withTagValue(is((Object) 1))).atPosition(0)
+                .check(matches(checkTargetBackground(activity.getDrawable(R.drawable.ic_1))));
+        onData(withTagValue(is((Object) 2))).check(matches(not(checkTargetBackground(activity.getDrawable(R.drawable.ic_1)))));
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(0).perform(click());
+        onView(withText(R.string.mc_invalid_tap))
+                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(isRoot()).perform(waitView(R.id.text_undos, 1000));
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
+        intended(hasComponent(ScoreBoard.class.getName()));
+        onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      99"))));
+    }
+//
+//    @Test
+//    public void getTileButtons() {
+//    }
+//
+//    @Test
+//    public void generateBackground() {
+//    }
+//
+//    @Test
+//    public void generateImageBackground() {
+//    }
+//
+//    @Test
+//    public void generateTileLayers() {
+//    }
+//
+//    @Test
+//    public void alignTilesDigits() {
+//    }
+//
+//    @Test
+//    public void createTileButtons() {
+//    }
+}

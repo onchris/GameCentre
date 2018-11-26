@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -221,7 +222,8 @@ public class TileBuilder implements Tileable{
                 Button tmp = new Button(currentContext);
                 Tile tile = board.getTile(row,col);
                 int tileId = board.getTile(row,col).getId();
-                if(useImages){
+                tmp.setTag(tileId);
+                if(imageSet != null){
                     if(board.getTile(row,col).getId() == columns * rows)
                         tmp.setBackground(generateImageBackground(true, tile, null));
                     tmp.setBackground(generateImageBackground(false, tile, imageSet.get(tileId-1)));

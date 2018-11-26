@@ -25,6 +25,10 @@
     <string name="am_credentials_saved">Account credentials saved!</string>
     <string name="am_error_save">Unable to save credentials in AccountManager!</string>
 
+    <!-- MovementController's Toast's strings-->
+    <string name="mc_win">YOU WIN!</string>
+    <string name="mc_invalid_tap">Invalid Tap</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
