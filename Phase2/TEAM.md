@@ -22,6 +22,11 @@
 - Phone:437-236-8666
 - in git log: RguEG
 
+### Chris On
+- Email:chris.on@mail.utoronto.ca
+- Phone:647-982-8801
+- in git log: chrison
+
 ## Communication tools
 Facebook Messenger
 

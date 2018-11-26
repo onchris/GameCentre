@@ -8,7 +8,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
-import android.widget.TextView;
 
 import org.json.JSONObject;
 
@@ -80,7 +79,7 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         int index;
         ImageButton curr_button;
         curr_button = findViewById(v.getId());
-        index = getIndex(curr_button);
+        index = connector.getIndex(curr_button);
         runFrontEnd(index);
         ultTTTBoardManager.operate();
     }
@@ -95,33 +94,4 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         }
     }
 
-
-    public void setText(TextView tv, String s) {
-        tv.setText(s);
-    }
-
-
-    public String getGlobalWinnerName(String global_winner) {
-        if (global_winner.equals("Player 1"))
-            return P1Name + " wins";
-        else if (global_winner.equals("Player 2"))
-            return P2Name + " wins";
-        else if (global_winner.equals("Drawn"))
-            return "Match Drawn";
-        return "None";
-    }
-
-
-    private int getIndex(ImageButton b) {
-        for (int i = 0; i < ImageButtons.length; i++) {
-            if (ImageButtons[i].equals(b)) {
-                return i;
-            }
-        }
-        if (b.equals(connector.breset))
-            return 100;
-        if (b.equals(connector.bundo))
-            return 200;
-        return -1;
-    }
 }

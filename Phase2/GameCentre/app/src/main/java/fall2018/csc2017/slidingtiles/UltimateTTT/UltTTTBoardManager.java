@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Map;
@@ -97,8 +98,8 @@ public class UltTTTBoardManager {
         cellManager.enableBlock(nextActiveBlock);
         cellManager.disableWinnerBlocks(disableBlock);
         cellManager.disableUsedCells(usedCells);
-        activity.setText(connector.scoreP1, Integer.toString(scoreP1));
-        activity.setText(connector.scoreP2, Integer.toString(scoreP2));
+        setText(connector.scoreP1, Integer.toString(scoreP1));
+        setText(connector.scoreP2, Integer.toString(scoreP2));
 
         if (winner.equals("Player 1"))
             Toast.makeText(activity, activity.P1Name + " won this round", Toast.LENGTH_SHORT).show();
@@ -133,7 +134,7 @@ public class UltTTTBoardManager {
         cellManager.disableAll();
         AlertDialog ad = new AlertDialog.Builder(activity)
                 .setTitle("WINNER!!!")
-                .setMessage(activity.getGlobalWinnerName(global_winner))
+                .setMessage(connector.backend.scanner.getGlobalWinnerName(global_winner))
                 .setPositiveButton("Restart Game", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -154,6 +155,10 @@ public class UltTTTBoardManager {
                 //.setIcon(R.drawable.trophy)
                 .show();
         ad.setCanceledOnTouchOutside(false);
+    }
+
+    private void setText(TextView tv, String s) {
+        tv.setText(s);
     }
 
 }

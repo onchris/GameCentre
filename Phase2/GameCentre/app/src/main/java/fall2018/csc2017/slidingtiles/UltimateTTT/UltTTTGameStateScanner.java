@@ -6,9 +6,11 @@ import java.util.Iterator;
 class UltTTTGameStateScanner {
 
     private UltTTTBackendInit initializer;
+    private UltimateTTTGameActivity activity;
 
-    UltTTTGameStateScanner(UltTTTBackendInit initializer) {
+    UltTTTGameStateScanner(UltTTTBackendInit initializer, UltimateTTTGameActivity activity) {
         this.initializer = initializer;
+        this.activity = activity;
     }
 
     String findGlobalWinner() {
@@ -25,6 +27,16 @@ class UltTTTGameStateScanner {
             return "Drawn";
         else
             return "None";
+    }
+
+    String getGlobalWinnerName(String global_winner) {
+        if (global_winner.equals("Player 1"))
+            return activity.P1Name + " wins";
+        else if (global_winner.equals("Player 2"))
+            return activity.P2Name + " wins";
+        else if (global_winner.equals("Drawn"))
+            return "Match Drawn";
+        return "None";
     }
 
     private int findOccurrences(String str, ArrayList list) {

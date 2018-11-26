@@ -174,7 +174,6 @@ public class ScoreBoard extends AppCompatActivity{
                 public void onClick(View v) {
                     if(IS_GUEST){
                         Intent tmp = new Intent(v.getContext(), ObGameActivity.class);
-                        tmp.putExtra("account", -1);
                         startActivity(tmp);
                     } else {
                         Intent tmp = new Intent(v.getContext(), ObGameActivity.class);
