@@ -34,6 +34,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests initiates in alphabetical order to achieve desired testing results
+ */
 @RunWith(JUnit4.class)
 @SmallTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -43,6 +46,9 @@ public class LaunchCentreTest{
     private SharedPreferences sharedPreferences;
     private List<Account> testAccountList = new ArrayList<>();
 
+    /**
+     * Creates a rule before the 'Before' life cycle for specialized data input
+     */
     @Rule
     public IntentsTestRule<LaunchCentre> launchCentreActivityTestRule = new IntentsTestRule<LaunchCentre>(LaunchCentre.class){
         @Override
@@ -53,36 +59,53 @@ public class LaunchCentreTest{
         }
     };
 
+    /**
+     * Sets up the UI view in LaunchCentre
+     */
     @Before
-    public void setUp() throws Exception {
+    public void setUp(){
         activity = launchCentreActivityTestRule.getActivity();
         usernameField = onView(withId(R.id.text_username));
         passwordField = onView(withId(R.id.text_password));
     }
 
+    /**
+     * General test for all components in LaunchCentre
+     */
     @Test
-    public void test1_onCreate() {
+    public void test1_generalTest() {
+        //Retrieve preferences prior testing condition.
         sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+
         // If preference for remember login details was previously set to true, set to false
         if(sharedPreferences.getBoolean("remember", false))
             onView(withId(R.id.cb_remember)).perform(click());
 
-
+        // Replace username and password with 123 which was instantiated in an account list
+        // TestRule cycle
         usernameField.perform(replaceText("123"));
         passwordField.perform(replaceText("123"));
-        //onView(withId(R.id.button_register)).perform(click());
 
+        // Ensure credentials are save on login
         onView(withId(R.id.cb_remember))
                 .perform(click())
                 .check(matches(isChecked()));
         onView(withId(R.id.button_login)).perform(click());
 
+        // Should be able to login with intended credentials
         intended(hasComponent(GameSelection.class.getName()));
     }
 
+    /**
+     * Test for login button for both valid and invalid credentials
+     */
     @Test
     public void test2_loginButtonOnClick() {
+        //Retrieve preferences prior testing condition.
         sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        // Remember me option should be toggled to true from @Test test1_onCreate().
+        assertTrue(sharedPreferences.getBoolean("remember", false));
+
         // Incorrect login credentials testing.
         assertNotEquals(sharedPreferences.getString("previousUser", ""), "1234");
         assertNotEquals(sharedPreferences.getString("previousPass", ""), "1234");
@@ -91,9 +114,22 @@ public class LaunchCentreTest{
         assertEquals(sharedPreferences.getString("previousUser", ""), "123");
         assertEquals(sharedPreferences.getString("previousPass", ""), "123");
 
-        // Remember me option should be toggled to true from @Test test1_onCreate().
-        assertTrue(sharedPreferences.getBoolean("remember", false));
+        // Test against false credentials
+        usernameField.perform(replaceText("1234"));
+        passwordField.perform(replaceText("1234"));
+        onView(withId(R.id.button_login)).perform(click());
+        // Check View Assertions for strings "lc_wrong_credentials" displayed by a Toast
+        // when wrong credentials are used for logging in
+        onView(withText(R.string.lc_wrong_credentials))
+                .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
 
+        // Replace username and password with 123 which was instantiated in an account list
+        // TestRule cycle
+        usernameField.perform(replaceText("123"));
+        passwordField.perform(replaceText("123"));
+
+        // Un-toggle remember checkbox and perform a login action
         onView(withId(R.id.cb_remember)).perform(click());
         onView(withId(R.id.button_login)).perform(click());
         intended(hasComponent(GameSelection.class.getName()));
@@ -101,19 +137,27 @@ public class LaunchCentreTest{
 
     @Test
     public void test3_registerButtonOnClick() {
-        String username = "12345";
-        String password = "12345";
-        usernameField.perform(replaceText(username));
-        passwordField.perform(replaceText(password));
+        // Instantiate bogus credentials that are not in the account list
+        usernameField.perform(replaceText("12345"));
+        passwordField.perform(replaceText("12345"));
+
+        // Perform registration
         onView(withId(R.id.button_register)).perform(click());
 
+        // Check View Assertions for strings "am_credentials_saved" displayed by a Toast
+        // when no existing user with input username and valid credentials
         onView(withText(R.string.am_credentials_saved))
                 .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
+
+        // Login with the new account created
+        onView(withId(R.id.button_login)).perform(click());
+        intended(hasComponent(GameSelection.class.getName()));
     }
 
     @Test
     public void test4_guestButtonOnClick() {
+        // Simple guests logging in action
         onView(withId(R.id.button_guest)).perform(click());
         intended(hasComponent(GameSelection.class.getName()));
     }
