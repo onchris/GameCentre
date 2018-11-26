@@ -61,6 +61,14 @@ public class LaunchCentre extends AppCompatActivity {
         preferenceManager.setWidgetPreferences();
     }
     /**
+     * Gets the account manager.
+     * @return account manager
+     */
+    public AccountManager getAccountManager() {
+        return accountManager;
+    }
+
+    /**
      * Password field can directly login using the Enter button
      */
     private void addPasswordOnKeyListener(){
@@ -98,7 +106,7 @@ public class LaunchCentre extends AppCompatActivity {
         String password = passwordTextField.getText().toString();
         if(accountManager.authenticateCredentials(username, password)) {
             currentUser = username;
-            makeCustomToastText("Login successful!", getBaseContext());
+            makeCustomToastText(this.getString(R.string.lc_login_successful), getBaseContext());
             if(rememberCheckbox.isChecked())
                 preferenceManager.storeLoginData(currentUser,
                         passwordTextField.getText().toString(),
@@ -110,7 +118,7 @@ public class LaunchCentre extends AppCompatActivity {
             startActivity(tmp);
         }
         else{
-            makeCustomToastText("Wrong credentials, please try again!", getBaseContext());
+            makeCustomToastText(this.getString(R.string.lc_wrong_credentials), getBaseContext());
         }
     }
     /**

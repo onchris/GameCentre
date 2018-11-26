@@ -12,4 +12,20 @@
     <string name="login_user">Login User</string>
     <string name="register">Register Using Credentials</string>
     <string name="login_as_guest">Login as Guest</string>
+
+    <!-- LaunchCentre's Toast's strings-->
+    <string name="lc_wrong_credentials">Wrong credentials, please try again!</string>
+    <string name="lc_login_successful">Login successful!</string>
+
+    <!-- AccountManager's Toast's strings-->
+    <string name="am_guest_reserved">Account name reserved for guests only!</string>
+    <string name="am_empty_field">Fields cannot be empty!</string>
+    <string name="am_invalid_field">Fields cannot have less than 3 characters!</string>
+    <string name="am_existing_user">User already exists!</string>
+    <string name="am_credentials_saved">Account credentials saved!</string>
+    <string name="am_error_save">Unable to save credentials in AccountManager!</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
