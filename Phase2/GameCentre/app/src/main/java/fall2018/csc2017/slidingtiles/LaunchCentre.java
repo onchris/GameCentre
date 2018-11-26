@@ -1,3 +1,10 @@
+/**
+ * There are no testable logic since this class only handles UI components for logging in.
+ * Although UI testing is implemented in LaunchCentreTest under androidTest which is an
+ * instrumented test specifically for testing extensively for UI logic.
+ *
+ * For instrumented testing of this class, please refer to LaunchCentreTest under src/androidTest
+ */
 package fall2018.csc2017.slidingtiles;
 
 import android.content.Intent;
@@ -67,6 +74,14 @@ public class LaunchCentre extends AppCompatActivity {
     public AccountManager getAccountManager() {
         return accountManager;
     }
+    /**
+     * Gets the preference manager for different implementation for loading preference
+     * @return preference manager
+     */
+    public PreferenceManager getPreferenceManager() {
+        return preferenceManager;
+    }
+
     /**
      * Password field can directly login using the Enter button
      */

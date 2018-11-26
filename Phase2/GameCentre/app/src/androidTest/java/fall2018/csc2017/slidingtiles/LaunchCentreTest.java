@@ -3,8 +3,12 @@ package fall2018.csc2017.slidingtiles;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.action.EditorAction;
+import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.SmallTest;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -19,19 +23,26 @@ import java.util.List;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
+import static android.support.test.espresso.action.ViewActions.pressKey;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -92,11 +103,16 @@ public class LaunchCentreTest{
         // If preference for remember login details was previously set to true, set to false
         if(sharedPreferences.getBoolean("remember", false))
             onView(withId(R.id.cb_remember)).perform(click());
+        List<Account> originalAccountList = testAccountList;
+        AccountManager am = activity.getAccountManager();
+        am.setAccountsList(new ArrayList<Account>());
+        assertFalse(am.checkExistingUser("123"));
 
         // Replace username and password with 123 which was instantiated in an account list
         // TestRule cycle
         usernameField.perform(replaceText("123"));
         passwordField.perform(replaceText("123"));
+        am.setAccountsList(originalAccountList);
 
         // Ensure credentials are save on login
         onView(withId(R.id.cb_remember))
@@ -139,22 +155,57 @@ public class LaunchCentreTest{
         // Replace username and password with 123 which was instantiated in an account list
         // TestRule cycle
         usernameField.perform(replaceText("123"));
-        passwordField.perform(replaceText("123"));
-
+        passwordField.perform(replaceText(""));
+        passwordField.perform(typeText("123"));
         // Un-toggle remember checkbox and perform a login action
         onView(withId(R.id.cb_remember)).perform(click());
-        onView(withId(R.id.button_login)).perform(click());
+        onView(withId(R.id.text_password)).perform(pressImeActionButton());
         intended(hasComponent(GameSelection.class.getName()));
     }
 
     @Test
     public void test3_registerButtonOnClick() {
+
+
         // Instantiate bogus credentials that are not in the account list
+        usernameField.perform(replaceText("1"));
+        passwordField.perform(replaceText("1"));
+        onView(withId(R.id.button_register)).perform(click());
+        onView(withText(R.string.am_invalid_field))
+                .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+        usernameField.perform(replaceText("guest"));
+        passwordField.perform(replaceText("12345"));
+        onView(withId(R.id.button_register)).perform(click());
+        onView(withText(R.string.am_guest_reserved))
+                .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+        usernameField.perform(replaceText("123"));
+        passwordField.perform(replaceText("12345"));
+        onView(withId(R.id.button_register)).perform(click());
+        onView(withText(R.string.am_existing_user))
+                .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+        usernameField.perform(replaceText(""));
+        passwordField.perform(replaceText(""));
+        onView(withId(R.id.button_register)).perform(click());
+        onView(withText(R.string.am_empty_field))
+                .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+
         usernameField.perform(replaceText("12345"));
         passwordField.perform(replaceText("12345"));
 
+        AccountManager am = launchCentreActivityTestRule.getActivity().getAccountManager();
+        assertNull(am.getAccountFromUsername("12345"));
+
         // Perform registration
         onView(withId(R.id.button_register)).perform(click());
+        assertNotNull(am.getAccountFromUsername("12345"));
 
         // Check View Assertions for strings "am_credentials_saved" displayed by a Toast
         // when no existing user with input username and valid credentials
