@@ -177,6 +177,12 @@ public class TileBuilderTest {
         };
     }
 
+    /**
+     * Custom matcher for comparing drawables of a view component, useful for debugging correct
+     * tile digits being displayed
+     * @param targetBackground the background to be matched against
+     * @return A valid view matcher for check assertions
+     */
     private static Matcher<View> checkTargetBackground(final Drawable targetBackground){
         return new BoundedMatcher<View, Button>(Button.class) {
             @Override
@@ -215,7 +221,6 @@ public class TileBuilderTest {
     /**
      * General test for solving, moving, displaying, switching intent to scoreboard.
      */
-
     @Test
     public void test1_setupBoardUnsolved() {
         List<Account> accountsList = new ArrayList<>();
