@@ -93,6 +93,10 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
         notifyObservers();
     }
 
+    /**
+     * toString method that returns tiles of this board in row-major order
+     * @return String of tile orders
+     */
     @Override
     public String toString() {
         String tileOrder = "";
@@ -106,6 +110,11 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
                 "tiles=" + tileOrder +
                 '}';
     }
+
+    /**
+     * Iterator method that allows iteration through tiles in row-major order
+     * @return A tile iterator
+     */
     @Override
     public Iterator<Tile> iterator(){
         return new Iterator<Tile>() {
