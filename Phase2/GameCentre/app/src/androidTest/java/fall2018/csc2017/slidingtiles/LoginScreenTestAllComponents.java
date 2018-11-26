@@ -3,12 +3,8 @@ package fall2018.csc2017.slidingtiles;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.test.espresso.ViewInteraction;
-import android.support.test.espresso.action.EditorAction;
-import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.SmallTest;
-import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -24,7 +20,6 @@ import java.util.List;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
-import static android.support.test.espresso.action.ViewActions.pressKey;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -33,7 +28,6 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
