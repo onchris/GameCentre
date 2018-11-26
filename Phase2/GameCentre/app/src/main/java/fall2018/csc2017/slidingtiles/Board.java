@@ -95,8 +95,15 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
 
     @Override
     public String toString() {
+        String tileOrder = "";
+        Iterator tileIterator = this.iterator();
+        while(tileIterator.hasNext()){
+            tileOrder += tileIterator.next();
+            if(tileIterator.hasNext())
+                tileOrder += ", ";
+        }
         return "Board{" +
-                "tiles=" + Arrays.toString(tiles) +
+                "tiles=" + tileOrder +
                 '}';
     }
     @Override
@@ -126,7 +133,7 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
      * @return the dimensions of tiles on the board as String
      */
     public String getTilesDimension(){
-        String returnString = tiles.length + "," + tiles[0].length;
+        String returnString = tiles.length + "x" + tiles[0].length;
         return returnString;
     }
 

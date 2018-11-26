@@ -85,4 +85,9 @@ public class Tile implements Comparable<Tile>, Serializable {
     public int compareTo(@NonNull Tile o) {
         return o.id - this.id;
     }
+
+    @Override
+    public String toString(){
+        return "" + getId();
+    }
 }
