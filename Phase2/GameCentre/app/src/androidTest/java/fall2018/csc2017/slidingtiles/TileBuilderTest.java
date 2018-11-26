@@ -86,20 +86,35 @@ import static org.junit.Assert.*;
 @SmallTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TileBuilderTest {
-    private BoardManager board4x4 = BoardSetup.setUp4x4Solved();
-    private TileBuilder tileBuilder;
+    /**
+     * BoardManager that sets up a nearly solved 4x4 board
+     */
+    private BoardManager board4x4 = BoardSetup.setUp4x4NearSolved();
+    /**
+     * The activity that each test cycle will store
+     */
     private Activity activity;
+    /**
+     * Overriding certain lifecycle of IntentsTestRule for relaying data that requires previous
+     * intent to pass in.
+     */
     @Rule
     public IntentsTestRule<GameActivity> testRule = new IntentsTestRule<GameActivity>(GameActivity.class){
-
+        /**
+         * Ensure that the board is 1 move away from solving by swapping the last tile.
+         * Also saves board manager to a isolated file system for scoreboard retrieval.
+         */
         @Override
         protected void beforeActivityLaunched() {
             super.beforeActivityLaunched();
-            board4x4.touchMove(14);
             saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,
                     board4x4, InstrumentationRegistry.getTargetContext());
         }
 
+        /**
+         * Overriding the intent creation cycle
+         * @return Intent that has all the data from required previous intent
+         */
         @Override
         protected Intent getActivityIntent() {
             Intent intent = new Intent();
@@ -112,7 +127,9 @@ public class TileBuilderTest {
 
             return intent;
         }
-
+        /**
+         * Initializes activity after activity has launched
+         */
         @Override
         protected void afterActivityLaunched() {
             activity = getActivity();
@@ -121,6 +138,13 @@ public class TileBuilderTest {
         }
     };
 
+    /**
+     * Custom ViewAction for waiting on a certain view component, primarily used for debugging
+     * the view component.
+     * @param viewId the view id of a view widget/component displayed on the screen
+     * @param seconds milliseconds of delay to be performed
+     * @return ViewAction that is performable by a runner
+     */
     public ViewAction waitView(final int viewId, final long seconds)
     {
         return new ViewAction() {
@@ -188,6 +212,9 @@ public class TileBuilderTest {
         };
     }
 
+    /**
+     * General test for solving, moving, displaying, switching intent to scoreboard.
+     */
 
     @Test
     public void test1_setupBoardUnsolved() {
@@ -213,28 +240,4 @@ public class TileBuilderTest {
         intended(hasComponent(ScoreBoard.class.getName()));
         onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      99"))));
     }
-//
-//    @Test
-//    public void getTileButtons() {
-//    }
-//
-//    @Test
-//    public void generateBackground() {
-//    }
-//
-//    @Test
-//    public void generateImageBackground() {
-//    }
-//
-//    @Test
-//    public void generateTileLayers() {
-//    }
-//
-//    @Test
-//    public void alignTilesDigits() {
-//    }
-//
-//    @Test
-//    public void createTileButtons() {
-//    }
 }
