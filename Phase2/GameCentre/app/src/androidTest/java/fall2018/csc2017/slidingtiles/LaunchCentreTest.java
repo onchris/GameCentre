@@ -98,10 +98,10 @@ public class LaunchCentreTest{
     @Test
     public void test1_generalTest() {
         //Retrieve preferences prior testing condition.
-        sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        PreferenceManager pManager = activity.getPreferenceManager();
 
         // If preference for remember login details was previously set to true, set to false
-        if(sharedPreferences.getBoolean("remember", false))
+        if(pManager.retrieveBool("remember", false))
             onView(withId(R.id.cb_remember)).perform(click());
         List<Account> originalAccountList = testAccountList;
         AccountManager am = activity.getAccountManager();
@@ -165,8 +165,6 @@ public class LaunchCentreTest{
 
     @Test
     public void test3_registerButtonOnClick() {
-
-
         // Instantiate bogus credentials that are not in the account list
         usernameField.perform(replaceText("1"));
         passwordField.perform(replaceText("1"));
@@ -175,6 +173,7 @@ public class LaunchCentreTest{
                 .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
 
+        // Force fail registration by using "guest" as username which is reserved for guests only
         usernameField.perform(replaceText("guest"));
         passwordField.perform(replaceText("12345"));
         onView(withId(R.id.button_register)).perform(click());
@@ -182,6 +181,7 @@ public class LaunchCentreTest{
                 .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
 
+        // Force fail registration with existing username
         usernameField.perform(replaceText("123"));
         passwordField.perform(replaceText("12345"));
         onView(withId(R.id.button_register)).perform(click());
@@ -189,6 +189,7 @@ public class LaunchCentreTest{
                 .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
 
+        // Force fail registration with empty fields
         usernameField.perform(replaceText(""));
         passwordField.perform(replaceText(""));
         onView(withId(R.id.button_register)).perform(click());
@@ -196,10 +197,11 @@ public class LaunchCentreTest{
                 .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
 
-
+        // Create account with valid credentials
         usernameField.perform(replaceText("12345"));
         passwordField.perform(replaceText("12345"));
 
+        // Check that username is not in account list and not existing
         AccountManager am = launchCentreActivityTestRule.getActivity().getAccountManager();
         assertNull(am.getAccountFromUsername("12345"));
 
