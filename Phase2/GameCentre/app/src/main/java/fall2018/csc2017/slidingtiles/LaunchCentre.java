@@ -61,13 +61,12 @@ public class LaunchCentre extends AppCompatActivity {
         preferenceManager.setWidgetPreferences();
     }
     /**
-     * Gets the account manager.
+     * Gets the account manager for different implementation for loading account lists
      * @return account manager
      */
     public AccountManager getAccountManager() {
         return accountManager;
     }
-
     /**
      * Password field can directly login using the Enter button
      */
