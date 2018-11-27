@@ -20,7 +20,7 @@ public class SlidingTilesScoreManager extends ScoreManager {
      */
     public SlidingTilesScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
-        if (!username.equals("-1")) {
+        if (!username.equals("-1") && currentAccount != null) {
             userScores = currentAccount.getSlidingGameScores();
             buildDisplayUserScoresList();
         }

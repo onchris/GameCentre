@@ -91,6 +91,7 @@
         android:layout_marginEnd="168dp"
         android:layout_marginBottom="19dp"
         android:backgroundTint="@color/colorAccent"
+        android:onClick="scoreboardOnClick"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_scoremarks5lines" />
 

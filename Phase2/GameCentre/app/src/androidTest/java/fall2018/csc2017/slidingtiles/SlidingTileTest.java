@@ -5,41 +5,24 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableWrapper;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.VectorDrawable;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.DataInteraction;
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
-import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.ViewInteraction;
-import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.BoundedMatcher;
-import android.support.test.espresso.matcher.CursorMatchers;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.espresso.util.HumanReadables;
 import android.support.test.espresso.util.TreeIterables;
-import android.support.test.filters.MediumTest;
 import android.support.test.filters.SmallTest;
-import android.support.test.rule.ActivityTestRule;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Chronometer;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.hamcrest.core.IsNot;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,7 +44,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
-import static android.support.test.espresso.matcher.ViewMatchers.hasBackground;
 import static android.support.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
@@ -71,19 +53,18 @@ import static android.support.test.espresso.matcher.ViewMatchers.withTagKey;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
-import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 @SmallTest
@@ -110,8 +91,20 @@ public class SlidingTileTest {
         @Override
         protected void beforeActivityLaunched() {
             super.beforeActivityLaunched();
+            GameSelection.IS_GUEST = false;
+            List<Account> accountsList = new ArrayList<>();
+            accountsList.add(new Account("123", "123"));
+            try {
+            ObjectOutputStream outputStream =
+                    new ObjectOutputStream(InstrumentationRegistry.getTargetContext().openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
+            outputStream.writeObject(accountsList);
+            outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,
                     board4x4, InstrumentationRegistry.getTargetContext());
+            saveBoardsToAccounts(InstrumentationRegistry.getTargetContext(), new Account("123","123"), new ArrayList<BoardManager>());
         }
 
         /**
@@ -148,7 +141,7 @@ public class SlidingTileTest {
      * @param seconds milliseconds of delay to be performed
      * @return ViewAction that is performable by a runner
      */
-    private static ViewAction waitView(final int viewId, final long seconds)
+    private static ViewAction delayFor(final int viewId, final long seconds)
     {
         return new ViewAction() {
             @Override
@@ -176,6 +169,44 @@ public class SlidingTileTest {
                     uiController.loopMainThreadForAtLeast(50);
                 }
                 while (System.currentTimeMillis() < endTime);
+
+            }
+        };
+    }
+
+    private static ViewAction waitFor(final int viewId, final long seconds)
+    {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return ViewMatchers.withId(viewId);
+            }
+
+            @Override
+            public String getDescription() {
+                return "waiting";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                uiController.loopMainThreadUntilIdle();
+                final long startTime = System.currentTimeMillis();
+                final long endTime = startTime + seconds;
+                final Matcher<View> viewMatcher = withId(viewId);
+                do {
+                    for (View childView : TreeIterables.breadthFirstViewTraversal(view)) {
+                        if (viewMatcher.matches(childView)) {
+                            return;
+                        }
+                    }
+                    uiController.loopMainThreadForAtLeast(50);
+                }
+                while (System.currentTimeMillis() < endTime);
+                throw new PerformException.Builder()
+                        .withActionDescription(this.getDescription())
+                        .withViewDescription(HumanReadables.describe(view))
+                        .withCause(new TimeoutException())
+                        .build();
 
             }
         };
@@ -287,12 +318,6 @@ public class SlidingTileTest {
     public void test1_setupBoardUnsolved() {
         try {
             GameSelection.IS_GUEST = false;
-            List<Account> accountsList = new ArrayList<>();
-            accountsList.add(new Account("123", "123"));
-            ObjectOutputStream outputStream =
-                    new ObjectOutputStream(activity.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
-            outputStream.writeObject(accountsList);
-            outputStream.close();
             testRule.getActivity().setCurrentAccount(new Account("123","123"));
 
             onView(withId(R.id.grid)).check(matches(isDisplayed())).check(matches(hasChildCount(16)));
@@ -300,21 +325,21 @@ public class SlidingTileTest {
                     .check(matches(checkTargetBackground(activity.getDrawable(R.drawable.ic_1))));
             onData(withTagValue(is((Object) 2))).check(matches(not(checkTargetBackground(activity.getDrawable(R.drawable.ic_1)))));
             onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(0).perform(click());
-            Thread.sleep(500);
+            Thread.sleep(300);
             onView(withText(R.string.mc_invalid_tap))
                     .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                     .check(matches(isDisplayed()));
             onView(withId(R.id.SaveButton)).perform(click());
-            Thread.sleep(500);
+            Thread.sleep(300);
             onView(withText(R.string.ga_manual_save))
                     .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                     .check(matches(isDisplayed()));
             onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(10).perform(click());
-            onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+            Thread.sleep(250);
             onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(6).perform(click());
-            onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+            Thread.sleep(250);
             onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(2).perform(click());
-            onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+            Thread.sleep(250);
             ViewInteraction undoButton = onView(allOf(instanceOf(Button.class), withId(R.id.UndoButton)));
             undoButton.perform(click()).perform(click()).perform(click()).perform(click());
             Thread.sleep(500);
@@ -327,12 +352,9 @@ public class SlidingTileTest {
                     .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                     .check(matches(isDisplayed()));
             onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
-            onView(isRoot()).perform(waitView(R.id.text_undos, 1000));
+            onView(isRoot()).perform(delayFor(R.id.text_undos, 1000));
             intended(hasComponent(ScoreBoard.class.getName()));
-            onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      9"))));
-            onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
-        } catch (IOException e){
-
+            onData(allOf(instanceOf(String.class), startsWith("123"))).atPosition(0).check(matches(withText(startsWith("123:      9"))));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -344,28 +366,26 @@ public class SlidingTileTest {
         try {
             List<Account> accountsList = new ArrayList<>();
             accountsList.add(new Account("123", "123"));
-            ObjectOutputStream outputStream =
-                    null;
+            ObjectOutputStream outputStream;
             outputStream = new ObjectOutputStream(activity.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
-
             outputStream.writeObject(accountsList);
             outputStream.close();
-        testRule.getActivity().setCurrentAccount(null);
-        onView(withId(R.id.text_currentUserGame)).check(matches(withText("Guest")));
-        onView(withId(R.id.SaveButton)).perform(click());
-        onView(withText(R.string.ga_guest_save))
-                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
-                .check(matches(isDisplayed()));
-        testRule.getActivity().setCurrentAccount(new Account("123","123"));
-        onView(withId(R.id.SaveButton)).perform(click());
-        onView(withText(R.string.ga_manual_save))
-                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
-                .check(matches(isDisplayed()));
-        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
-        Thread.sleep(500);
-        intended(hasComponent(ScoreBoard.class.getName()));
-        onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      9"))));
-        onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
+            testRule.getActivity().setCurrentAccount(null);
+            onView(withId(R.id.text_currentUserGame)).check(matches(withText("Guest")));
+            onView(withId(R.id.SaveButton)).perform(click());
+            onView(withText(R.string.ga_guest_save))
+                    .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                    .check(matches(isDisplayed()));
+            testRule.getActivity().setCurrentAccount(new Account("123","123"));
+            onView(withId(R.id.SaveButton)).perform(click());
+            onView(withText(R.string.ga_manual_save))
+                    .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                    .check(matches(isDisplayed()));
+            onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
+            Thread.sleep(500);
+            intended(hasComponent(ScoreBoard.class.getName()));
+            onData(allOf(instanceOf(String.class), startsWith("123"))).check(matches(withText(startsWith("123:      9"))));
+            onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
         } catch (IOException e){
 
         } catch (InterruptedException e) {
@@ -377,12 +397,16 @@ public class SlidingTileTest {
     public void test3_guestScoreTest(){
         try {
             testRule.getActivity().setCurrentAccount(null);
+            GameSelection.IS_GUEST = true;
             onView(withId(R.id.text_currentUserGame)).check(matches(withText("Guest")));
             onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
             Thread.sleep(500);
             intended(hasComponent(ScoreBoard.class.getName()));
-            onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("Guest:      9"))));
+            onData(allOf(instanceOf(String.class), startsWith("Guest"))).inAdapterView(withId(R.id.scoreboard_list))
+                    .check(matches(withText(startsWith("Guest:      9"))));
             onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
+            onView(withId(R.id.button_new_game)).perform(click());
+            intended(hasComponent(GameActivity.class.getName()));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
