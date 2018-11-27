@@ -28,4 +28,16 @@
     <string name="player">Player</string>
     <string name="save">Save</string>
     <string name="num_undo">Undo</string>
+    <string name="welcome_message">Welcome To Sliding Tiles   A Puzzle Game where you must arrange the numbers in the correct order</string>
+    <string name="text_game">text game</string>
+    <string name="difficulty_text">difficulty</string>
+    <string name="undos">Undos</string>
+    <string name="load_game">Load Game</string>
+    <string name="load_image_warning">Image will NOT be saved nor loadable after exiting, but puzzle will remain loadable.</string>
+    <string name="load_image">Load Image</string>
+    <string name="use_image_message">Use this image as puzzle</string>
+    <string name="insert_image_url_hint">Custom URL Image</string>
+    <string name="default_undos">3</string>
+    <string name="x">x</string>
+    <string name="confirm">Confirm</string>
 </resources>
