@@ -47,6 +47,20 @@
     <string name="sb_game">%1$s</string>
     <string name="gsb_logged_as">Logged as: %1$s</string>
 
+    <!-- LoadList's Strings-->
+    <string name="ll_text_game">text game</string>
+    <string name="ll_difficulty_text">difficulty</string>
+    <string name="ll_load_game">Load Game</string>
+
+    <!-- dialog SlidingDifficulty's Strings-->
+    <string name="sd_confirm">Confirm</string>
+    <string name="sd_x">x</string>
+    <string name="sd_num_default_undos">3</string>
+    <string name="sd_insert_image_url_hint">Custom URL Image</string>
+    <string name="sd_use_image_message">Use this image as puzzle</string>
+    <string name="sd_load_image">Load Image</string>
+    <string name="sd_load_image_warning">Image will NOT be saved nor loadable after exiting, but puzzle will remain loadable.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -59,4 +73,9 @@
     <string name="select_loaded_games">Select Loaded Games</string>
     <string name="new_game">New Game</string>
     <string name="player">Player</string>
+    <string name="num_undos">Undos</string>
+
+    <string name="welcome_message">Welcome To Sliding Tiles   A Puzzle Game where you must arrange the numbers in the correct order</string>
+
+
 </resources>
