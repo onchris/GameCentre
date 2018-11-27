@@ -55,25 +55,25 @@ public class MainThread extends Thread {
                         e.printStackTrace();
                     }
                 }
-
+            }
+            timeMillis = (System.nanoTime() - startTime) / 1000000;
+            waitTime = targetTime - timeMillis;
+            try {
+                if (waitTime > 0)
+                    this.sleep(waitTime);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            totalTime += System.nanoTime() - startTime;
+            frameCount++;
+            if (frameCount == MAX_FPS) {
+                averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
+                frameCount = 0;
+                totalTime = 0;
+                System.out.println(averageFPS);
             }
         }
-        timeMillis = (System.nanoTime() - startTime) / 1000000;
-        waitTime = targetTime - timeMillis;
-        try {
-            if (waitTime > 0)
-                this.sleep(waitTime);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        totalTime += System.nanoTime() - startTime;
-        frameCount++;
-        if (frameCount == MAX_FPS) {
-            averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
-            frameCount = 0;
-            totalTime = 0;
-            System.out.println(averageFPS);
-        }
+
     }
 }
 
