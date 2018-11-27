@@ -210,7 +210,6 @@ public class SlidingTileTest {
                 final long endTime = startTime + timeoutThreshold;
                 final Matcher<View> viewMatcher = withId(viewId);
                 TextView textfield = null;
-                Log.e("Chrono", "wroks");
                 do {
                     if(!foundView) {
                         for (View childView : TreeIterables.breadthFirstViewTraversal(view)) {
@@ -229,8 +228,6 @@ public class SlidingTileTest {
                                     .build();
                         }
                         else if(textfield != null) {
-                            //textfield.getText();
-                            Log.e("Chrono", textfield.getText().toString());
                             if(textfield.getText().toString().endsWith(targetString))
                                 reached = true;
                             uiController.loopMainThreadForAtLeast(500);
