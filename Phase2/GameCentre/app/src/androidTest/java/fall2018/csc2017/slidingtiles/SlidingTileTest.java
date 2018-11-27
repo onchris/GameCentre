@@ -285,56 +285,106 @@ public class SlidingTileTest {
      */
     @Test
     public void test1_setupBoardUnsolved() {
-        List<Account> accountsList = new ArrayList<>();
-        accountsList.add(new Account("123","123"));
-        try{
+        try {
+            GameSelection.IS_GUEST = false;
+            List<Account> accountsList = new ArrayList<>();
+            accountsList.add(new Account("123", "123"));
             ObjectOutputStream outputStream =
                     new ObjectOutputStream(activity.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
             outputStream.writeObject(accountsList);
             outputStream.close();
+            testRule.getActivity().setCurrentAccount(new Account("123","123"));
+
+            onView(withId(R.id.grid)).check(matches(isDisplayed())).check(matches(hasChildCount(16)));
+            onData(withTagValue(is((Object) 1))).atPosition(0)
+                    .check(matches(checkTargetBackground(activity.getDrawable(R.drawable.ic_1))));
+            onData(withTagValue(is((Object) 2))).check(matches(not(checkTargetBackground(activity.getDrawable(R.drawable.ic_1)))));
+            onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(0).perform(click());
+            Thread.sleep(500);
+            onView(withText(R.string.mc_invalid_tap))
+                    .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                    .check(matches(isDisplayed()));
+            onView(withId(R.id.SaveButton)).perform(click());
+            Thread.sleep(500);
+            onView(withText(R.string.ga_manual_save))
+                    .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                    .check(matches(isDisplayed()));
+            onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(10).perform(click());
+            onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+            onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(6).perform(click());
+            onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+            onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(2).perform(click());
+            onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+            ViewInteraction undoButton = onView(allOf(instanceOf(Button.class), withId(R.id.UndoButton)));
+            undoButton.perform(click()).perform(click()).perform(click()).perform(click());
+            Thread.sleep(500);
+            onView(withText(R.string.ga_cannot_undo))
+                    .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                    .check(matches(isDisplayed()));
+            onView(withId(R.id.chronometer)).perform(waitUntil(R.id.chronometer, "10", 15000));
+            Thread.sleep(250);
+            onView(withText(R.string.ga_auto_saved))
+                    .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                    .check(matches(isDisplayed()));
+            onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
+            onView(isRoot()).perform(waitView(R.id.text_undos, 1000));
+            intended(hasComponent(ScoreBoard.class.getName()));
+            onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      9"))));
+            onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
         } catch (IOException e){
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        onView(withId(R.id.grid)).check(matches(isDisplayed())).check(matches(hasChildCount(16)));
-        onData(withTagValue(is((Object) 1))).atPosition(0)
-                .check(matches(checkTargetBackground(activity.getDrawable(R.drawable.ic_1))));
-        onData(withTagValue(is((Object) 2))).check(matches(not(checkTargetBackground(activity.getDrawable(R.drawable.ic_1)))));
-        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(0).perform(click());
-        onView(withText(R.string.mc_invalid_tap))
-                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
-                .check(matches(isDisplayed()));
-        onView(withId(R.id.SaveButton)).perform(click());
-        onView(withText(R.string.ga_manual_save))
-                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
-                .check(matches(isDisplayed()));
-        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(10).perform(click());
-        onView(isRoot()).perform(waitView(R.id.text_undos, 500));
-        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(6).perform(click());
-        onView(isRoot()).perform(waitView(R.id.text_undos, 500));
-        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(2).perform(click());
-        onView(isRoot()).perform(waitView(R.id.text_undos, 500));
-        ViewInteraction undoButton = onView(allOf(instanceOf(Button.class), withId(R.id.UndoButton)));
-        undoButton.perform(click()).perform(click()).perform(click()).perform(click());
-        onView(withText(R.string.ga_cannot_undo))
-                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
-                .check(matches(isDisplayed()));
-        onView(withId(R.id.chronometer)).perform(waitUntil(R.id.chronometer, "10", 15000));
-        onView(withText(R.string.ga_auto_saved))
-                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
-                .check(matches(isDisplayed()));
-        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
-        onView(isRoot()).perform(waitView(R.id.text_undos, 1000));
-        intended(hasComponent(ScoreBoard.class.getName()));
-        onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      9"))));
-        onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
+
     }
 
     @Test
     public void test2_guestSaveTest(){
+        try {
+            List<Account> accountsList = new ArrayList<>();
+            accountsList.add(new Account("123", "123"));
+            ObjectOutputStream outputStream =
+                    null;
+            outputStream = new ObjectOutputStream(activity.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
+
+            outputStream.writeObject(accountsList);
+            outputStream.close();
         testRule.getActivity().setCurrentAccount(null);
         onView(withId(R.id.text_currentUserGame)).check(matches(withText("Guest")));
         onView(withId(R.id.SaveButton)).perform(click());
         onView(withText(R.string.ga_guest_save))
                 .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
+        testRule.getActivity().setCurrentAccount(new Account("123","123"));
+        onView(withId(R.id.SaveButton)).perform(click());
+        onView(withText(R.string.ga_manual_save))
+                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
+        Thread.sleep(500);
+        intended(hasComponent(ScoreBoard.class.getName()));
+        onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      9"))));
+        onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
+        } catch (IOException e){
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test3_guestScoreTest(){
+        try {
+            testRule.getActivity().setCurrentAccount(null);
+            onView(withId(R.id.text_currentUserGame)).check(matches(withText("Guest")));
+            onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
+            Thread.sleep(500);
+            intended(hasComponent(ScoreBoard.class.getName()));
+            onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("Guest:      9"))));
+            onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

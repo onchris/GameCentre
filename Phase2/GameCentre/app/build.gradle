@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -10,6 +9,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    sourceSets{
+        androidTest.setRoot('src/androidTest')
+    }
     packagingOptions {
         exclude 'LICENSE.txt'
     }
@@ -18,12 +20,29 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled = true
+
+            tasks.withType(Test){
+                beforeTest { descriptor -> logger.lifecycle("Running: $descriptor.className")}
+            }
+        }
     }
     testOptions {
+        unitTests.all {
+            testLogging {
+                outputs.upToDateWhen {false}
+                events "passed", "failed", "standardError"
+                showCauses true
+                showExceptions true
+            }
+        }
         unitTests.returnDefaultValues = true
         animationsDisabled = true
+
     }
 }
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -39,4 +58,5 @@ dependencies {
     testImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     testImplementation 'com.android.support.test:runner:1.0.2'
     testImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'junit:junit:4.12'
 }

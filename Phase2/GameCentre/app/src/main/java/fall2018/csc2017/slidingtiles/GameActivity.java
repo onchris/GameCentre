@@ -84,8 +84,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     private void checkGameIsOver() {
         if (boardManager.puzzleSolved()) {
-            timer.cancel();
-            timerTask.cancel();
+            if(currentAccount!=null) {
+                timer.cancel();
+                timerTask.cancel();
+            }
             pauseChronometer(chronometer);
             int movesTaken = boardManager.getMoves();
             boardManager.setTimeSpent(SystemClock.elapsedRealtime() - chronometer.getBase());
@@ -93,7 +95,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
             currentScore = scoringSystem.calculateScore(movesTaken, timeTaken);
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
-            if(!GameSelection.IS_GUEST) {
+            if(currentAccount != null) {
                 currentAccount.addToSlidingGameScores(currentScore);
                 saveScoresToAccounts(this, currentAccount, currentScore);
                 tmp.putExtra("currentUsername", currentAccount.getUsername());
@@ -121,6 +123,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
         if(!GameSelection.IS_GUEST)
             setCurrentAccount((Account) getIntent().getSerializableExtra("account"));
+        else
+            setCurrentAccount(null);
         boolean useImage = IMAGE_SET != null;
         if(boardManager == null)
         {
@@ -161,19 +165,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
                         display();
                     }
                 });
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        onClickSaveBoard(getCurrentFocus(),true);
-                    }
-                });
-            }
-        };
-        if(!GameSelection.IS_GUEST)
-            timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
     }
 
     /**
@@ -298,10 +289,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void onBackPressed() {
         pauseChronometer(chronometer);
         boardManager.setTimeSpent(pauseTime);
-        if(!GameSelection.IS_GUEST)
+        if(currentAccount != null) {
             onClickSaveBoard(getCurrentFocus(), false);
-        timer.cancel();
-        timerTask.cancel();
+            timer.cancel();
+            timerTask.cancel();
+        }
         IMAGE_SET = null;
         super.onBackPressed();
         finish();
@@ -318,6 +310,18 @@ public class GameActivity extends AppCompatActivity implements Observer {
         if(this.currentAccount != null) {
             Log.e("null s", currentAccount.getUsername());
             v.setText(getString(R.string.ga_current_user, currentAccount.getUsername()));
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onClickSaveBoard(getCurrentFocus(),true);
+                        }
+                    });
+                }
+            };
+            timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
         }
         else
             v.setText(getString(R.string.ga_guest_user));
