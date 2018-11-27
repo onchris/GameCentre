@@ -29,6 +29,12 @@
     <string name="mc_win">YOU WIN!</string>
     <string name="mc_invalid_tap">Invalid Tap</string>
 
+    <!-- GameActivity's Strings -->
+    <string name="ga_undo">Undo:%1$d</string>
+    <string name="ga_save">Save</string>
+    <string name="ga_logged_as">Logged in:</string>
+    <string name="ga_current_user">%1$s</string>
+    <string name="ga_guest_user">Guest</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

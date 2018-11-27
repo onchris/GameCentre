@@ -240,9 +240,22 @@ public class SlidingTileTest {
         onView(withText(R.string.mc_invalid_tap))
                 .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
-        onView(isRoot()).perform(waitView(R.id.text_undos, 1000));
+        onView(withId(R.id.SaveButton)).perform(click());
+        onView(withText(R.string.mc_invalid_tap))
+                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(10).perform(click());
+        onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(6).perform(click());
+        onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(2).perform(click());
+        onView(isRoot()).perform(waitView(R.id.text_undos, 500));
+        ViewInteraction undoButton = onView(allOf(instanceOf(Button.class), withId(R.id.UndoButton)));
+        undoButton.perform(click()).perform(click()).perform(click());
         onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
+        onView(isRoot()).perform(waitView(R.id.text_undos, 1000));
         intended(hasComponent(ScoreBoard.class.getName()));
-        onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      99"))));
+        onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      9"))));
+        onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
     }
 }

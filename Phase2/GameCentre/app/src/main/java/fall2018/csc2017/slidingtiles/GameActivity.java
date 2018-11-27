@@ -75,7 +75,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         checkGameIsOver();
         undoButton = findViewById(R.id.UndoButton);
-        undoButton.setText("Undo:"+boardManager.getNumCanUndo());
+        undoButton.setText(getString(R.string.ga_undo, boardManager.getNumCanUndo()));
     }
 
     /**
@@ -134,9 +134,9 @@ public class GameActivity extends AppCompatActivity implements Observer {
         addUndoButtonListener();
         TextView v = findViewById(R.id.text_currentUserGame);
         if(!GameSelection.IS_GUEST)
-            v.setText(currentAccount.getUsername());
+            v.setText(getString(R.string.ga_current_user,currentAccount.getUsername()));
         else
-            v.setText("Guest");
+            v.setText(getString(R.string.ga_guest_user));
         chronometer = findViewById(R.id.chronometer);
         startChronometer(chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime() - boardManager.getTimeSpent());
