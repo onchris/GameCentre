@@ -12,8 +12,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(JUnit4.class)
 @SmallTest
@@ -33,7 +39,13 @@ public class GameSelectionTest {
             Intent intent = new Intent();
             intent.putExtra("currentUser", "123");
             testRule.launchActivity(intent);
-            intended(hasComponent(GameSelection.class.getName()));
+            onView(withId(R.id.text_loggedas)).check(matches(withText("123")));
+            onView(withId(R.id.button_gameselect1)).perform(click());
+            onView(withId(R.id.scrollable_loadablegames)).check(matches(isDisplayed()));
+
+
+
+
             Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
