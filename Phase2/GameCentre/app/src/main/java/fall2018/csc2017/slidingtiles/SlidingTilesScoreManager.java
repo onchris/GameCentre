@@ -18,7 +18,7 @@ public class SlidingTilesScoreManager extends ScoreManager {
      * @param ctx context of the activity
      * @param score score of the last game
      */
-    public SlidingTilesScoreManager(String username, Context ctx, Integer score) {
+    SlidingTilesScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
         if (!username.equals("-1") && currentAccount != null) {
             userScores = currentAccount.getSlidingGameScores();
@@ -46,7 +46,7 @@ public class SlidingTilesScoreManager extends ScoreManager {
                 p = new Pair<>(score, "Guest");
                 gameScores.add(p);
             } catch (NumberFormatException e) {
-                p = new Pair<>(-1, "Guest");
+                e.printStackTrace();
             }
         }
         Collections.sort(gameScores, new Comparator<Pair<Integer, String>>() {

@@ -32,7 +32,7 @@
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginBottom="0dp"
         android:onClick="onClickSaveBoard"
         android:text="@string/ga_save" />
@@ -61,7 +61,7 @@
         android:layout_marginBottom="3dp"
         android:layout_toStartOf="@+id/SaveButton"
         android:paddingEnd="0dp"
-        android:text="TextView" />
+        android:text="@string/player" />
 
     <Chronometer
         android:id="@+id/chronometer"
@@ -71,7 +71,7 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="5dp"
         android:layout_toStartOf="@+id/textView7"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
 
 

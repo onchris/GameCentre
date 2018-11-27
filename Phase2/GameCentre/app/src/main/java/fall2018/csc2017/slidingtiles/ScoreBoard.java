@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,10 +44,6 @@ public class ScoreBoard extends AppCompatActivity{
      * Scores List for Game-wide scores for display with all pair
      */
     private List<String> displayGameScoresList = new ArrayList<>();
-    /**
-     * TextView for the score from the most recently completed game
-     */
-    private TextView currentScore;
     /**
      * A check for if the player is a guest
      */
@@ -90,11 +87,12 @@ public class ScoreBoard extends AppCompatActivity{
             if (getIntent().hasExtra("board")) { //TODO: board???
                 board = (Board) getIntent().getSerializableExtra("board");
             }
-        } else {
-            IS_GUEST = true;
         }
 
-        currentScore = findViewById(R.id.lastscore);
+        /*
+          TextView for the score from the most recently completed game
+         */
+        TextView currentScore = findViewById(R.id.lastscore);
         currentScore.setText(getIntent().getStringExtra("currentScore"));
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
@@ -162,7 +160,7 @@ public class ScoreBoard extends AppCompatActivity{
                         Intent tmp = new Intent(v.getContext(), GameActivity.class);
                         currentAccount.getBoardList().add(bm);
                         tmp.putExtra("account", currentAccount);
-                        tmp.putExtra("boardList", currentAccount.getBoardList());
+                        tmp.putExtra("boardList", (Serializable) currentAccount.getBoardList());
                         tmp.putExtra("boardIndex", currentAccount.getBoardList().indexOf(bm));
                         startActivity(tmp);
                     }
@@ -176,7 +174,6 @@ public class ScoreBoard extends AppCompatActivity{
                 public void onClick(View v) {
                     if(IS_GUEST){
                         Intent tmp = new Intent(v.getContext(), ObGameActivity.class);
-                        tmp.putExtra("account", -1);
                         startActivity(tmp);
                     } else {
                         Intent tmp = new Intent(v.getContext(), ObGameActivity.class);

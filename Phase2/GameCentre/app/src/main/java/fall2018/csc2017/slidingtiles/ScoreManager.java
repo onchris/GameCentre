@@ -44,9 +44,9 @@ abstract class ScoreManager {
 
     /**
      * Sorts the lists of scores.
-     * @param username
-     * @param ctx
-     * @param score
+     * @param username username of the account
+     * @param ctx context of the activity
+     * @param score score for the last game
      */
     public ScoreManager(String username, Context ctx, Integer score){
         this.score = score;

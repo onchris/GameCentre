@@ -6,9 +6,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UltimateTTTInfoManager {
+class UltimateTTTInfoManager {
     //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/json/jsonparser.java
-    public static Map<String, String> parseJson(JSONObject json_data) {
+    static Map<String, String> parseJson(JSONObject json_data) {
         HashMap<String, String> map;
         JSONObject jsonObject;
         jsonObject = json_data;
