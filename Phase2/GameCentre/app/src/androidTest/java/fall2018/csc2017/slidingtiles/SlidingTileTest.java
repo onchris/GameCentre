@@ -241,7 +241,7 @@ public class SlidingTileTest {
                 .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
         onView(withId(R.id.SaveButton)).perform(click());
-        onView(withText(R.string.mc_invalid_tap))
+        onView(withText(R.string.ga_manual_save))
                 .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
         onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(10).perform(click());
