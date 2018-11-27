@@ -21,6 +21,7 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.CursorMatchers;
 import android.support.test.espresso.matcher.ViewMatchers;
+import android.support.test.espresso.util.HumanReadables;
 import android.support.test.espresso.util.TreeIterables;
 import android.support.test.filters.MediumTest;
 import android.support.test.filters.SmallTest;
@@ -29,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -75,6 +77,7 @@ import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -145,7 +148,7 @@ public class SlidingTileTest {
      * @param seconds milliseconds of delay to be performed
      * @return ViewAction that is performable by a runner
      */
-    public ViewAction waitView(final int viewId, final long seconds)
+    private static ViewAction waitView(final int viewId, final long seconds)
     {
         return new ViewAction() {
             @Override
@@ -173,9 +176,72 @@ public class SlidingTileTest {
                     uiController.loopMainThreadForAtLeast(50);
                 }
                 while (System.currentTimeMillis() < endTime);
+
             }
         };
     }
+
+    /**
+     * Wait until certain text field ends with an input targetString
+     * @param viewId the view to be matched against
+     * @param targetString the suffix which the string should end it
+     * @param timeoutThreshold the threshold that this ViewAction will run for
+     * @return ViewAction that is performable
+     */
+    private static ViewAction waitUntil(final int viewId,
+                                        final String targetString,
+                                        final long timeoutThreshold){
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return instanceOf(TextView.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "Waiting until string matches target string: " + targetString;
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                boolean reached = false, foundView = false;
+                uiController.loopMainThreadUntilIdle();
+                final long startTime = System.currentTimeMillis();
+                final long endTime = startTime + timeoutThreshold;
+                final Matcher<View> viewMatcher = withId(viewId);
+                TextView textfield = null;
+                Log.e("Chrono", "wroks");
+                do {
+                    if(!foundView) {
+                        for (View childView : TreeIterables.breadthFirstViewTraversal(view)) {
+                            if (viewMatcher.matches(childView)) {
+                                foundView = true;
+                                textfield = (TextView) childView;
+                            }
+                        }
+                    }
+                    else{
+                        if(System.currentTimeMillis() >= endTime) {
+                            throw new PerformException.Builder()
+                                    .withActionDescription(this.getDescription())
+                                    .withViewDescription(HumanReadables.describe(view))
+                                    .withCause(new TimeoutException())
+                                    .build();
+                        }
+                        else if(textfield != null) {
+                            //textfield.getText();
+                            Log.e("Chrono", textfield.getText().toString());
+                            if(textfield.getText().toString().endsWith(targetString))
+                                reached = true;
+                            uiController.loopMainThreadForAtLeast(500);
+                        }
+                    }
+                }
+                while(!reached && foundView);
+            }
+        };
+    }
+
 
     /**
      * Custom matcher for comparing drawables of a view component, useful for debugging correct
@@ -217,7 +283,6 @@ public class SlidingTileTest {
             }
         };
     }
-
     /**
      * General test for solving, moving, displaying, switching intent to scoreboard.
      */
@@ -253,6 +318,10 @@ public class SlidingTileTest {
         ViewInteraction undoButton = onView(allOf(instanceOf(Button.class), withId(R.id.UndoButton)));
         undoButton.perform(click()).perform(click()).perform(click()).perform(click());
         onView(withText(R.string.ga_cannot_undo))
+                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+        onView(withId(R.id.chronometer)).perform(waitUntil(R.id.chronometer, "10", 15000));
+        onView(withText(R.string.ga_auto_saved))
                 .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
         onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
