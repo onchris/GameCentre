@@ -327,4 +327,14 @@ public class SlidingTileTest {
         onData(instanceOf(String.class)).atPosition(0).check(matches(withText(startsWith("123:      9"))));
         onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
     }
+
+    @Test
+    public void test2_guestSaveTest(){
+        testRule.getActivity().setCurrentAccount(null);
+        onView(withId(R.id.text_currentUserGame)).check(matches(withText("Guest")));
+        onView(withId(R.id.SaveButton)).perform(click());
+        onView(withText(R.string.ga_guest_save))
+                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+    }
 }

@@ -49,7 +49,9 @@ public class GameActivity extends AppCompatActivity implements Observer {
     // Grid View and calculated column height and width based on device size
     private GestureDetectGridView gridView;
     private static int columnWidth, columnHeight;
+
     private Account currentAccount;
+
     private ArrayList<BoardManager> boardList;
     private int boardIndex;
     private Timer timer = new Timer();
@@ -64,7 +66,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private long pauseTime;
     private ScoringSystem scoringSystem = new ScoringSystem();
     public static ArrayList<Bitmap> IMAGE_SET;
-
     /**
      * Set up the background image for each button based on the master list
      * of positions, and then call the adapter to set the view.
@@ -115,11 +116,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadFromFile(TEMP_SAVE_FILENAME);
-        if(!GameSelection.IS_GUEST)
-            currentAccount = (Account) getIntent().getSerializableExtra("account");
         boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
         boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
         setContentView(R.layout.activity_main);
+        if(!GameSelection.IS_GUEST)
+            setCurrentAccount((Account) getIntent().getSerializableExtra("account"));
         boolean useImage = IMAGE_SET != null;
         if(boardManager == null)
         {
@@ -132,11 +133,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
             boardManager.setCustomImageSet(IMAGE_SET);
         }
         addUndoButtonListener();
-        TextView v = findViewById(R.id.text_currentUserGame);
-        if(!GameSelection.IS_GUEST)
-            v.setText(getString(R.string.ga_current_user,currentAccount.getUsername()));
-        else
-            v.setText(getString(R.string.ga_guest_user));
         chronometer = findViewById(R.id.chronometer);
         startChronometer(chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime() - boardManager.getTimeSpent());
@@ -179,6 +175,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
         if(!GameSelection.IS_GUEST)
             timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
     }
+
     /**
      * Update the backgrounds on the buttons to match the tiles.
      */
@@ -270,9 +267,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
             makeCustomToastText(getString(R.string.ga_auto_saved), this);
         saveBoardsToAccounts(this, currentAccount, boardList);
     }
-
     public void onClickSaveBoard(View v){
-        if(GameSelection.IS_GUEST)
+        if(currentAccount == null)
             makeCustomToastText(getString(R.string.ga_guest_save), this);
         else {
             if (boardIndex != -1) {
@@ -309,6 +305,23 @@ public class GameActivity extends AppCompatActivity implements Observer {
         IMAGE_SET = null;
         super.onBackPressed();
         finish();
+    }
+
+    /**
+     * Set current account depending on different implementation of account loading
+     * @param currentAccount current player's account
+     */
+    public void setCurrentAccount(Account currentAccount) {
+        this.currentAccount = currentAccount;
+        TextView v = findViewById(R.id.text_currentUserGame);
+        Log.e("null t", v.toString());
+        if(this.currentAccount != null) {
+            Log.e("null s", currentAccount.getUsername());
+            v.setText(getString(R.string.ga_current_user, currentAccount.getUsername()));
+        }
+        else
+            v.setText(getString(R.string.ga_guest_user));
+
     }
     @Override
     public void update(Observable o, Object arg) {
