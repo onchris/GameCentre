@@ -257,7 +257,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
                     display();
                 } else{
                     Context context = getApplicationContext();
-                    Toast.makeText(context, "Not Able To Undo", Toast.LENGTH_SHORT).show();
+                    makeCustomToastText(getString(R.string.ga_cannot_undo), context);
                 }
             }
         });
@@ -267,19 +267,19 @@ public class GameActivity extends AppCompatActivity implements Observer {
             boardList.set(boardIndex, boardManager);
         }
         if (isAutosave)
-            makeCustomToastText("Auto-saved!", this);
+            makeCustomToastText(getString(R.string.ga_auto_saved), this);
         saveBoardsToAccounts(this, currentAccount, boardList);
     }
 
     public void onClickSaveBoard(View v){
         if(GameSelection.IS_GUEST)
-            makeCustomToastText("Cannot save as guest!", this);
+            makeCustomToastText(getString(R.string.ga_guest_save), this);
         else {
             if (boardIndex != -1) {
                 boardList.set(boardIndex, boardManager);
             }
             saveBoardsToAccounts(this, currentAccount, boardList);
-            makeCustomToastText("Saved!", this);
+            makeCustomToastText(getString(R.string.ga_manual_save), this);
         }
     }
 

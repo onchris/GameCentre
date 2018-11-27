@@ -251,7 +251,10 @@ public class SlidingTileTest {
         onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(2).perform(click());
         onView(isRoot()).perform(waitView(R.id.text_undos, 500));
         ViewInteraction undoButton = onView(allOf(instanceOf(Button.class), withId(R.id.UndoButton)));
-        undoButton.perform(click()).perform(click()).perform(click());
+        undoButton.perform(click()).perform(click()).perform(click()).perform(click());
+        onView(withText(R.string.ga_cannot_undo))
+                .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
         onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
         onView(isRoot()).perform(waitView(R.id.text_undos, 1000));
         intended(hasComponent(ScoreBoard.class.getName()));

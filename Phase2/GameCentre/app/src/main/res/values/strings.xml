@@ -35,6 +35,10 @@
     <string name="ga_logged_as">Logged in:</string>
     <string name="ga_current_user">%1$s</string>
     <string name="ga_guest_user">Guest</string>
+    <string name="ga_cannot_undo">Not Able To Undo!</string>
+    <string name="ga_auto_saved">Auto-saved!</string>\
+    <string name="ga_manual_save">Saved!</string>
+    <string name="ga_guest_save">Cannot save as guest!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
