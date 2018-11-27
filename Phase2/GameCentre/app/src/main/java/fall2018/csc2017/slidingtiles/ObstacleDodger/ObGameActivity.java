@@ -9,8 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import fall2018.csc2017.slidingtiles.Account;
+import fall2018.csc2017.slidingtiles.R;
 
 public class ObGameActivity extends AppCompatActivity {
 
@@ -54,8 +56,12 @@ public class ObGameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        int pid = android.os.Process.myPid();
-        android.os.Process.killProcess(pid);
+        try {
+            gamePanel.getThread().setRunning(false);
+            gamePanel.getThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         super.onBackPressed();
     }
 }
