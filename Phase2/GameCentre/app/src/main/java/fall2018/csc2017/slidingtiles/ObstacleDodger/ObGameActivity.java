@@ -5,14 +5,19 @@ Adapted from:
 https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
  */
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import fall2018.csc2017.slidingtiles.Account;
 import fall2018.csc2017.slidingtiles.R;
+
+import static android.os.Process.getThreadPriority;
+import static android.os.Process.killProcess;
 
 public class ObGameActivity extends AppCompatActivity {
 
@@ -59,8 +64,10 @@ public class ObGameActivity extends AppCompatActivity {
         try {
             gamePanel.getThread().setRunning(false);
             gamePanel.getThread().join();
+            super.onBackPressed();
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Log.e("Ooops", "Interrupted");
         }
         super.onBackPressed();
     }

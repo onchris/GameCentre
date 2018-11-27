@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -38,10 +39,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
 
         bgr = BitmapFactory.decodeResource(getResources(), R.drawable.aliengreen);
-        overlayDefault = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background);
-        overlay = BitmapFactory.decodeResource(getResources(), R.drawable.tile_16).copy(Bitmap.Config.ARGB_8888, true);
+        overlayDefault = BitmapFactory.decodeResource(getResources(), R.drawable.tile_16).copy(Bitmap.Config.ARGB_8888, true);
+        overlay = BitmapFactory.decodeResource(getResources(), R.drawable.aliengreen).copy(Bitmap.Config.ARGB_8888, true);
         c2 = new Canvas(overlay);
-
         pTouch = new Paint(Paint.ANTI_ALIAS_FLAG);
         pTouch.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
         pTouch.setColor(Color.TRANSPARENT);
@@ -140,4 +140,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public SceneManager getManager() {
         return manager;
     }
+
+    public MainThread getThread(){return thread;}
 }
