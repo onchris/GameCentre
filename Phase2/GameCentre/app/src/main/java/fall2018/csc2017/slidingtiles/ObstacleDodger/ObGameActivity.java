@@ -50,13 +50,12 @@ public class ObGameActivity extends AppCompatActivity {
             System.out.println("Exception occurred");
         }
 
-
-
     }
 
     @Override
     public void onBackPressed() {
         int pid = android.os.Process.myPid();
         android.os.Process.killProcess(pid);
+        super.onBackPressed();
     }
 }
