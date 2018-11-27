@@ -134,16 +134,6 @@ public class Account implements Serializable {
     }
 
     /**
-     * Add to this account's list of sliding game's boards
-     *
-     * @param board the board to be added to this account's list of boards
-     */
-    public void addToBoardList(BoardManager board) {
-        if (!boardList.contains(board))
-            boardList.add(board);
-    }
-
-    /**
      * Sets this account's list of ultimate tic tac toe game's boards
      *
      * @param ultTTTUserResponses the board to be replaced with

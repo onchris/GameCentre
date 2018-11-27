@@ -81,8 +81,22 @@ public class Tile implements Comparable<Tile>, Serializable {
         return hasBackground;
     }
 
+    /**
+     * Compares the tile id with this tile id to other tiles' id
+     * @param o Other tile
+     * @return the id difference
+     */
     @Override
     public int compareTo(@NonNull Tile o) {
         return o.id - this.id;
+    }
+
+    /**
+     * toString method for tiles
+     * @return the id of the tile
+     */
+    @Override
+    public String toString(){
+        return "" + getId();
     }
 }

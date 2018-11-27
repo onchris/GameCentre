@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -10,19 +9,74 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    sourceSets {
+        androidTest.setRoot('src/androidTest')
+    }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
     buildTypes {
         release {
             minifyEnabled false
+            testCoverageEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled true
+            tasks.withType(Test) {
+                beforeTest { descriptor -> logger.lifecycle("Running: $descriptor.className") }
+            }
+        }
+    }
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+            testLogging {
+                outputs.upToDateWhen { false }
+                events "passed", "failed", "standardError"
+                showCauses true
+                showExceptions true
+            }
+        }
+        unitTests.returnDefaultValues = true
+        animationsDisabled = true
+
+
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    implementation 'com.android.support:support-v4:27.1.1'
+
+    androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
+    testImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation 'com.android.support.test:runner:1.0.2'
+    testImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'junit:junit:4.12'
+}
+
+task codeCoverageReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+    def fileFilter = ['**/R.class',
+                      '**/R$*.class',
+                      '**/*$ViewInjector*.*',
+                      '**/BuildConfig.*',
+                      '**/Manifest*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData fileTree(dir: "$buildDir", includes: ["jacoco/testDebugUnitTest.exec", "outputs/code-coverage/connected/*coverage.ec"])
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
 }

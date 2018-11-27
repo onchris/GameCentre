@@ -26,7 +26,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="30dp"
         android:layout_marginBottom="30dp"
-        android:text="@string/logged_in_as"
+        android:text="@string/ga_logged_as"
         android:textAlignment="viewStart"
         android:textSize="18sp" />
 
@@ -35,12 +35,13 @@
         android:layout_width="118dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/textView5"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="80dp"
         android:layout_marginTop="0dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:layout_toEndOf="@+id/textView5"
-        android:text="@string/name_here"
+        android:text="@string/player"
         android:textSize="18sp" />
 
     <ImageButton
@@ -52,10 +53,9 @@
         android:layout_marginStart="36dp"
         android:layout_marginTop="270dp"
         android:backgroundTint="@color/colorAccent"
-        android:src="@drawable/ic_button1"
-        android:text="@string/button"
         android:onClick="slidingGameButtonOnClick"
-        android:contentDescription="@string/sliding_tiles" />
+        android:src="@drawable/ic_button1"
+        android:text="@string/button" />
 
     <ImageButton
         android:id="@+id/button_gameselect2"
@@ -67,9 +67,10 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="36dp"
         android:onClick="ultTTTGameButtonOnClick"
-        android:text="@string/button"
         android:src="@drawable/ult_icon"
-        android:contentDescription="@string/ob_dodger" />
+        android:text="@string/button"
+        app:srcCompat="@drawable/aliengreen"
+        android:contentDescription="@string/ult_ttt" />
 
     <ImageButton
         android:id="@+id/button_gameselect3"
@@ -79,7 +80,36 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="105dp"
         android:onClick="obDodgerGameButtonOnClick"
-        android:text="@string/button"
-        app:srcCompat="@drawable/aliengreen"
-        android:contentDescription="@string/ult_ttt" />
+        android:text="Button"
+        app:srcCompat="@drawable/aliengreen" />
+
+    <ImageButton
+        android:id="@+id/button_gameselection_scoreboard"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_above="@+id/textView5"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="168dp"
+        android:layout_marginEnd="168dp"
+        android:layout_marginBottom="19dp"
+        android:backgroundTint="@color/colorAccent"
+        android:onClick="scoreboardOnClick"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_scoremarks5lines" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_gameselection_scoreboard"
+        android:layout_alignStart="@+id/button_gameselection_scoreboard"
+        android:layout_alignEnd="@+id/button_gameselection_scoreboard"
+        android:layout_marginStart="-56dp"
+        android:layout_marginEnd="-56dp"
+        android:layout_marginBottom="10dp"
+        android:text="Scoreboard"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 </RelativeLayout>

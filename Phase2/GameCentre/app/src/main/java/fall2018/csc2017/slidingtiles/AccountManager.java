@@ -11,7 +11,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
 
 public class AccountManager {
-    private final List<Account> accountsList;
+    private List<Account> accountsList;
     private Account currentAccount;
     public AccountManager(List<Account> accountsList){
         this.accountsList = accountsList;
@@ -30,6 +30,9 @@ public class AccountManager {
                 return true;
         }
         return false;
+    }
+    public void setAccountsList(List<Account> accountsList) {
+        this.accountsList = accountsList;
     }
     /**
      * Authenticates the user with it's corresponding login details input
@@ -75,18 +78,18 @@ public class AccountManager {
     public Account createNewAccount(String username, String password, Activity activity){
         Account account;
         if(username.equals("Guest") || username.equals("guest")){
-            makeCustomToastText("Account name reserved for guests only!", activity);
+            makeCustomToastText(activity.getString(R.string.am_guest_reserved), activity);
         } else if (username.equals("") || username.equals("")){
-            makeCustomToastText("Fields cannot be empty!", activity);
+            makeCustomToastText(activity.getString(R.string.am_empty_field), activity);
         } else if (username.length() < 3 || password.length() < 3 ) {
-            makeCustomToastText("Fields cannot have less than 3 characters!", activity);
+            makeCustomToastText(activity.getString(R.string.am_invalid_field), activity);
         } else if (!checkExistingUser(username)){
             account = new Account(username, password);
             accountsList.add(account);
             return account;
         } else if (checkExistingUser(username))
         {
-            makeCustomToastText("User already exists!", activity);
+            makeCustomToastText(activity.getString(R.string.am_existing_user), activity);
         }
         return null;
     }
@@ -102,9 +105,9 @@ public class AccountManager {
                     new ObjectOutputStream(currentActivity.openFileOutput(fileName, MODE_PRIVATE));
             outputStream.writeObject(accountsList);
             outputStream.close();
-            makeCustomToastText("Account credentials saved!", currentActivity);
+            makeCustomToastText(currentActivity.getString(R.string.am_credentials_saved), currentActivity);
         } catch (IOException e){
-            makeCustomToastText("Unable to save credentials in AccountManager!", currentActivity);
+            makeCustomToastText(currentActivity.getString(R.string.am_error_save), currentActivity);
         }
     }
 }

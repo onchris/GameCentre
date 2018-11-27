@@ -24,7 +24,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginBottom="0dp"
-        android:text="@string/num_undo" />
+        android:text="@string/ga_undo" />
 
     <Button
         android:id="@+id/SaveButton"
@@ -35,7 +35,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginBottom="0dp"
         android:onClick="onClickSaveBoard"
-        android:text="@string/save" />
+        android:text="@string/ga_save" />
 
     <TextView
         android:id="@+id/textView7"
@@ -50,7 +50,7 @@
         android:layout_marginBottom="5dp"
         android:layout_toStartOf="@+id/SaveButton"
         android:paddingEnd="0dp"
-        android:text="@string/logged_in" />
+        android:text="@string/ga_logged_as" />
 
     <TextView
         android:id="@+id/text_currentUserGame"

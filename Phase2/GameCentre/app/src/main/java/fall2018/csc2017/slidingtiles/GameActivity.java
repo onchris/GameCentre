@@ -49,7 +49,9 @@ public class GameActivity extends AppCompatActivity implements Observer {
     // Grid View and calculated column height and width based on device size
     private GestureDetectGridView gridView;
     private static int columnWidth, columnHeight;
+
     private Account currentAccount;
+
     private ArrayList<BoardManager> boardList;
     private int boardIndex;
     private Timer timer = new Timer();
@@ -64,7 +66,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
     private long pauseTime;
     private ScoringSystem scoringSystem = new ScoringSystem();
     public static ArrayList<Bitmap> IMAGE_SET;
-
     /**
      * Set up the background image for each button based on the master list
      * of positions, and then call the adapter to set the view.
@@ -75,7 +76,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
         gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));
         checkGameIsOver();
         undoButton = findViewById(R.id.UndoButton);
-        undoButton.setText("Undo:"+boardManager.getNumCanUndo());
+        undoButton.setText(getString(R.string.ga_undo, boardManager.getNumCanUndo()));
     }
 
     /**
@@ -83,17 +84,18 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     private void checkGameIsOver() {
         if (boardManager.puzzleSolved()) {
-            timer.cancel();
-            timerTask.cancel();
+            if(currentAccount!=null) {
+                timer.cancel();
+                timerTask.cancel();
+            }
             pauseChronometer(chronometer);
             int movesTaken = boardManager.getMoves();
             boardManager.setTimeSpent(SystemClock.elapsedRealtime() - chronometer.getBase());
             int timeTaken = (int)boardManager.getTimeSpent() / 1000;
-            Log.e(" wot", timeTaken + ":" + movesTaken );
             currentScore = scoringSystem.calculateScore(movesTaken, timeTaken);
             gridView = findViewById(R.id.grid);
             Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);
-            if(!GameSelection.IS_GUEST) {
+            if(currentAccount != null) {
                 currentAccount.addToSlidingGameScores(currentScore);
                 saveScoresToAccounts(this, currentAccount, currentScore);
                 tmp.putExtra("currentUsername", currentAccount.getUsername());
@@ -116,24 +118,26 @@ public class GameActivity extends AppCompatActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadFromFile(TEMP_SAVE_FILENAME);
-        if(!GameSelection.IS_GUEST)
-            currentAccount = (Account) getIntent().getSerializableExtra("account");
         boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
         boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
         setContentView(R.layout.activity_main);
-        boardManager.setUseImage(IMAGE_SET!=null);
+        if(!GameSelection.IS_GUEST)
+            setCurrentAccount((Account) getIntent().getSerializableExtra("account"));
+        else
+            setCurrentAccount(null);
+        boolean useImage = IMAGE_SET != null;
+        if(boardManager == null)
+        {
+            boardManager = boardList.get(boardIndex);
+            numRows = boardManager != null? boardManager.getBoard().getNumRows(): 1;
+            numColumns = boardManager != null? boardManager.getBoard().getNumColumns(): 1;
+        }
+        boardManager.setUseImage(useImage);
         if(boardManager.isUseImage()){
             boardManager.setCustomImageSet(IMAGE_SET);
         }
         addUndoButtonListener();
-        TextView v = findViewById(R.id.text_currentUserGame);
-        if(!GameSelection.IS_GUEST)
-            v.setText(currentAccount.getUsername());
-        else
-            v.setText("Guest");
         chronometer = findViewById(R.id.chronometer);
-        Log.e("boardManagerGet", boardManager.getTimeSpent()+" start");
-
         startChronometer(chronometer);
         chronometer.setBase(SystemClock.elapsedRealtime() - boardManager.getTimeSpent());
 
@@ -161,20 +165,8 @@ public class GameActivity extends AppCompatActivity implements Observer {
                         display();
                     }
                 });
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        onClickSaveBoard(getCurrentFocus(),true);
-                    }
-                });
-            }
-        };
-        if(!GameSelection.IS_GUEST)
-            timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
     }
+
     /**
      * Update the backgrounds on the buttons to match the tiles.
      */
@@ -214,6 +206,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
             }
         } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
+            boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
+            boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
+            boardManager = boardList.get(boardIndex);
+            numRows = boardManager != null? boardManager.getBoard().getNumRows(): 1;
+            numColumns = boardManager != null? boardManager.getBoard().getNumColumns() : 1;
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
         } catch (ClassNotFoundException e) {
@@ -248,7 +245,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
                     display();
                 } else{
                     Context context = getApplicationContext();
-                    Toast.makeText(context, "Not Able To Undo", Toast.LENGTH_SHORT).show();
+                    makeCustomToastText(getString(R.string.ga_cannot_undo), context);
                 }
             }
         });
@@ -258,19 +255,18 @@ public class GameActivity extends AppCompatActivity implements Observer {
             boardList.set(boardIndex, boardManager);
         }
         if (isAutosave)
-            makeCustomToastText("Auto-saved!", this);
+            makeCustomToastText(getString(R.string.ga_auto_saved), this);
         saveBoardsToAccounts(this, currentAccount, boardList);
     }
-
     public void onClickSaveBoard(View v){
-        if(GameSelection.IS_GUEST)
-            makeCustomToastText("Cannot save as guest!", this);
+        if(currentAccount == null)
+            makeCustomToastText(getString(R.string.ga_guest_save), this);
         else {
             if (boardIndex != -1) {
                 boardList.set(boardIndex, boardManager);
             }
             saveBoardsToAccounts(this, currentAccount, boardList);
-            makeCustomToastText("Saved!", this);
+            makeCustomToastText(getString(R.string.ga_manual_save), this);
         }
     }
 
@@ -293,13 +289,43 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void onBackPressed() {
         pauseChronometer(chronometer);
         boardManager.setTimeSpent(pauseTime);
-        if(!GameSelection.IS_GUEST)
+        if(currentAccount != null) {
             onClickSaveBoard(getCurrentFocus(), false);
-        timer.cancel();
-        timerTask.cancel();
+            timer.cancel();
+            timerTask.cancel();
+        }
         IMAGE_SET = null;
         super.onBackPressed();
         finish();
+    }
+
+    /**
+     * Set current account depending on different implementation of account loading
+     * @param currentAccount current player's account
+     */
+    public void setCurrentAccount(Account currentAccount) {
+        this.currentAccount = currentAccount;
+        TextView v = findViewById(R.id.text_currentUserGame);
+        Log.e("null t", v.toString());
+        if(this.currentAccount != null) {
+            Log.e("null s", currentAccount.getUsername());
+            v.setText(getString(R.string.ga_current_user, currentAccount.getUsername()));
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onClickSaveBoard(getCurrentFocus(),true);
+                        }
+                    });
+                }
+            };
+            timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);
+        }
+        else
+            v.setText(getString(R.string.ga_guest_user));
+
     }
     @Override
     public void update(Observable o, Object arg) {

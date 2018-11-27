@@ -93,12 +93,28 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
         notifyObservers();
     }
 
+    /**
+     * toString method that returns tiles of this board in row-major order
+     * @return String of tile orders
+     */
     @Override
     public String toString() {
+        String tileOrder = "";
+        Iterator tileIterator = this.iterator();
+        while(tileIterator.hasNext()){
+            tileOrder += tileIterator.next();
+            if(tileIterator.hasNext())
+                tileOrder += ", ";
+        }
         return "Board{" +
-                "tiles=" + Arrays.toString(tiles) +
+                "tiles=" + tileOrder +
                 '}';
     }
+
+    /**
+     * Iterator method that allows iteration through tiles in row-major order
+     * @return A tile iterator
+     */
     @Override
     public Iterator<Tile> iterator(){
         return new Iterator<Tile>() {
@@ -126,7 +142,7 @@ public class Board extends Observable implements Serializable, Iterable<Tile> {
      * @return the dimensions of tiles on the board as String
      */
     public String getTilesDimension(){
-        String returnString = tiles.length + "," + tiles[0].length;
+        String returnString = tiles.length + "x" + tiles[0].length;
         return returnString;
     }
 

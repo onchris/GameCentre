@@ -12,32 +12,51 @@
     <string name="login_user">Login User</string>
     <string name="register">Register Using Credentials</string>
     <string name="login_as_guest">Login as Guest</string>
-    <string name="delete_all_games">Delete all games?</string>
+
+    <!-- LaunchCentre's Toast's strings-->
+    <string name="lc_wrong_credentials">Wrong credentials, please try again!</string>
+    <string name="lc_login_successful">Login successful!</string>
+
+    <!-- AccountManager's Toast's strings-->
+    <string name="am_guest_reserved">Account name reserved for guests only!</string>
+    <string name="am_empty_field">Fields cannot be empty!</string>
+    <string name="am_invalid_field">Fields cannot have less than 3 characters!</string>
+    <string name="am_existing_user">User already exists!</string>
+    <string name="am_credentials_saved">Account credentials saved!</string>
+    <string name="am_error_save">Unable to save credentials in AccountManager!</string>
+
+    <!-- MovementController's Toast's strings-->
+    <string name="mc_win">YOU WIN!</string>
+    <string name="mc_invalid_tap">Invalid Tap</string>
+
+    <!-- GameActivity's Strings -->
+    <string name="ga_undo">Undo:%1$d</string>
+    <string name="ga_save">Save</string>
+    <string name="ga_logged_as">Logged in:</string>
+    <string name="ga_current_user">%1$s</string>
+    <string name="ga_guest_user">Guest</string>
+    <string name="ga_cannot_undo">Not Able To Undo!</string>
+    <string name="ga_auto_saved">Auto-saved!</string>\
+    <string name="ga_manual_save">Saved!</string>
+    <string name="ga_guest_save">Cannot save as guest!</string>
+
+    <!-- GameActivity's Strings -->
+    <string name="gs_confirm_deletion">Delete all games?</string>
+
+    <!-- Scoreboard's Strings -->
+    <string name="sb_game">%1$s</string>
+    <string name="gsb_logged_as">Logged as: %1$s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="sliding_tiles">slidingTiles</string>
     <string name="ob_dodger">obDodger</string>
     <string name="ult_ttt">ultTTT</string>>
     <string name="guest_name">Guest</string>
     <string name="button">Button</string>
-    <string name="name_here">Name here</string>
-    <string name="logged_in_as">Logged in as:</string>
     <string name="select_a_game">Select A Game!</string>
     <string name="select_loaded_games">Select Loaded Games</string>
     <string name="new_game">New Game</string>
-    <string name="delete_all">Delete All</string>
-    <string name="logged_in">Logged in:</string>
     <string name="player">Player</string>
-    <string name="save">Save</string>
-    <string name="num_undo">Undo</string>
-    <string name="welcome_message">Welcome To Sliding Tiles   A Puzzle Game where you must arrange the numbers in the correct order</string>
-    <string name="text_game">text game</string>
-    <string name="difficulty_text">difficulty</string>
-    <string name="undos">Undos</string>
-    <string name="load_game">Load Game</string>
-    <string name="load_image_warning">Image will NOT be saved nor loadable after exiting, but puzzle will remain loadable.</string>
-    <string name="load_image">Load Image</string>
-    <string name="use_image_message">Use this image as puzzle</string>
-    <string name="insert_image_url_hint">Custom URL Image</string>
-    <string name="default_undos">3</string>
-    <string name="x">x</string>
-    <string name="confirm">Confirm</string>
 </resources>

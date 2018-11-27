@@ -81,8 +81,8 @@ public class ScoreBoard extends AppCompatActivity{
         displayGameScoresList = scoreManager.getDisplayGameScoresList();
         displayUserScoresList = scoreManager.getDisplayUserScoresList();
 
-        IS_GUEST = getIntent().getStringExtra("currentUsername").equals("-1");
-        if(!IS_GUEST) {
+        if(scoreManager.getCurrentAccount() != null) {
+            IS_GUEST = false;
             currentAccount = scoreManager.getCurrentAccount();
             if (getIntent().hasExtra("board")) { //TODO: board???
                 board = (Board) getIntent().getSerializableExtra("board");

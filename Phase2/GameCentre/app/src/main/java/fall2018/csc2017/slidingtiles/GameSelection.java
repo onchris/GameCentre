@@ -90,7 +90,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
             currentAccount = accountManager.getAccountFromUsername(currentUsername);
             IS_GUEST = false;
         } else {
-            currentUserTextView.setText("Guest");
+            currentUserTextView.setText(getString(R.string.ga_guest_user));
             IS_GUEST = true;
         }
         boardList = accountManager.getCurrentAccountBoardList(currentAccount, IS_GUEST);
@@ -203,12 +203,18 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
             }
         });
         TextView titleText = new TextView(this);
-        titleText.setText(R.string.delete_all_games);
+        titleText.setText(getString(R.string.gs_confirm_deletion));
         titleText.setPadding(10, 10, 10, 10);
         titleText.setTextSize(30);
         titleText.setGravity(Gravity.CENTER);
         ad.setCustomTitle(titleText);
         ad.show();
+    }
+
+    public void scoreboardOnClick(View v){
+        Intent scoreboardIntent =  new Intent(this, GeneralScoreboard.class);
+        scoreboardIntent.putExtra("username", currentUsername);
+        startActivity(scoreboardIntent);
     }
 
     /**

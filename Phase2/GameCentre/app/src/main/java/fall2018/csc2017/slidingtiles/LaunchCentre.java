@@ -1,3 +1,10 @@
+/**
+ * There are no testable logic since this class only handles UI components for logging in.
+ * Although UI testing is implemented in LaunchCentreTest under androidTest which is an
+ * instrumented test specifically for testing extensively for UI logic.
+ *
+ * For instrumented testing of this class, please refer to LaunchCentreTest under src/androidTest
+ */
 package fall2018.csc2017.slidingtiles;
 
 import android.content.Intent;
@@ -61,6 +68,21 @@ public class LaunchCentre extends AppCompatActivity {
         preferenceManager.setWidgetPreferences();
     }
     /**
+     * Gets the account manager for different implementation for loading account lists
+     * @return account manager
+     */
+    public AccountManager getAccountManager() {
+        return accountManager;
+    }
+    /**
+     * Gets the preference manager for different implementation for loading preference
+     * @return preference manager
+     */
+    public PreferenceManager getPreferenceManager() {
+        return preferenceManager;
+    }
+
+    /**
      * Password field can directly login using the Enter button
      */
     private void addPasswordOnKeyListener(){
@@ -98,7 +120,7 @@ public class LaunchCentre extends AppCompatActivity {
         String password = passwordTextField.getText().toString();
         if(accountManager.authenticateCredentials(username, password)) {
             currentUser = username;
-            makeCustomToastText("Login successful!", getBaseContext());
+            makeCustomToastText(this.getString(R.string.lc_login_successful), getBaseContext());
             if(rememberCheckbox.isChecked())
                 preferenceManager.storeLoginData(currentUser,
                         passwordTextField.getText().toString(),
@@ -110,7 +132,7 @@ public class LaunchCentre extends AppCompatActivity {
             startActivity(tmp);
         }
         else{
-            makeCustomToastText("Wrong credentials, please try again!", getBaseContext());
+            makeCustomToastText(this.getString(R.string.lc_wrong_credentials), getBaseContext());
         }
     }
     /**

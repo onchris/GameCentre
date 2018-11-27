@@ -15,11 +15,19 @@ public class PreferenceManager {
     /**
      * SharedPreferences that handles retrieving preferences
      */
-    private final Activity currentActivity;
     private SharedPreferences preferences;
+    /**
+     * An instanced activity to be used for retrieving valid Context/Activity
+     */
+    private final Activity currentActivity;
+    /**
+     * Text fields for username and password fields
+     */
     private EditText userField, passwordField;
+    /**
+     * Checkbox for remembering credentials
+     */
     private CheckBox rememberCheckBox;
-
 
     /**
      * PreferenceManager Constructor, instantiates preferences and it's editor
@@ -36,6 +44,9 @@ public class PreferenceManager {
         }
     }
 
+    /**
+     * Sets previous recorded widget preferences in login screen
+     */
     public void setWidgetPreferences(){
         if(currentActivity.getLocalClassName().equals("LaunchCentre")) {
             userField.setText(retrieveString("previousUser", ""));
