@@ -354,4 +354,10 @@ public class GameSelectionTest {
         onView(allOf(withId(android.R.id.button1))).perform(click());
     }
 
+    @Test
+    public void test4_dialogExtensive(){
+
+    }
+
+
 }
