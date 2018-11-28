@@ -309,9 +309,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
     public void setCurrentAccount(Account currentAccount) {
         this.currentAccount = currentAccount;
         TextView v = findViewById(R.id.text_currentUserGame);
-        Log.e("null t", v.toString());
         if(this.currentAccount != null) {
-            Log.e("null s", currentAccount.getUsername());
             v.setText(getString(R.string.ga_current_user, currentAccount.getUsername()));
             timerTask = new TimerTask() {
                 @Override
