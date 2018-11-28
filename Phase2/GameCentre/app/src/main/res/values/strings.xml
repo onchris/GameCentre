@@ -46,6 +46,7 @@
     <!-- Scoreboard's Strings -->
     <string name="sb_game">%1$s</string>
     <string name="gsb_logged_as">Logged as: %1$s</string>
+    <string name="gsb_no_score">Guest has no saved scores!</string>
 
     <!-- Dialog's Strings -->
     <string name="d_url_field">Custom URL Image</string>
