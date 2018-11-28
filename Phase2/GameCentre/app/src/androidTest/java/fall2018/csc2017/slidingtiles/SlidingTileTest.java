@@ -6,8 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.IBinder;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.PerformException;
+import android.support.test.espresso.Root;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewInteraction;
@@ -18,11 +20,13 @@ import android.support.test.espresso.util.HumanReadables;
 import android.support.test.espresso.util.TreeIterables;
 import android.support.test.filters.SmallTest;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
@@ -318,6 +322,7 @@ public class SlidingTileTest {
             onView(isRoot()).perform(delayFor(R.id.text_undos, 1000));
             intended(hasComponent(ScoreBoard.class.getName()));
             onData(allOf(instanceOf(String.class), startsWith("123"))).atPosition(0).check(matches(withText(startsWith("123:      9"))));
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -368,10 +373,35 @@ public class SlidingTileTest {
             onData(allOf(instanceOf(String.class), startsWith("Guest"))).inAdapterView(withId(R.id.scoreboard_list))
                     .check(matches(withText(startsWith("Guest:      9"))));
             onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
+            onView(withId(R.id.switchscoreboardview)).check(matches(isDisplayed())).perform(click());
             onView(withId(R.id.button_new_game)).perform(click());
+            onView(withText(R.string.gsb_no_score))
+                    .inRoot(toastMatch())
+                    .check(matches(isDisplayed()));
             intended(hasComponent(GameActivity.class.getName()));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private static TypeSafeMatcher<Root> toastMatch(){
+        return new TypeSafeMatcher<Root>() {
+            @Override
+            protected boolean matchesSafely(Root item) {
+                int type = item.getWindowLayoutParams().get().type;
+                if ((type == WindowManager.LayoutParams.FIRST_SYSTEM_WINDOW + 5)) {
+                    IBinder windowToken = item.getDecorView().getWindowToken();
+                    IBinder appToken = item.getDecorView().getApplicationWindowToken();
+                    if (windowToken == appToken) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("toast matching");
+            }
+        };
     }
 }
