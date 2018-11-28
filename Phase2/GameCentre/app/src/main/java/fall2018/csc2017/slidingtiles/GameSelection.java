@@ -82,18 +82,18 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
-        accountManager = new AccountManager(loadAccountList(this));
         currentUserTextView = findViewById(R.id.text_loggedas);
         if (!getIntent().getStringExtra("currentUser").equals("-1")) {
+            accountManager = new AccountManager(loadAccountList(this));
             currentUsername = getIntent().getStringExtra("currentUser");
             currentUserTextView.setText(currentUsername);
             currentAccount = accountManager.getAccountFromUsername(currentUsername);
-            IS_GUEST = false;
         } else {
+            accountManager = new AccountManager(new ArrayList<Account>());
             currentUserTextView.setText(getString(R.string.ga_guest_user));
-            IS_GUEST = true;
         }
-        boardList = accountManager.getCurrentAccountBoardList(currentAccount, IS_GUEST);
+        IS_GUEST = currentUsername == null;
+        boardList = accountManager.getCurrentAccountBoardList(currentAccount, accountManager == null);
         dialogManager = new DialogManager(this);
     }
 
