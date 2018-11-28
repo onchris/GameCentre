@@ -76,7 +76,7 @@ public class ScoreBoard extends AppCompatActivity{
         } else if (currentGame.equals("obDodger")) {
             scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"), //TODO: make this for obstacledodger
                     scoreList.getContext(),
-                    Integer.parseInt(getIntent().getStringExtra("currentScore")));
+                    getIntent().getIntExtra("currentScore", 0));
         }
         displayGameScoresList = scoreManager.getDisplayGameScoresList();
         displayUserScoresList = scoreManager.getDisplayUserScoresList();
