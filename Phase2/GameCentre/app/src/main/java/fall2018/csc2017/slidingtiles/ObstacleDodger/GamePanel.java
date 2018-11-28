@@ -19,13 +19,14 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import fall2018.csc2017.slidingtiles.Board;
 import fall2018.csc2017.slidingtiles.R;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
 
     private SceneManager manager;
-
+    Boolean receive;
 
     Bitmap bgr;
     Bitmap overlayDefault;
@@ -37,7 +38,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public GamePanel(Context context) {
         super(context);
-
+        receive = true;
         bgr = BitmapFactory.decodeResource(getResources(), R.drawable.aliengreen);
         overlayDefault = BitmapFactory.decodeResource(getResources(), R.drawable.tile_16).copy(Bitmap.Config.ARGB_8888, true);
         overlay = BitmapFactory.decodeResource(getResources(), R.drawable.aliengreen).copy(Bitmap.Config.ARGB_8888, true);
@@ -77,8 +78,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         boolean retry = true;
         while (true) {
             try {
+                receive = false;
+                thread.interrupt();
                 thread.setRunning(false);
-                thread.join();
+                retry = false;
+                return;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -88,34 +92,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+        if(!receive)
+            return false;
         switch (event.getAction()) {
-
             case MotionEvent.ACTION_DOWN: {
-
                 X = (int) event.getX();
                 Y = (int) event.getY();
                 invalidate();
-
                 }
                 break;
-
-
             case MotionEvent.ACTION_MOVE: {
-
                 X = (int) event.getX();
                 Y = (int) event.getY();
                 invalidate();
                 break;
-
             }
-
             case MotionEvent.ACTION_UP:
-
                 break;
-
         }
-        manager.receiveTouch(event);
+        if(receive)
+            manager.receiveTouch(event);
         return true;
     }
 
