@@ -40,6 +40,7 @@ import java.util.concurrent.TimeoutException;
 
 import fall2018.csc2017.slidingtiles.ObstacleDodger.GamePanel;
 import fall2018.csc2017.slidingtiles.ObstacleDodger.ObGameActivity;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltimateTTTGameActivity;
 
 import static android.app.PendingIntent.getActivity;
 import static android.support.test.espresso.Espresso.getIdlingResources;
@@ -113,5 +114,44 @@ public class GameSelectionTest {
         Thread.sleep(10000);
         onView(withId(R.id.button_new_game)).check(matches(isDisplayed())).perform(click());
         intended(hasComponent(ObGameActivity.class.getName()),times(3));
+    }
+    @Test
+    public void test2_testGuestSelectionGames() throws InterruptedException {
+        Intent intent = new Intent();
+        intent.putExtra("currentUser", "-1");
+        testRule.launchActivity(intent);
+        onView(withId(R.id.text_loggedas)).check(matches(withText("Guest")));
+        onView(withId(R.id.button_gameselection_scoreboard)).perform(click());
+        intended(hasComponent(GeneralScoreboard.class.getName()));
+        onView(allOf(withId(R.id.fragment_layout), isDisplayed())).check(matches(isDisplayed()));
+        onView(allOf(withText("Sliding Tiles"), instanceOf(TextView.class)))
+                .check(matches(isDisplayed()))
+                .perform(swipeLeft());
+        onView(allOf(withText("Obstacle Dodger"), instanceOf(TextView.class)))
+                .check(matches(isDisplayed()));
+        Espresso.pressBack();
+        onView(withId(R.id.text_loggedas)).check(matches(withText("Guest")));
+        onView(withId(R.id.button_gameselect1)).perform(click());
+        intended(hasComponent(GameActivity.class.getName()));
+        Espresso.pressBack();
+        onView(withId(R.id.text_loggedas)).check(matches(withText("Guest")));
+        onView(withId(R.id.button_gameselect2)).perform(click());
+        intended(hasComponent(UltimateTTTGameActivity.class.getName()));
+        Espresso.pressBack();
+        onView(withId(R.id.text_loggedas)).check(matches(withText("Guest")));
+        onView(withId(R.id.button_gameselect3)).perform(click());
+        intended(hasComponent(ObGameActivity.class.getName()));
+        Thread.sleep(10000);
+        onView(withId(R.id.button_game_selection)).check(matches(isDisplayed())).perform(click());
+        intended(hasComponent(GameSelection.class.getName()), times(4));
+        onView(withId(R.id.button_gameselect3)).perform(click());
+        intended(hasComponent(ObGameActivity.class.getName()),times(2));
+        Thread.sleep(10000);
+        onView(withId(R.id.button_new_game)).check(matches(isDisplayed())).perform(click());
+        intended(hasComponent(ObGameActivity.class.getName()),times(3));
+    }
+    @Test
+    public void test3_testSlidingTileCreation(){
+
     }
 }
