@@ -288,11 +288,14 @@ public class GameActivity extends AppCompatActivity implements Observer {
     @Override
     public void onBackPressed() {
         pauseChronometer(chronometer);
-        boardManager.setTimeSpent(pauseTime);
+        if(boardManager!=null)
+            boardManager.setTimeSpent(pauseTime);
         if(currentAccount != null) {
             onClickSaveBoard(getCurrentFocus(), false);
-            timer.cancel();
-            timerTask.cancel();
+            if(timer != null && timerTask != null) {
+                timer.cancel();
+                timerTask.cancel();
+            }
         }
         IMAGE_SET = null;
         super.onBackPressed();
