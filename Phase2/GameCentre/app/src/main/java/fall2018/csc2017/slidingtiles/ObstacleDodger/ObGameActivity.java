@@ -76,13 +76,8 @@ public class ObGameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        try {
-            gamePanel.getThread().join();
-            gamePanel.getThread().setRunning(false);
-            super.onBackPressed();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        gamePanel.getThread().interrupt();
+        gamePanel.getThread().setRunning(false);
         super.onBackPressed();
     }
 }
