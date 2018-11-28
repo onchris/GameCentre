@@ -174,44 +174,6 @@ public class SlidingTileTest {
         };
     }
 
-    private static ViewAction waitFor(final int viewId, final long seconds)
-    {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return ViewMatchers.withId(viewId);
-            }
-
-            @Override
-            public String getDescription() {
-                return "waiting";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                uiController.loopMainThreadUntilIdle();
-                final long startTime = System.currentTimeMillis();
-                final long endTime = startTime + seconds;
-                final Matcher<View> viewMatcher = withId(viewId);
-                do {
-                    for (View childView : TreeIterables.breadthFirstViewTraversal(view)) {
-                        if (viewMatcher.matches(childView)) {
-                            return;
-                        }
-                    }
-                    uiController.loopMainThreadForAtLeast(50);
-                }
-                while (System.currentTimeMillis() < endTime);
-                throw new PerformException.Builder()
-                        .withActionDescription(this.getDescription())
-                        .withViewDescription(HumanReadables.describe(view))
-                        .withCause(new TimeoutException())
-                        .build();
-
-            }
-        };
-    }
-
     /**
      * Wait until certain text field ends with an input targetString
      * @param viewId the view to be matched against
@@ -220,8 +182,8 @@ public class SlidingTileTest {
      * @return ViewAction that is performable
      */
     private static ViewAction waitUntil(final int viewId,
-                                        final String targetString,
-                                        final long timeoutThreshold){
+                                        final long timeoutThreshold,
+                                        final String... targetString){
         return new ViewAction() {
             @Override
             public Matcher<View> getConstraints() {
@@ -259,7 +221,8 @@ public class SlidingTileTest {
                                     .build();
                         }
                         else if(textfield != null) {
-                            if(textfield.getText().toString().endsWith(targetString))
+                            if(textfield.getText().toString().endsWith(targetString[0]) ||
+                                    textfield.getText().toString().endsWith(targetString[1]) )
                                 reached = true;
                             uiController.loopMainThreadForAtLeast(500);
                         }
@@ -346,7 +309,7 @@ public class SlidingTileTest {
             onView(withText(R.string.ga_cannot_undo))
                     .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                     .check(matches(isDisplayed()));
-            onView(withId(R.id.chronometer)).perform(waitUntil(R.id.chronometer, "10", 15000));
+            onView(withId(R.id.chronometer)).perform(waitUntil(R.id.chronometer, 15000, "10", "20"));
             Thread.sleep(250);
             onView(withText(R.string.ga_auto_saved))
                     .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
