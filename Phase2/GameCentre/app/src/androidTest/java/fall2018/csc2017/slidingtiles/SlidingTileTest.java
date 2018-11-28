@@ -374,10 +374,10 @@ public class SlidingTileTest {
                     .check(matches(withText(startsWith("Guest:      9"))));
             onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
             onView(withId(R.id.switchscoreboardview)).check(matches(isDisplayed())).perform(click());
-            onView(withId(R.id.button_new_game)).perform(click());
             onView(withText(R.string.gsb_no_score))
                     .inRoot(toastMatch())
                     .check(matches(isDisplayed()));
+            onView(withId(R.id.button_new_game)).perform(click());
             intended(hasComponent(GameActivity.class.getName()));
         } catch (InterruptedException e) {
             e.printStackTrace();
