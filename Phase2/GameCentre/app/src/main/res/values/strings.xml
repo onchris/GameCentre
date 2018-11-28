@@ -57,6 +57,15 @@
     <string name="d_hint_auto_dimensions">3</string>
     <string name="d_hint_row">Rows</string>
     <string name="d_hint_col">Columns</string>
+        <!-- Dialog Toast's Strings -->
+        <string name="d_toast_empty_fields">Fields must not be empty</string>
+        <string name="d_toast_let_3">Rows/Columns cannot be less than 3</string>
+        <string name="d_toast_lat_31">Rows/Columns cannot be larger than 31</string>
+        <string name="d_toast_succ_load">Load Successful!</string>
+        <string name="d_toast_invalid_url">Invalid image link, make sure to copy image link address directly!</string>
+        <string name="d_toast_racecar">You must wait for your image to finish downloading!</string>
+        <string name="d_toast_fix_url">Your url is not valid for board creation!</string>
+        <string name="d_toast_wait_url">Cannot create board when image is downloading!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

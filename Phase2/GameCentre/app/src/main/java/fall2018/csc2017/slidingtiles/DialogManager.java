@@ -124,6 +124,10 @@ public class DialogManager implements PopupMenu.OnMenuItemClickListener{
                     currentActivity.startService(imageIntent);
                     if(resultReceiver.contentReceived())
                         makeCustomToastText(currentActivity.getString(R.string.d_toast_succ_load), currentActivity);
+                    else if (resultReceiver.invalidImageLink())
+                        makeCustomToastText(currentActivity.getString(R.string.d_toast_invalid_url), currentActivity);
+                    else
+                        makeCustomToastText(currentActivity.getString(R.string.d_toast_racecar), currentActivity);
                 }
             });
             confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -147,9 +151,9 @@ public class DialogManager implements PopupMenu.OnMenuItemClickListener{
                             makeCustomToastText(rowsInt + "x" +colsInt, currentActivity);
                             dialog.dismiss();
                     } else if (resultReceiver.invalidImageLink()) {
-                        makeCustomToastText(currentActivity.getString(R.string.d_toast_invalid_url), currentActivity);
+                        makeCustomToastText(currentActivity.getString(R.string.d_toast_fix_url), currentActivity);
                     } else {
-                        makeCustomToastText(currentActivity.getString(R.string.d_toast_racecar), currentActivity);
+                        makeCustomToastText(currentActivity.getString(R.string.d_toast_wait_url), currentActivity);
                     }
                     } else if (checkValidDialogInputs(rows.getText().toString(), columns.getText().toString())) {
                         Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()),
