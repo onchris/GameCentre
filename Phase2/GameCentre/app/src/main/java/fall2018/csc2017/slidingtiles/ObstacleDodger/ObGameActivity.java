@@ -6,18 +6,24 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
  */
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import fall2018.csc2017.slidingtiles.Account;
 import fall2018.csc2017.slidingtiles.R;
+import fall2018.csc2017.slidingtiles.ScoreBoard;
 
 import static android.os.Process.getThreadPriority;
 import static android.os.Process.killProcess;
+import static android.os.Process.myPid;
 
 public class ObGameActivity extends AppCompatActivity {
 
@@ -56,18 +62,33 @@ public class ObGameActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             System.out.println("Exception occurred");
         }
+    }
 
+    public void createScoreBoard(int score, Bundle info){
+
+        ActivityManager am = (ActivityManager) getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningAppProcessInfo pid : am.getRunningAppProcesses()) {
+            Log.e("Process" , pid.processName);
+        }
+        Intent scoreboard = new Intent(this, ScoreBoard.class);
+        scoreboard.putExtra("currentUsername", info.getString("currentUsername"));
+        scoreboard.putExtra("currentGame", info.getString("currentGame"));
+        scoreboard.putExtra("currentScore", score);
+        scoreboard.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+        this.finish();
+        gamePanel.setVisibility(View.GONE);
+        startActivity(scoreboard);
     }
 
     @Override
     public void onBackPressed() {
         try {
-            gamePanel.getThread().setRunning(false);
             gamePanel.getThread().join();
+            gamePanel.getThread().setRunning(false);
             super.onBackPressed();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            Log.e("Ooops", "Interrupted");
         }
         super.onBackPressed();
     }
