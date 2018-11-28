@@ -69,11 +69,11 @@ public class ScoreBoard extends AppCompatActivity{
         if (currentGame.equals("slidingTiles")) {
             scoreManager = new SlidingTilesScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
-                    Integer.parseInt(getIntent().getStringExtra("currentScore")));
+                    currentUserScore);
         } else if (currentGame.equals("obDodger")) {
             scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"), //TODO: make this for obstacledodger
                     scoreList.getContext(),
-                    getIntent().getIntExtra("currentScore", 0));
+                    currentUserScore);
         }
         addChangeScoreboardViewButton();
         addNewGameButtonListener();
