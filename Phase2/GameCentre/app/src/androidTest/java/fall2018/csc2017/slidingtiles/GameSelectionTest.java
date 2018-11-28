@@ -80,6 +80,7 @@ import static android.support.test.espresso.Espresso.getIdlingResources;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.doubleClick;
 import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.swipeLeft;
@@ -414,7 +415,27 @@ public class GameSelectionTest {
                 .inRoot(toastMatch())
                 .check(matches(isDisplayed()));
     }
-    public TypeSafeMatcher<Root> toastMatch(){
+
+    @Test
+    public void test5_testDeleteIndividual(){
+        Intent intent = new Intent();
+        intent.putExtra("currentUser", "123");
+        testRule.launchActivity(intent);
+        onView(withId(R.id.text_loggedas)).check(matches(withText("123")));
+        onView(withId(R.id.button_gameselect1)).perform(click());
+        onView(withId(R.id.button_slidingreset)).check(matches(isDisplayed())).perform(click());
+        onView(withText("Delete all games?")).inRoot(isDialog()).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.button2))).perform(click());
+        onView(withId(R.id.button_slidingreset)).check(matches(isDisplayed())).perform(click());
+        onView(allOf(withId(android.R.id.button1))).perform(click());
+        onView(withId(R.id.button_newgame)).check(matches(isDisplayed())).perform(click());
+        onView(withText("4x4")).inRoot(isPlatformPopup()).check(matches(isDisplayed())).perform(click());
+        onView(allOf(withId(R.id.adapter_loader))).check(matches(isDisplayed())).perform(doubleClick());
+        onView(allOf(withId(android.R.id.button2))).perform(click());
+        onView(allOf(withId(R.id.adapter_loader))).check(matches(isDisplayed())).perform(doubleClick());
+        onView(allOf(withId(android.R.id.button1))).perform(click());
+    }
+    private static TypeSafeMatcher<Root> toastMatch(){
         return new TypeSafeMatcher<Root>() {
             @Override
             protected boolean matchesSafely(Root item) {
