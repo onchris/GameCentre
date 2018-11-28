@@ -1,6 +1,7 @@
 package fall2018.csc2017.slidingtiles;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.InstrumentationInfo;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.support.test.espresso.IdlingPolicies;
 import android.support.test.espresso.IdlingRegistry;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.PerformException;
+import android.support.test.espresso.Root;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewFinder;
@@ -29,15 +31,21 @@ import android.support.test.espresso.base.IdlingResourceRegistry;
 import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.test.espresso.matcher.RootMatchers;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.espresso.util.HumanReadables;
 import android.support.test.espresso.util.TreeIterables;
 import android.support.test.filters.LargeTest;
 import android.support.test.filters.SmallTest;
 import android.support.test.internal.runner.listener.InstrumentationRunListener;
+import android.support.test.runner.lifecycle.ActivityLifecycleCallback;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitor;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
+import android.support.test.runner.lifecycle.Stage;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -59,6 +67,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -88,7 +97,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasBackground;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
+import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withResourceName;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -317,7 +328,6 @@ public class GameSelectionTest {
         onView(withId(R.id.text_column)).perform(replaceText("10"));
         onView(withId(R.id.text_undos)).perform(replaceText("20"));
         onView(withId(R.id.button_confirm_difficulty)).perform(click());
-
         onView(allOf(withText("Load Game"), instanceOf(Button.class))).check(matches(isDisplayed())).perform(click());
         intended(hasComponent(GameActivity.class.getName()),times(4));
         onData(withTagValue(is((Object) 1))).atPosition(0)
@@ -336,7 +346,6 @@ public class GameSelectionTest {
         onView(withId(R.id.text_row)).perform(replaceText("4"));
         onView(withId(R.id.text_column)).perform(replaceText("4"));
         onView(withId(R.id.text_undos)).perform(replaceText("4"));
-        onView(withId(R.id.et_Url)).perform(replaceText("4"));
         onView(withId(R.id.button_confirm_difficulty)).perform(click());
         onView(allOf(withText("Load Game"), instanceOf(Button.class))).check(matches(isDisplayed())).perform(click());
         intended(hasComponent(GameActivity.class.getName()),times(5));
@@ -356,8 +365,77 @@ public class GameSelectionTest {
 
     @Test
     public void test4_dialogExtensive(){
+        Intent intent = new Intent();
+        intent.putExtra("currentUser", "123");
+        testRule.launchActivity(intent);
+        onView(withId(R.id.text_loggedas)).check(matches(withText("123")));
+        onView(withId(R.id.button_gameselect1)).perform(click());
+        onView(withId(R.id.button_slidingreset)).check(matches(isDisplayed())).perform(click());
+        onView(withText("Delete all games?")).inRoot(isDialog()).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.button1))).perform(click());
+        onView(withId(R.id.button_newgame)).check(matches(isDisplayed())).perform(click());
+        onView(withText("Other...")).inRoot(isPlatformPopup()).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.text_row)).perform(replaceText(""));
+        onView(withId(R.id.text_column)).perform(replaceText(""));
+        onView(withId(R.id.button_confirm_difficulty)).perform(click());
 
+
+        onView(allOf(withText(R.string.d_toast_empty_fields)))
+                .inRoot(toastMatch())
+                .check(matches(isDisplayed()));
+        onView(withId(R.id.text_row)).perform(replaceText("1"));
+        onView(withId(R.id.text_column)).perform(replaceText("1"));
+        onView(withId(R.id.button_confirm_difficulty)).perform(click());
+        onView(withText(R.string.d_toast_let_3))
+                .inRoot(toastMatch())
+                .check(matches(isDisplayed()));
+        onView(withId(R.id.text_row)).perform(replaceText("40"));
+        onView(withId(R.id.text_column)).perform(replaceText("40"));
+        onView(withId(R.id.button_confirm_difficulty)).perform(click());
+        onView(withText(R.string.d_toast_lat_31))
+                .inRoot(toastMatch())
+                .check(matches(isDisplayed()));
+        onView(withId(R.id.text_row)).perform(replaceText("4"));
+        onView(withId(R.id.text_column)).perform(replaceText("4"));
+        onView(withId(R.id.text_undos)).perform(replaceText(""));
+        onView(withId(R.id.button_confirm_difficulty)).perform(click());
+        onView(withText("4x4"))
+                .inRoot(toastMatch())
+                .check(matches(isDisplayed()));
     }
 
+    public Activity getCurrentActivity(){
+        final Activity[] currentActivity = new Activity[1];
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                Collection<Activity> activities = ActivityLifecycleMonitorRegistry.getInstance()
+                        .getActivitiesInStage(Stage.RESUMED);
+                if(!activities.isEmpty())
+                    currentActivity[0] = activities.iterator().next();
+            }
+        });
+        return  currentActivity[0];
+    }
+    public TypeSafeMatcher<Root> toastMatch(){
+        return new TypeSafeMatcher<Root>() {
+            @Override
+            protected boolean matchesSafely(Root item) {
+                int type = item.getWindowLayoutParams().get().type;
+                if ((type == WindowManager.LayoutParams.FIRST_SYSTEM_WINDOW + 5)) {
+                    IBinder windowToken = item.getDecorView().getWindowToken();
+                    IBinder appToken = item.getDecorView().getApplicationWindowToken();
+                    if (windowToken == appToken) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("toast matching");
+            }
+        };
+    }
 
 }
