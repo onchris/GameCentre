@@ -361,6 +361,18 @@ public class GameSelectionTest {
         onView(withId(R.id.button_slidingreset)).check(matches(isDisplayed())).perform(click());
         onView(withText("Delete all games?")).inRoot(isDialog()).check(matches(isDisplayed()));
         onView(allOf(withId(android.R.id.button1))).perform(click());
+        onView(withId(R.id.button_newgame)).check(matches(isDisplayed())).perform(click());
+        onView(withText("Other...")).inRoot(isPlatformPopup()).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.text_row)).perform(replaceText("11"));
+        onView(withId(R.id.text_column)).perform(replaceText("11"));
+        onView(withId(R.id.button_confirm_difficulty)).perform(click());
+        onView(allOf(withText("Load Game"), instanceOf(Button.class))).check(matches(isDisplayed())).perform(click());
+        intended(hasComponent(GameActivity.class.getName()),times(6));
+        Espresso.pressBack();
+        onView(withId(R.id.button_gameselect1)).perform(click());
+        onView(withId(R.id.button_slidingreset)).check(matches(isDisplayed())).perform(click());
+        onView(withText("Delete all games?")).inRoot(isDialog()).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.button1))).perform(click());
     }
 
     @Test
