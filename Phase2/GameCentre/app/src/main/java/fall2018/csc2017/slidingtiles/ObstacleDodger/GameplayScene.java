@@ -31,7 +31,6 @@ public class GameplayScene extends Observable implements Scene {
         player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));
         playerPoint = new Point(ObUtilityManager.getScreenWidth() / 2, 3 * ObUtilityManager.getScreenHeight() / 4);
         player.update(playerPoint);
-
         obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
     }
 
@@ -45,27 +44,29 @@ public class GameplayScene extends Observable implements Scene {
     @Override
     public void terminate() {
         SceneManager.ACTIVE_SCENE = 0;
+        deleteObservers();
     }
 
     @Override
     public void receiveTouch(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (!gameOver && player.getRectangle().contains((int) event.getX(), (int) event.getY()))
-                    movingPlayer = true;
-                if (gameOver && System.currentTimeMillis() - gameOverTime >= 2000) {
-                    reset();
-                    gameOver = false;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!gameOver && movingPlayer)
-                    playerPoint.set((int) event.getX(), (int) event.getY());
-                break;
-            case MotionEvent.ACTION_UP:
-                movingPlayer = false;
-                break;
-        }
+        if(!gameOver)
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (!gameOver && player.getRectangle().contains((int) event.getX(), (int) event.getY()))
+                        movingPlayer = true;
+                    if (gameOver && System.currentTimeMillis() - gameOverTime >= 2000) {
+                        reset();
+                        gameOver = true;
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (!gameOver && movingPlayer)
+                        playerPoint.set((int) event.getX(), (int) event.getY());
+                    break;
+                case MotionEvent.ACTION_UP:
+                    movingPlayer = false;
+                    break;
+            }
     }
 
     @Override
