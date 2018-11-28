@@ -65,20 +65,13 @@ public class ObGameActivity extends AppCompatActivity {
     }
 
     public void createScoreBoard(int score, Bundle info){
-
-        ActivityManager am = (ActivityManager) getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
-
-        for (ActivityManager.RunningAppProcessInfo pid : am.getRunningAppProcesses()) {
-            Log.e("Process" , pid.processName);
-        }
         Intent scoreboard = new Intent(this, ScoreBoard.class);
         scoreboard.putExtra("currentUsername", info.getString("currentUsername"));
         scoreboard.putExtra("currentGame", info.getString("currentGame"));
         scoreboard.putExtra("currentScore", score);
         scoreboard.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
-        this.finish();
-        gamePanel.setVisibility(View.GONE);
         startActivity(scoreboard);
+        this.finish();
     }
 
     @Override

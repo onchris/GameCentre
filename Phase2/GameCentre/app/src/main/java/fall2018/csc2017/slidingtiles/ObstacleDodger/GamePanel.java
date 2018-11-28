@@ -5,6 +5,7 @@ Adapted from:
 https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -92,15 +93,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(!receive)
-            return false;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 X = (int) event.getX();
                 Y = (int) event.getY();
                 invalidate();
-                }
-                break;
+            }
+            break;
             case MotionEvent.ACTION_MOVE: {
                 X = (int) event.getX();
                 Y = (int) event.getY();
@@ -110,8 +109,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_UP:
                 break;
         }
-        if(receive)
+        if(!receive)
+            return false;
+        if(receive) {
             manager.receiveTouch(event);
+        }
         return true;
     }
 
