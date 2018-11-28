@@ -47,6 +47,17 @@
     <string name="sb_game">%1$s</string>
     <string name="gsb_logged_as">Logged as: %1$s</string>
 
+    <!-- Dialog's Strings -->
+    <string name="d_url_field">Custom URL Image</string>
+    <string name="d_cb_use_image">Use this image as puzzle</string>
+    <string name="d_load_image">Load Image</string>
+    <string name="d_image_once">Image will NOT be saved nor loadable after exiting, but puzzle will remain loadable.</string>
+    <string name="d_undo">Undos</string>
+    <string name="d_default_undos">3</string>
+    <string name="d_hint_auto_dimensions">3</string>
+    <string name="d_hint_row">Rows</string>
+    <string name="d_hint_col">Columns</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
