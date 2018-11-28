@@ -379,7 +379,6 @@ public class GameSelectionTest {
         onView(withId(R.id.text_column)).perform(replaceText(""));
         onView(withId(R.id.button_confirm_difficulty)).perform(click());
 
-
         onView(allOf(withText(R.string.d_toast_empty_fields)))
                 .inRoot(toastMatch())
                 .check(matches(isDisplayed()));
