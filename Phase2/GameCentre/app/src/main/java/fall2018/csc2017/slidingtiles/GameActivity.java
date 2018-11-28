@@ -117,7 +117,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadFromFile(TEMP_SAVE_FILENAME);
+        try {
+            loadFromFile(TEMP_SAVE_FILENAME);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
         boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
         setContentView(R.layout.activity_main);
@@ -193,28 +197,14 @@ public class GameActivity extends AppCompatActivity implements Observer {
      *
      * @param fileName the name of the file
      */
-    private void loadFromFile(String fileName) {
-
-        try {
-            InputStream inputStream = this.openFileInput(fileName);
-            if (inputStream != null) {
-                ObjectInputStream input = new ObjectInputStream(inputStream);
-                boardManager = (BoardManager) input.readObject();
-                numRows = boardManager.getBoard().getNumRows();
-                numColumns = boardManager.getBoard().getNumColumns();
-                inputStream.close();
-            }
-        } catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-            boardList = (ArrayList<BoardManager>) getIntent().getSerializableExtra("boardList");
-            boardIndex = this.getIntent().getIntExtra("boardIndex", -1);
-            boardManager = boardList.get(boardIndex);
-            numRows = boardManager != null? boardManager.getBoard().getNumRows(): 1;
-            numColumns = boardManager != null? boardManager.getBoard().getNumColumns() : 1;
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        } catch (ClassNotFoundException e) {
-            Log.e("login activity", "File contained unexpected data type: " + e.toString());
+    private void loadFromFile(String fileName) throws Exception {
+        InputStream inputStream = this.openFileInput(fileName);
+        if (inputStream != null) {
+            ObjectInputStream input = new ObjectInputStream(inputStream);
+            boardManager = (BoardManager) input.readObject();
+            numRows = boardManager.getBoard().getNumRows();
+            numColumns = boardManager.getBoard().getNumColumns();
+            inputStream.close();
         }
     }
     /**
