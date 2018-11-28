@@ -402,20 +402,6 @@ public class GameSelectionTest {
                 .inRoot(toastMatch())
                 .check(matches(isDisplayed()));
     }
-
-    public Activity getCurrentActivity(){
-        final Activity[] currentActivity = new Activity[1];
-        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run() {
-                Collection<Activity> activities = ActivityLifecycleMonitorRegistry.getInstance()
-                        .getActivitiesInStage(Stage.RESUMED);
-                if(!activities.isEmpty())
-                    currentActivity[0] = activities.iterator().next();
-            }
-        });
-        return  currentActivity[0];
-    }
     public TypeSafeMatcher<Root> toastMatch(){
         return new TypeSafeMatcher<Root>() {
             @Override
