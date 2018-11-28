@@ -68,13 +68,13 @@ public class DialogManager implements PopupMenu.OnMenuItemClickListener{
     }
     private boolean checkValidDialogInputs(String row, String column){
         if (row.equals("")||column.equals("")) {
-            makeCustomToastText("Fields must not be empty", null);
+            makeCustomToastText(currentActivity.getString(R.string.d_toast_empty_fields), currentActivity);
             return false;
         } else if (Integer.parseInt(row) < 3 || Integer.parseInt(column) < 3){
-            makeCustomToastText("Rows/Columns cannot be less than 3", currentActivity);
+            makeCustomToastText(currentActivity.getString(R.string.d_toast_let_3), currentActivity);
             return false;
         } else if (Integer.parseInt(row) > 31 || Integer.parseInt(column) > 31){
-            makeCustomToastText("Rows/Columns cannot be larger than 31", currentActivity);
+            makeCustomToastText(currentActivity.getString(R.string.d_toast_lat_31), currentActivity);
             return false;
         }
         return true;
@@ -123,13 +123,14 @@ public class DialogManager implements PopupMenu.OnMenuItemClickListener{
                     imageIntent.putExtra("columns", 0);
                     currentActivity.startService(imageIntent);
                     if(resultReceiver.contentReceived())
-                        makeCustomToastText("Load Successful!", currentActivity);
+                        makeCustomToastText(currentActivity.getString(R.string.d_toast_succ_load), currentActivity);
                 }
             });
             confirmButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     CheckBox useImage = dialog.findViewById(R.id.cb_useImage);
+                    int parsedUndo = undos.getText().toString().equals("") ? 0 : Integer.parseInt(undos.getText().toString());
                     if(useImage.isChecked()){
                         if(resultReceiver.contentReceived() && checkValidDialogInputs(rows.getText().toString(),columns.getText().toString() )){
                             int rowsInt = Integer.parseInt(rows.getText().toString());
@@ -138,7 +139,7 @@ public class DialogManager implements PopupMenu.OnMenuItemClickListener{
                             bm.setCustomImageSet(resultReceiver.getBitmapList(
                                     ImageServiceIntent.bitmapSplitter
                                     (resultReceiver.getUnprocessedBitmap(), rowsInt , colsInt)));
-                            bm.setNumCanUndo(Integer.parseInt(undos.getText().toString()));
+                            bm.setNumCanUndo(parsedUndo);
                             bm.setUseImage(true);
                             boardList.add(bm);
                             adapter.notifyDataSetChanged();
@@ -146,15 +147,15 @@ public class DialogManager implements PopupMenu.OnMenuItemClickListener{
                             makeCustomToastText(rowsInt + "x" +colsInt, currentActivity);
                             dialog.dismiss();
                     } else if (resultReceiver.invalidImageLink()) {
-                        makeCustomToastText("Invalid image link, make sure to copy image link address directly!", currentActivity);
+                        makeCustomToastText(currentActivity.getString(R.string.d_toast_invalid_url), currentActivity);
                     } else {
-                        makeCustomToastText("You must wait for your image to finish downloading!", currentActivity);
+                        makeCustomToastText(currentActivity.getString(R.string.d_toast_racecar), currentActivity);
                     }
                     } else if (checkValidDialogInputs(rows.getText().toString(), columns.getText().toString())) {
                         Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()),
                                 Integer.parseInt(columns.getText().toString()));
                         BoardManager bm = new BoardManager(randomBoard);
-                        bm.setNumCanUndo(Integer.parseInt(undos.getText().toString()));
+                        bm.setNumCanUndo(parsedUndo);
                         boardList.add(bm);
                         adapter.notifyDataSetChanged();
                         saveBoardsToAccounts(currentActivity, account, boardList);
