@@ -66,9 +66,6 @@ public class ScoreBoard extends AppCompatActivity{
 
         currentGame = getIntent().getStringExtra("currentGame");
 
-        addChangeScoreboardViewButton();
-        addNewGameButtonListener();
-
         if (currentGame.equals("slidingTiles")) {
             scoreManager = new SlidingTilesScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
@@ -78,6 +75,8 @@ public class ScoreBoard extends AppCompatActivity{
                     scoreList.getContext(),
                     getIntent().getIntExtra("currentScore", 0));
         }
+        addChangeScoreboardViewButton();
+        addNewGameButtonListener();
         displayGameScoresList = scoreManager.getDisplayGameScoresList();
         displayUserScoresList = scoreManager.getDisplayUserScoresList();
 
@@ -87,6 +86,8 @@ public class ScoreBoard extends AppCompatActivity{
             if (getIntent().hasExtra("board")) { //TODO: board???
                 board = (Board) getIntent().getSerializableExtra("board");
             }
+        } else {
+            IS_GUEST = true;
         }
 
         /*
