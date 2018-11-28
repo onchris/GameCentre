@@ -24,7 +24,11 @@ import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewFinder;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.action.EspressoKey;
+import android.support.test.espresso.action.GeneralLocation;
+import android.support.test.espresso.action.GeneralSwipeAction;
 import android.support.test.espresso.action.KeyEventAction;
+import android.support.test.espresso.action.Press;
+import android.support.test.espresso.action.Swipe;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.base.DefaultFailureHandler;
 import android.support.test.espresso.base.IdlingResourceRegistry;
@@ -222,8 +226,11 @@ public class GameSelectionTest {
         intended(hasComponent(GeneralScoreboard.class.getName()));
         onView(allOf(withId(R.id.fragment_layout), isDisplayed())).check(matches(isDisplayed()));
         onView(allOf(withText("Sliding Tiles"), instanceOf(TextView.class)))
-                .check(matches(isDisplayed()))
-                .perform(swipeLeft());
+                .check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.fragment_layout), isDisplayed()))
+                .perform(new GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_RIGHT,
+                        GeneralLocation.BOTTOM_LEFT, Press.FINGER));
+        Thread.sleep(1000);
         onView(allOf(withText("Obstacle Dodger"), instanceOf(TextView.class)))
                 .check(matches(isDisplayed()));
         Espresso.pressBack();
@@ -243,8 +250,11 @@ public class GameSelectionTest {
         intended(hasComponent(GeneralScoreboard.class.getName()));
         onView(allOf(withId(R.id.fragment_layout), isDisplayed())).check(matches(isDisplayed()));
         onView(allOf(withText("Sliding Tiles"), instanceOf(TextView.class)))
-                .check(matches(isDisplayed()))
-                .perform(swipeLeft());
+                .check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.fragment_layout), isDisplayed()))
+                .perform(new GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_RIGHT,
+                GeneralLocation.BOTTOM_LEFT, Press.FINGER));
+        Thread.sleep(1000);
         onView(allOf(withText("Obstacle Dodger"), instanceOf(TextView.class)))
                 .check(matches(isDisplayed()));
         Espresso.pressBack();
