@@ -65,7 +65,7 @@ public class ScoreBoard extends AppCompatActivity{
         scoreList = findViewById(R.id.scoreboard_list);
 
         currentGame = getIntent().getStringExtra("currentGame");
-
+        int currentUserScore = getIntent().getIntExtra("currentScore", 0);
         if (currentGame.equals("slidingTiles")) {
             scoreManager = new SlidingTilesScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
@@ -94,7 +94,7 @@ public class ScoreBoard extends AppCompatActivity{
           TextView for the score from the most recently completed game
          */
         TextView currentScore = findViewById(R.id.lastscore);
-        currentScore.setText(getIntent().getStringExtra("currentScore"));
+        currentScore.setText(String.format("%s", currentUserScore));
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
                 R.layout.activity_scorelist, displayGameScoresList);
