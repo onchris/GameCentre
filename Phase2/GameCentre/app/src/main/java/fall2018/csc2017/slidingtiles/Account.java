@@ -149,7 +149,7 @@ public class Account implements Serializable {
      * @return The equality test with this account's username and param account's username
      */
     public boolean equals(Account account) {
-        return account.getUsername().equals(this.getUsername());
+        return account != null && account.getUsername().equals(this.getUsername());
     }
 
     /**
