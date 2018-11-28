@@ -107,7 +107,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
                 tmp.putExtra("currentUsername", "-1");
             }
             tmp.putExtra("currentGame", "slidingTiles");
-            tmp.putExtra("currentScore", currentScore.toString());
+            tmp.putExtra("currentScore", currentScore);
             startActivity(tmp);
             IMAGE_SET = null;
             finish();
