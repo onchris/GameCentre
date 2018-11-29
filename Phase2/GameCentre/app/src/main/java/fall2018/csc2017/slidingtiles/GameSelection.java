@@ -211,6 +211,10 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         ad.show();
     }
 
+    /**
+     * Viewing scoreboard
+     * @param v the view, called by activity
+     */
     public void scoreboardOnClick(View v){
         Intent scoreboardIntent =  new Intent(this, GeneralScoreboard.class);
         scoreboardIntent.putExtra("username", currentUsername);

@@ -46,26 +46,68 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     public static final int SAVE_INTERVAL = 10000;
 
-    // Grid View and calculated column height and width based on device size
+    /**
+     * Grid View for the game
+     */
     private GestureDetectGridView gridView;
+    /**
+     * width and height of the sliding tiles columns
+     */
     private static int columnWidth, columnHeight;
-
+    /**
+     * the current account of the game player, null if guest player
+     */
     private Account currentAccount;
-
+    /**
+     * the account's list of boards
+     */
     private ArrayList<BoardManager> boardList;
+    /**
+     * the index of the current board being played on from the current account's list of boards
+     */
     private int boardIndex;
+    /**
+     * the game timer
+     */
     private Timer timer = new Timer();
+    /**
+     * timer task for this game activity
+     */
     private TimerTask timerTask;
+    /**
+     * undo button for the game
+     */
     private Button undoButton;
+    /**
+     * current game score
+     */
     private Integer currentScore;
+    /**
+     * number of rows and columns on this game board
+     */
     private int numRows, numColumns;
-    private final Context ctx = this;
+    private final Context ctx = this; //TODO: can we remove?
+    /**
+     * tile builder for the game board
+     */
     private TileBuilder tileBuilder;
+    /**
+     * chronometer for the game
+     */
     private Chronometer chronometer;
+    /**
+     * check if chronometer is running, true if yes
+     */
     private boolean isChmRunning;
+    /**
+     * time when the game is pasued
+     */
     private long pauseTime;
+    /**
+     * scoring system for the game
+     */
     private ScoringSystem scoringSystem = new ScoringSystem();
-    public static ArrayList<Bitmap> IMAGE_SET;
+    public static ArrayList<Bitmap> IMAGE_SET; //TODO: make javadoc
     /**
      * Set up the background image for each button based on the master list
      * of positions, and then call the adapter to set the view.
@@ -250,6 +292,12 @@ public class GameActivity extends AppCompatActivity implements Observer {
             }
         });
     }
+
+    /**
+     * method to save board
+     * @param v the view
+     * @param isAutosave true if the game save method is autosave
+     */
     public void onClickSaveBoard(View v, boolean isAutosave){
         if (boardIndex != -1) {
             boardList.set(boardIndex, boardManager);
@@ -258,6 +306,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
             makeCustomToastText(getString(R.string.ga_auto_saved), this);
         saveBoardsToAccounts(this, currentAccount, boardList);
     }
+
+    /**
+     * on click method to save board
+     * @param v
+     */
     public void onClickSaveBoard(View v){
         if(currentAccount == null)
             makeCustomToastText(getString(R.string.ga_guest_save), this);
@@ -270,6 +323,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
         }
     }
 
+    /**
+     * start the chronometer for the game
+     * @param chronometer the chronometer to start
+     */
     public void startChronometer(Chronometer chronometer){
         if (!isChmRunning){
             chronometer.start();
@@ -277,6 +334,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
         }
     }
 
+    /**
+     * pause the chronometer for the game
+     * @param chronometer the chronometer
+     */
     public void pauseChronometer(Chronometer chronometer){
         if (isChmRunning){
             pauseTime = SystemClock.elapsedRealtime() - chronometer.getBase();

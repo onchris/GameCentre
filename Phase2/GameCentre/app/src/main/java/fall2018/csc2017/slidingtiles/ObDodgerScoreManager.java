@@ -13,6 +13,12 @@ import java.util.List;
 
 class ObDodgerScoreManager extends ScoreManager {
 
+    /**
+     * Constructor for a new obstacle dodger score manager
+     * @param username
+     * @param ctx
+     * @param score
+     */
     ObDodgerScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
         if (!username.equals("-1") && currentAccount != null) {
