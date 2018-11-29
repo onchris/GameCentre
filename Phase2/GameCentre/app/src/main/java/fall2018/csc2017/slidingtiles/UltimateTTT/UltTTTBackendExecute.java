@@ -84,9 +84,9 @@ class UltTTTBackendExecute {
         initializer.globalWinner = scanner.findGlobalWinner();
         currState = gamestates.toJson();
         gamestates.updateTurn();
-        gamestates.updateHistory(curr_state);
-        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), gamestates.toJson());
-        return curr_state;
+        gamestates.updateHistory(currState);
+        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), UltimateTTTInfoManager.parseJson(gamestates.toJson())); //TODO: may need to switch back to json (remove parse Json)
+        return currState;
     }
 
     /**

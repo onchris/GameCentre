@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,8 @@ public class Account implements Serializable {
     /**
      * Account's saved ultimate tic tac toe games
      */
-    private JSONObject ultimateTTTSave = new JSONObject();
+//    private JSONObject ultimateTTTSave = new JSONObject(); //TODO: trying to use ultimateTTTSave as a map
+    private Map<String, String> ultimateTTTSave = new HashMap<>();
 
     /**
      * Account's sliding tile games' scores as a list
@@ -142,9 +144,13 @@ public class Account implements Serializable {
      *
      * @param ultTTTUserResponses the board to be replaced with
      */
-    public void setUltimateTTTSave(JSONObject ultTTTUserResponses) {
+//    public void setUltimateTTTSave(JSONObject ultTTTUserResponses) {
+//        this.ultimateTTTSave = ultTTTUserResponses;
+//    } //TODO: remove if save works as a map
+
+    public void setUltimateTTTSave(Map<String, String> ultTTTUserResponses) {
         this.ultimateTTTSave = ultTTTUserResponses;
-    }
+    } //TODO: remove if map doesn't work
 
     /**
      * Assert with this account's username is equal to the account to be compared with
@@ -183,7 +189,11 @@ public class Account implements Serializable {
         sortGameScores();
     }
 
-    public JSONObject getUltimateTTTSave() {
+    public Map<String, String> getUltimateTTTSave() { //TODO: remove if map doesn't work
         return ultimateTTTSave;
     }
+
+//    public JSONObject getUltimateTTTSave() {
+//        return ultimateTTTSave;
+//    } //TODO: use if save is JSON, delete if save is as a map
 }

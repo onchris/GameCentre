@@ -45,8 +45,8 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
     /**
      * The current account
      */
-    private List<UltTTTConnector> ultTTTBoardManagers = new ArrayList<>();
-    private int boardNum;
+//    private List<UltTTTConnector> ultTTTBoardManagers = new ArrayList<>();
+//    private int boardNum; //TODO: remove?
 
     private Account currentAccount;
     /**
@@ -126,19 +126,20 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         connector.bundo.setEnabled(true);
     }
 
-    private void initialize(UltTTTConnector connector) {
-
-        for (ImageButton ImageButton : connector.getImageButtons()) {
-            ImageButton.setOnClickListener(this);
-            ImageButton.setBackgroundResource(R.drawable.ult_clearimage);
-        }
-        for (TableLayout tableLayout : connector.getTables())
-            tableLayout.setBackgroundColor(Color.BLACK);
-        connector.breset.setOnClickListener(this);
-        connector.breset.setEnabled(true);
-        connector.bundo.setOnClickListener(this);
-        connector.bundo.setEnabled(true);
-    }
+//    private void initialize(UltTTTConnector connector) {
+//        //TODO: may not need this anymore
+//
+//        for (ImageButton ImageButton : connector.getImageButtons()) {
+//            ImageButton.setOnClickListener(this);
+//            ImageButton.setBackgroundResource(R.drawable.ult_clearimage);
+//        }
+//        for (TableLayout tableLayout : connector.getTables())
+//            tableLayout.setBackgroundColor(Color.BLACK);
+//        connector.breset.setOnClickListener(this);
+//        connector.breset.setEnabled(true);
+//        connector.bundo.setOnClickListener(this);
+//        connector.bundo.setEnabled(true);
+//    }
 
 
     @Override
@@ -162,7 +163,7 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         if (GameSelection.IS_GUEST) {
             response = connector.backend.executer.execute(index);
         } else {
-            response = currentAccount.getUltimateTTTSave();
+            response = UltimateTTTInfoManager.getMapToJson(currentAccount.getUltimateTTTSave());
         }
         ultTTTBoardManager = new UltTTTBoardManager(UltimateTTTInfoManager.parseJson(response), connector);
         if (!IS_GUEST) {

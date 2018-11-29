@@ -160,7 +160,7 @@ public final class UtilityManager {
      * @param account the account of the user
      * @param ultTTTSave the modified list of ultttt games
      */
-    public static void saveUltTTTBoardManager(Context ctx, Account account, JSONObject ultTTTSave){
+    public static void saveUltTTTBoardManager(Context ctx, Account account, Map<String, String> ultTTTSave){ //TODO: trying as a map
         List<Account> accountList = new ArrayList<Account>();
         try {
             InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);
@@ -172,7 +172,7 @@ public final class UtilityManager {
             for(Account acc:accountList)
             {
                 if(acc.equals(account)){
-                    acc.setUltimateTTTSave((JSONObject) ultTTTSave);
+                    acc.setUltimateTTTSave(ultTTTSave);
                 }
             }
             ObjectOutputStream outputStream =
