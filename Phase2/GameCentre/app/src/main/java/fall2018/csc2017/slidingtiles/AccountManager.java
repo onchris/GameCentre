@@ -86,6 +86,7 @@ public class AccountManager {
         } else if (!checkExistingUser(username)){
             account = new Account(username, password);
             accountsList.add(account);
+            makeCustomToastText(activity.getString(R.string.am_register_succ), activity);
             return account;
         } else if (checkExistingUser(username))
         {
@@ -105,7 +106,6 @@ public class AccountManager {
                     new ObjectOutputStream(currentActivity.openFileOutput(fileName, MODE_PRIVATE));
             outputStream.writeObject(accountsList);
             outputStream.close();
-            makeCustomToastText(currentActivity.getString(R.string.am_credentials_saved), currentActivity);
         } catch (IOException e){
             makeCustomToastText(currentActivity.getString(R.string.am_error_save), currentActivity);
         }
