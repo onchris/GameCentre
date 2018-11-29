@@ -6,8 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.IBinder;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.PerformException;
+import android.support.test.espresso.Root;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.ViewInteraction;
@@ -18,11 +20,13 @@ import android.support.test.espresso.util.HumanReadables;
 import android.support.test.espresso.util.TreeIterables;
 import android.support.test.filters.SmallTest;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
@@ -174,44 +178,6 @@ public class SlidingTileTest {
         };
     }
 
-    private static ViewAction waitFor(final int viewId, final long seconds)
-    {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return ViewMatchers.withId(viewId);
-            }
-
-            @Override
-            public String getDescription() {
-                return "waiting";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                uiController.loopMainThreadUntilIdle();
-                final long startTime = System.currentTimeMillis();
-                final long endTime = startTime + seconds;
-                final Matcher<View> viewMatcher = withId(viewId);
-                do {
-                    for (View childView : TreeIterables.breadthFirstViewTraversal(view)) {
-                        if (viewMatcher.matches(childView)) {
-                            return;
-                        }
-                    }
-                    uiController.loopMainThreadForAtLeast(50);
-                }
-                while (System.currentTimeMillis() < endTime);
-                throw new PerformException.Builder()
-                        .withActionDescription(this.getDescription())
-                        .withViewDescription(HumanReadables.describe(view))
-                        .withCause(new TimeoutException())
-                        .build();
-
-            }
-        };
-    }
-
     /**
      * Wait until certain text field ends with an input targetString
      * @param viewId the view to be matched against
@@ -220,8 +186,8 @@ public class SlidingTileTest {
      * @return ViewAction that is performable
      */
     private static ViewAction waitUntil(final int viewId,
-                                        final String targetString,
-                                        final long timeoutThreshold){
+                                        final long timeoutThreshold,
+                                        final String... targetString){
         return new ViewAction() {
             @Override
             public Matcher<View> getConstraints() {
@@ -259,7 +225,8 @@ public class SlidingTileTest {
                                     .build();
                         }
                         else if(textfield != null) {
-                            if(textfield.getText().toString().endsWith(targetString))
+                            if(textfield.getText().toString().endsWith(targetString[0]) ||
+                                    textfield.getText().toString().endsWith(targetString[1]) )
                                 reached = true;
                             uiController.loopMainThreadForAtLeast(500);
                         }
@@ -346,7 +313,7 @@ public class SlidingTileTest {
             onView(withText(R.string.ga_cannot_undo))
                     .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
                     .check(matches(isDisplayed()));
-            onView(withId(R.id.chronometer)).perform(waitUntil(R.id.chronometer, "10", 15000));
+            onView(withId(R.id.chronometer)).perform(waitUntil(R.id.chronometer, 15000, "10", "20"));
             Thread.sleep(250);
             onView(withText(R.string.ga_auto_saved))
                     .inRoot(withDecorView(not(is(testRule.getActivity().getWindow().getDecorView()))))
@@ -355,6 +322,7 @@ public class SlidingTileTest {
             onView(isRoot()).perform(delayFor(R.id.text_undos, 1000));
             intended(hasComponent(ScoreBoard.class.getName()));
             onData(allOf(instanceOf(String.class), startsWith("123"))).atPosition(0).check(matches(withText(startsWith("123:      9"))));
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -405,10 +373,35 @@ public class SlidingTileTest {
             onData(allOf(instanceOf(String.class), startsWith("Guest"))).inAdapterView(withId(R.id.scoreboard_list))
                     .check(matches(withText(startsWith("Guest:      9"))));
             onView(withId(R.id.lastscore)).check(matches(withText(startsWith("9"))));
+            onView(withId(R.id.switchscoreboardview)).check(matches(isDisplayed())).perform(click());
+            onView(withText(R.string.gsb_no_score))
+                    .inRoot(toastMatch())
+                    .check(matches(isDisplayed()));
             onView(withId(R.id.button_new_game)).perform(click());
             intended(hasComponent(GameActivity.class.getName()));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private static TypeSafeMatcher<Root> toastMatch(){
+        return new TypeSafeMatcher<Root>() {
+            @Override
+            protected boolean matchesSafely(Root item) {
+                int type = item.getWindowLayoutParams().get().type;
+                if ((type == WindowManager.LayoutParams.FIRST_SYSTEM_WINDOW + 5)) {
+                    IBinder windowToken = item.getDecorView().getWindowToken();
+                    IBinder appToken = item.getDecorView().getApplicationWindowToken();
+                    if (windowToken == appToken) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("toast matching");
+            }
+        };
     }
 }

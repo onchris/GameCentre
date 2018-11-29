@@ -7,29 +7,83 @@ import java.util.Arrays;
 import java.util.Stack;
 
 class UltTTTBackendInit {
+    /**
+     * The winner of current round
+     */
     String winner;
+    /**
+     * The winner of the game
+     */
     String globalWinner;
+    /**
+     * The current active block
+     */
     int currentActiveBlock = Integer.MAX_VALUE; //In Board?
+    /**
+     * The next active block
+     */
     int nextActiveBlock = Integer.MAX_VALUE;
+    /**
+     * The list of disable blocks
+     */
     boolean[] disabledBlocks = new boolean[9];
+    /**
+     * The list of scores
+     */
     int score[];
+    /**
+     * The current cell
+     */
     int currentCell;
+    /**
+     * The used cells
+     */
     StringBuilder usedCells;
+    /**
+     * The cells to be reset
+     */
     String resetCells;
+    /**
+     * The button that is pressed
+     */
     String buttonPressed;
+    /**
+     * A check if it is player1's turn
+     */
     boolean isP1Turn;       //true for player1. false for player2
+    /**
+     * The block color to reset
+     */
     String resetBlockColor;
-
+    /**
+     * The status of the board
+     */
     int boardStatus[][][];
+    /**
+     * No terms
+     */
     int no_terms[];
+
+    /**
+     * The list of results of each round
+     */
     ArrayList<String> result;
 
+    /**
+     * The history of user's moves
+     */
     Stack<JSONObject> history;
 
+    /**
+     * Initialize Ultimate Tic Tac Toe game
+     */
     UltTTTBackendInit() {
         initialize();
     }
 
+    /**
+     * Initialize Ultimate Tic Tac Toe game
+     */
     void initialize() {
         winner = "None";
         globalWinner = "None";

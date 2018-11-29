@@ -50,7 +50,10 @@ public final class UtilityManager {
                 return returnList;
             }
         } catch (FileNotFoundException e) {
-            Log.e("UM: loadAccountList", "File not found: " + e.toString());
+            Log.e("UM: loadAccountList" , "File not found: " + e.toString());
+            ObjectOutputStream os = new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
+            os.writeObject(new ArrayList<Account>());
+            os.close();
         } catch (IOException e) {
             Log.e("UM: loadAccountList", "Can not read file: " + e.toString());
         } catch (ClassNotFoundException e) {

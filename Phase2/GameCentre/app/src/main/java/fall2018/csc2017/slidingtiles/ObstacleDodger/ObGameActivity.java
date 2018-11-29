@@ -5,12 +5,25 @@ Adapted from:
 https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
  */
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import fall2018.csc2017.slidingtiles.Account;
+import fall2018.csc2017.slidingtiles.R;
+import fall2018.csc2017.slidingtiles.ScoreBoard;
+
+import static android.os.Process.getThreadPriority;
+import static android.os.Process.killProcess;
+import static android.os.Process.myPid;
 
 public class ObGameActivity extends AppCompatActivity {
 
@@ -49,14 +62,22 @@ public class ObGameActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             System.out.println("Exception occurred");
         }
+    }
 
-
-
+    public void createScoreBoard(int score, Bundle info){
+        Intent scoreboard = new Intent(this, ScoreBoard.class);
+        scoreboard.putExtra("currentUsername", info.getString("currentUsername"));
+        scoreboard.putExtra("currentGame", info.getString("currentGame"));
+        scoreboard.putExtra("currentScore", score);
+        scoreboard.addFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
+        startActivity(scoreboard);
+        this.finish();
     }
 
     @Override
     public void onBackPressed() {
-        int pid = android.os.Process.myPid();
-        android.os.Process.killProcess(pid);
+        gamePanel.getThread().interrupt();
+        gamePanel.getThread().setRunning(false);
+        super.onBackPressed();
     }
 }

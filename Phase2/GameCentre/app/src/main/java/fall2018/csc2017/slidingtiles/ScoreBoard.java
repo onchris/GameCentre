@@ -65,14 +65,11 @@ public class ScoreBoard extends AppCompatActivity{
         scoreList = findViewById(R.id.scoreboard_list);
 
         currentGame = getIntent().getStringExtra("currentGame");
-
-        addChangeScoreboardViewButton();
-        addNewGameButtonListener();
-
+        int currentUserScore = getIntent().getIntExtra("currentScore", 0);
         if (currentGame.equals("slidingTiles")) {
             scoreManager = new SlidingTilesScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
-                    Integer.parseInt(getIntent().getStringExtra("currentScore")));
+                    currentUserScore);
         } else if (currentGame.equals("obDodger")) {
             scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
@@ -80,8 +77,10 @@ public class ScoreBoard extends AppCompatActivity{
         } else if (currentGame.equals("ultTTT")) {
             scoreManager = new UltTTTScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
-                    Integer.parseInt(getIntent().getStringExtra("currentScore")));
+                    currentUserScore);
         }
+        addChangeScoreboardViewButton();
+        addNewGameButtonListener();
         displayGameScoresList = scoreManager.getDisplayGameScoresList();
         displayUserScoresList = scoreManager.getDisplayUserScoresList();
 
@@ -91,13 +90,15 @@ public class ScoreBoard extends AppCompatActivity{
             if (getIntent().hasExtra("board")) {
                 board = (Board) getIntent().getSerializableExtra("board");
             }
+        } else {
+            IS_GUEST = true;
         }
 
         /*
           TextView for the score from the most recently completed game
          */
         TextView currentScore = findViewById(R.id.lastscore);
-        currentScore.setText(getIntent().getStringExtra("currentScore"));
+        currentScore.setText(String.format("%s", currentUserScore));
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
                 R.layout.activity_scorelist, displayGameScoresList);
@@ -131,7 +132,7 @@ public class ScoreBoard extends AppCompatActivity{
             arrayAdapter.notifyDataSetChanged();
             IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             if (IS_GUEST) {
-                Toast.makeText(scoreList.getContext(), "Guest has no saved scores!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(scoreList.getContext(), getString(R.string.gsb_no_score), Toast.LENGTH_SHORT).show();
                 IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             }
         } else {

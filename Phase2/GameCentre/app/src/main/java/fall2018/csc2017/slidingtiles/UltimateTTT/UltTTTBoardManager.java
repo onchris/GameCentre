@@ -16,31 +16,85 @@ import fall2018.csc2017.slidingtiles.ScoreBoard;
 
 //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
 public class UltTTTBoardManager {
+    /**
+     * The winner of current round
+     */
     private String winner;
+    /**
+     * The winner of the game
+     */
     private String globalWinner;
-
+    /**
+     * The current active block
+     */
     private int currentActiveBlock;
+    /**
+     * The next active block
+     */
     private int nextActiveBlock;
+    /**
+     * The disable block
+     */
     private String disableBlock;
-
+    /**
+     * The score of player1
+     */
     private int scoreP1;
+    /**
+     * The score of player2
+     */
     private int scoreP2;
-
+    /**
+     * The current cell
+     */
     private int currentCell;
+    /**
+     * The used cells
+     */
     private String usedCells[];
+    /**
+     * The cells to be reset
+     */
     private String resetCells;
-
+    /**
+     * A check if it is player1's turn
+     */
     private String isP1Turn;
+    /**
+     * The button that is pressed
+     */
     private String buttonPressed;
+    /**
+     * The block color to reset
+     */
     private String resetBlockColor;
-
+    /**
+     * List of image buttons
+     */
     private ImageButton[] ImageButtons;
+    /**
+     * The tables
+     */
     private TableLayout tables[];
+    /**
+     * The connector of Ultimate Tic Tac Toe game
+     */
     private UltTTTConnector connector;
+    /**
+     * The game activity of Ultimate Tic Tac Toe game
+     */
     private UltimateTTTGameActivity activity;
+    /**
+     * The cell manager of Ultimate Tic Tac Toe game
+     */
     private UltTTTCellManager cellManager;
 
-
+    /**
+     * Manage the board of Ultimate Tic Tac Toe game
+     *
+     * @param result    the result
+     * @param connector the connector of Ultimate Tic Tac Toe game
+     */
     UltTTTBoardManager(Map result, UltTTTConnector connector) {
         winner = (String) result.get("CurrentWinner");
         globalWinner = (String) result.get("GlobalWinner");
@@ -67,6 +121,9 @@ public class UltTTTBoardManager {
         cellManager = new UltTTTCellManager(connector);
     }
 
+    /**
+     * Operate the board
+     */
     void operate() {
         if (buttonPressed.equals("Reset")) {
             activity.initialize();
@@ -110,6 +167,14 @@ public class UltTTTBoardManager {
             gameOver(globalWinner);
     }
 
+    /**
+     * Change table's color
+     *
+     * @param nextActiveBlock    the next active block
+     * @param currentActiveBlock the current active block
+     * @param player             the current player
+     * @param buttonPressed      the button pressed
+     */
     private void changeTableColor(int nextActiveBlock, int currentActiveBlock, String player,
                                   String buttonPressed) {
         int color;
@@ -130,6 +195,11 @@ public class UltTTTBoardManager {
             tables[nextActiveBlock].setBackgroundColor(color);
     }
 
+    /**
+     * Manage the board when game is over
+     *
+     * @param global_winner the winner of the game
+     */
     private void gameOver(String global_winner) {
         cellManager.disableAll();
         Intent tmp = new Intent(this.activity, ScoreBoard.class);
@@ -170,6 +240,9 @@ public class UltTTTBoardManager {
 //        ad.setCanceledOnTouchOutside(false);
     }
 
+    /**
+     * Sets the text
+     */
     private void setText(TextView tv, String s) {
         tv.setText(s);
     }

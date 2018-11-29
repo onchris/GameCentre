@@ -6,6 +6,7 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
  */
 
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class MainThread extends Thread {
@@ -38,7 +39,10 @@ public class MainThread extends Thread {
         while (running) {
             startTime = System.nanoTime();
             canvas = null;
-
+            if(!running)
+            {
+                return;
+            }
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
@@ -55,7 +59,6 @@ public class MainThread extends Thread {
                         e.printStackTrace();
                     }
                 }
-
             }
         }
         timeMillis = (System.nanoTime() - startTime) / 1000000;
@@ -74,6 +77,7 @@ public class MainThread extends Thread {
             totalTime = 0;
             System.out.println(averageFPS);
         }
+
     }
 }
 
