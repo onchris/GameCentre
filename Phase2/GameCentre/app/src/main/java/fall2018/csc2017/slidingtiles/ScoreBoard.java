@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fall2018.csc2017.slidingtiles.ObstacleDodger.ObGameActivity;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltimateTTTGameActivity;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
@@ -185,6 +186,22 @@ public class ScoreBoard extends AppCompatActivity{
                         startActivity(tmp);
                     } else {
                         Intent tmp = new Intent(v.getContext(), ObGameActivity.class);
+                        tmp.putExtra("account", currentAccount);
+                        startActivity(tmp);
+                    }
+                    finish();
+                }
+            });
+        } else {
+            Button newGameButton = findViewById(R.id.button_new_game);
+            newGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (IS_GUEST) {
+                        Intent tmp = new Intent(v.getContext(), UltimateTTTGameActivity.class);
+                        startActivity(tmp);
+                    } else {
+                        Intent tmp = new Intent(v.getContext(), UltimateTTTGameActivity.class);
                         tmp.putExtra("account", currentAccount);
                         startActivity(tmp);
                     }
