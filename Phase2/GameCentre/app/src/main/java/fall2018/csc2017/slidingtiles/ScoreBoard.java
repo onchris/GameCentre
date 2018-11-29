@@ -56,6 +56,9 @@ public class ScoreBoard extends AppCompatActivity{
      * The board for the game
      */
     private Board board;
+    /**
+     * the last game played
+     */
     private String currentGame;
 
     @Override
