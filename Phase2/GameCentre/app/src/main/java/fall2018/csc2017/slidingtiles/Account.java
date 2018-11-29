@@ -72,8 +72,8 @@ public class Account implements Serializable {
         return ultimateTTTScores;
     }
 
-    public void ultimateTTTWinUpdate (Boolean won) {
-        if (won) ultimateTTTScores ++;
+    public void ultimateTTTWinUpdate(Boolean won) {
+        if (won) ultimateTTTScores++;
     }
 
     /**
