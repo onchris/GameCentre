@@ -11,8 +11,19 @@ import static android.content.Context.MODE_PRIVATE;
 import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
 
 public class AccountManager {
+    /**
+     * List of account's
+     */
     private List<Account> accountsList;
+    /**
+     * The current account
+     */
     private Account currentAccount;
+    /**
+     * Manage a list of accounts.
+     *
+     * @param accountsList the list of accounts
+     */
     public AccountManager(List<Account> accountsList){
         this.accountsList = accountsList;
     }
@@ -48,7 +59,11 @@ public class AccountManager {
         }
         return false;
     }
-
+    /**
+     * Gets the account according to username
+     * @param name the username used to get account
+     * @return the account of the username
+     */
     public Account getAccountFromUsername(String name){
         for(Account acc: accountsList)
         {
