@@ -73,7 +73,7 @@ public class ScoreBoard extends AppCompatActivity{
         } else if (currentGame.equals("obDodger")) {
             scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
-                    Integer.parseInt(getIntent().getStringExtra("currentScore")));
+                    currentUserScore);
         } else if (currentGame.equals("ultTTT")) {
             scoreManager = new UltTTTScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
@@ -133,7 +133,7 @@ public class ScoreBoard extends AppCompatActivity{
             IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             if (IS_GUEST) {
                 Toast.makeText(scoreList.getContext(), getString(R.string.gsb_no_score), Toast.LENGTH_SHORT).show();
-                IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
+                //IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             }
         } else {
             ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
