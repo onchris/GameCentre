@@ -8,22 +8,52 @@ import android.widget.TextView;
 import fall2018.csc2017.slidingtiles.R;
 
 public class UltTTTConnector {
-
+    /**
+     * The game activity of Ultimate Tic Tac Toe game
+     */
     public UltimateTTTGameActivity activity;
-
+    /**
+     * The text view of player1's score
+     */
     TextView scoreP1;
+    /**
+     * The text view of player2's score
+     */
     TextView scoreP2;
+    /**
+     * The reset button
+     */
     ImageButton breset;
+    /**
+     * The undo button
+     */
     ImageButton bundo;
+    /**
+     * The backend of ultimate tic tac toe game
+     */
     UltimateTTTBackend backend;
+    /**
+     * The image buttons of the board
+     */
     private ImageButton[] ImageButtons;
+    /**
+     * The tables
+     */
     private TableLayout tables[];
 
+    /**
+     * Connect the activity
+     *
+     * @param activity the activity of ultimate tic tac toe game
+     */
     UltTTTConnector(UltimateTTTGameActivity activity) {
         this.activity = activity;
         bind();
     }
 
+    /**
+     * Bind activity information with views
+     */
     private void bind() {
         scoreP1 = activity.findViewById(R.id.textView3);
         scoreP2 = activity.findViewById(R.id.textView4);
@@ -89,18 +119,39 @@ public class UltTTTConnector {
                 };
     }
 
+    /**
+     * Gets the image buttons
+     *
+     * @return the image buttons
+     */
     ImageButton[] getImageButtons() {
         return ImageButtons;
     }
 
+    /**
+     * Gets the tables
+     *
+     * @return the tables
+     */
     TableLayout[] getTables() {
         return tables;
     }
 
+    /**
+     * Gets the activity
+     *
+     * @return the activity
+     */
     public Activity getActivity() {
         return activity;
     }
 
+    /**
+     * Gets the index of the image button
+     *
+     * @param b the image button
+     * @return the index of the image button
+     */
     int getIndex(ImageButton b) {
         for (int i = 0; i < ImageButtons.length; i++) {
             if (ImageButtons[i].equals(b)) {
