@@ -1,15 +1,15 @@
 package fall2018.csc2017.slidingtiles;
 
+import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +30,11 @@ public class ScoreFragment extends Fragment {
     private String username;
     private ScoreManager scoreManager;
     private List<String> displayList = new ArrayList<>();
-    private OnFragmentInteractionListener mListener;
     private ListView scoresListDisplay;
-
+    private OnFragmentInteractionListener mListener;
     public ScoreFragment() {
         // Required empty public constructor
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -52,6 +50,10 @@ public class ScoreFragment extends Fragment {
         return fragment;
     }
 
+    public ScoreManager getScoreManager() {
+        return scoreManager;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,16 +61,18 @@ public class ScoreFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_scores, container, false);
     }
 
+    public ListView getScoresListDisplay() {
+        return scoresListDisplay;
+    }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         gameName = getView().findViewById(R.id.frag_textview);
         scoresListDisplay = getView().findViewById(R.id.lv_scores);
         String game = getArguments().getString("game", "Scoreboard");
         gameName.setText(game);
-        username = getArguments().getString("user", "Guest");
-
+        username = getArguments().getString("account", "Guest");
         if(game.equals("Sliding Tiles")) {
             scoreManager = new SlidingTilesScoreManager(username, getContext(), 0);
         } else if (game.equals("Obstacle Dodger")) {
@@ -79,7 +83,6 @@ public class ScoreFragment extends Fragment {
                 = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
                 R.layout.activity_scorelist, displayList);
         scoresListDisplay.setAdapter(adapter);
-
     }
 
     @Override
@@ -89,17 +92,9 @@ public class ScoreFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Fragment interface for getting instance scoreboard
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void getDisplayScoreboard();
     }
 }
