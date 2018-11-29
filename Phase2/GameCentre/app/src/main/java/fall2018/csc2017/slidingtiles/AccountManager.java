@@ -33,7 +33,7 @@ public class AccountManager {
      * @return whether if account already exists
      */
     public boolean checkExistingUser(String username){
-        if(accountsList.isEmpty())
+        if(accountsList == null ||accountsList.isEmpty())
             return false;
         for(Account existingAccount: accountsList)
         {
@@ -44,6 +44,9 @@ public class AccountManager {
     }
     public void setAccountsList(List<Account> accountsList) {
         this.accountsList = accountsList;
+    }
+    public List<Account> getAccountsList(){
+        return accountsList;
     }
     /**
      * Authenticates the user with it's corresponding login details input
