@@ -10,10 +10,6 @@ import java.util.List;
  */
 public class Account implements Serializable {
     /**
-     * Account's statistics, number of puzzles solved and scores achieved in sliding tiles
-     */
-    public int numSolved, highscore;
-    /**
      * Account's username
      */
     private String username;
@@ -37,7 +33,7 @@ public class Account implements Serializable {
     private List<Integer> slidingGameScores = new ArrayList<>();
 
     /**
-     * Account's ultimate tic tac toe games' scores as a list
+     * Account's ultimate tic tac toe games' total wins
      */
     private Integer ultimateTTTScores;
 
@@ -55,8 +51,7 @@ public class Account implements Serializable {
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
-        numSolved = 0;
-        highscore = 0;
+        ultimateTTTScores = 0;
     }
 
     /**
@@ -75,6 +70,10 @@ public class Account implements Serializable {
      */
     public Integer getUltimateTTTScores() {
         return ultimateTTTScores;
+    }
+
+    public void ultimateTTTWinUpdate (Boolean won) {
+        if (won) ultimateTTTScores ++;
     }
 
     /**
@@ -127,11 +126,13 @@ public class Account implements Serializable {
      *
      * @param ultTTTUserResponses the board to be replaced with
      */
-//    public void setUltimateTTTSave(JSONObject ultTTTUserResponses) {
-//        this.ultimateTTTSave = ultTTTUserResponses;
-//    } //TODO: remove if save works as a map
     public void setUltimateTTTSave(int ultTTTUserResponses) {
-        this.ultimateTTTSave.add(ultTTTUserResponses);
+        if (ultTTTUserResponses < 0)
+            this.ultimateTTTSave = new ArrayList();
+        else {
+            this.ultimateTTTSave.add(ultTTTUserResponses);
+        }
+
     }
 
     /**

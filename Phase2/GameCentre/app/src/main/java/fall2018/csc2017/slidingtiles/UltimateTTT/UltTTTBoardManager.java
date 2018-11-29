@@ -9,10 +9,12 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import fall2018.csc2017.slidingtiles.R;
 import fall2018.csc2017.slidingtiles.ScoreBoard;
+import fall2018.csc2017.slidingtiles.UtilityManager;
 
 //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
 public class UltTTTBoardManager {
@@ -208,6 +210,8 @@ public class UltTTTBoardManager {
             tmp.putExtra("currentUsername", "-1");
         } else{
             tmp.putExtra("currentUsername", activity.P1Name);
+            UtilityManager.saveUltTTTWinUpdate(this.activity, activity.getCurrentAccount(), global_winner.equals(activity.P1Name));
+            UtilityManager.saveUltTTTBoardManager(this.activity, activity.getCurrentAccount(), -1);
         }
         if (global_winner.equals(activity.P1Name)) {
             tmp.putExtra("currentScore", "1");

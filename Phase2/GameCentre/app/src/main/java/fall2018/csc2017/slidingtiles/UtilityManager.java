@@ -290,4 +290,38 @@ public final class UtilityManager {
             Log.e("UM: saveScoresToAccounts", "File contained unexpected data type: " + e.toString());
         }
     }
+
+    /**
+     * Static function for saving scores to accounts
+     *
+     * @param ctx,    the current context
+     * @param account the current account to be saved in
+     * @param won   if the game was won
+     */
+    public static void saveUltTTTWinUpdate(Context ctx, Account account, Boolean won) {
+        List<Account> accountList = new ArrayList<Account>();
+        try {
+            InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);
+            if (inputStream != null) {
+                ObjectInputStream input = new ObjectInputStream(inputStream);
+                accountList = (List<Account>) input.readObject();
+                inputStream.close();
+            }
+            for (Account acc : accountList) {
+                if (acc.equals(account)) {
+                    acc.ultimateTTTWinUpdate(won);
+                }
+            }
+            ObjectOutputStream outputStream =
+                    new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));
+            outputStream.writeObject(accountList);
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            Log.e("UM: saveScoresToAccounts", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("UM: saveScoresToAccounts", "Can not read file: " + e.toString());
+        } catch (ClassNotFoundException e) {
+            Log.e("UM: saveScoresToAccounts", "File contained unexpected data type: " + e.toString());
+        }
+    }
 }

@@ -77,6 +77,11 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
                 tables = connector.getTables();
                 initialize();
                 runFrontEnd(saveFile);
+            } else {
+                connector = new UltTTTConnector(this);
+                ImageButtons = connector.getImageButtons();
+                tables = connector.getTables();
+                initialize();
             }
         } else {
             IS_GUEST = true;
