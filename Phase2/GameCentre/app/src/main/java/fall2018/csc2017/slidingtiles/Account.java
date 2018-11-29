@@ -1,16 +1,9 @@
 package fall2018.csc2017.slidingtiles;
 
-import org.json.JSONObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTBoardManager;
-import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTConnector;
 
 /**
  * The account of the user.
@@ -36,8 +29,7 @@ public class Account implements Serializable {
     /**
      * Account's saved ultimate tic tac toe games
      */
-//    private JSONObject ultimateTTTSave = new JSONObject(); //TODO: trying to use ultimateTTTSave as a map
-    private Map<String, String> ultimateTTTSave = new HashMap<>();
+    private ArrayList ultimateTTTSave = new ArrayList();
 
     /**
      * Account's sliding tile games' scores as a list
@@ -121,15 +113,6 @@ public class Account implements Serializable {
         return boardList;
     }
 
-//    /**
-//     * Gets this account's list of ultimate tic tac toe game's boards
-//     *
-//     * @return the List of UltTTTBoards
-//     */
-//    public List<UltTTTConnector> getUltimateTTTList() {
-//        return ultimateTTTList;
-//    }
-
     /**
      * Sets this account's list of sliding game's boards
      *
@@ -147,10 +130,9 @@ public class Account implements Serializable {
 //    public void setUltimateTTTSave(JSONObject ultTTTUserResponses) {
 //        this.ultimateTTTSave = ultTTTUserResponses;
 //    } //TODO: remove if save works as a map
-
-    public void setUltimateTTTSave(Map<String, String> ultTTTUserResponses) {
-        this.ultimateTTTSave = ultTTTUserResponses;
-    } //TODO: remove if map doesn't work
+    public void setUltimateTTTSave(int ultTTTUserResponses) {
+        this.ultimateTTTSave.add(ultTTTUserResponses);
+    }
 
     /**
      * Assert with this account's username is equal to the account to be compared with
@@ -182,6 +164,7 @@ public class Account implements Serializable {
 
     /**
      * Add a score from a game of obstacle dodger to the list of user's scores
+     *
      * @param score the score to add to sliding games
      */
     public void addToObDodgeGameScores(int score) {
@@ -189,11 +172,8 @@ public class Account implements Serializable {
         sortGameScores();
     }
 
-    public Map<String, String> getUltimateTTTSave() { //TODO: remove if map doesn't work
+    public ArrayList getUltimateTTTSave() {
         return ultimateTTTSave;
     }
 
-//    public JSONObject getUltimateTTTSave() {
-//        return ultimateTTTSave;
-//    } //TODO: use if save is JSON, delete if save is as a map
 }
