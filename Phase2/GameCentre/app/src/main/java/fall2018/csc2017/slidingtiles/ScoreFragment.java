@@ -73,6 +73,8 @@ public class ScoreFragment extends Fragment {
             scoreManager = new SlidingTilesScoreManager(username, getContext(), 0);
         } else if (game.equals("Obstacle Dodger")) {
             scoreManager = new ObDodgerScoreManager(username, getContext(), 0);
+        } else {
+            scoreManager = new UltTTTScoreManager(username, getContext(), 0);
         }
         displayList = scoreManager.getDisplayGameScoresList();
         ArrayAdapter adapter
