@@ -52,11 +52,10 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
     /**
      * A check if the user is a guest
      */
-    private boolean IS_GUEST = false;
+    public boolean IS_GUEST = false;
     /**
      * The player1's name
      */
-    boolean IS_GUEST = false;
 
     String P1Name;
     /**
