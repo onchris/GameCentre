@@ -5,14 +5,31 @@ import java.util.Iterator;
 
 class UltTTTGameStateScanner {
 
+    /**
+     * The initializer for ultimate tic tac toe game
+     */
     private UltTTTBackendInit initializer;
+    /**
+     * The activity for ultimate tic tac toe game
+     */
     private UltimateTTTGameActivity activity;
 
+    /**
+     * The game state scanner for ultimate tic tac toe game
+     *
+     * @param initializer the initializer for ultimate tic tac toe game
+     * @param activity    the activity for ultimate tic tac toe game
+     */
     UltTTTGameStateScanner(UltTTTBackendInit initializer, UltimateTTTGameActivity activity) {
         this.initializer = initializer;
         this.activity = activity;
     }
 
+    /**
+     * Gets the global winner
+     *
+     * @return the global winner
+     */
     String findGlobalWinner() {
         int no_drawn = findOccurrences("Drawn", initializer.result);
         int no_win_p1 = findOccurrences("Player 1", initializer.result);
@@ -29,6 +46,11 @@ class UltTTTGameStateScanner {
             return "None";
     }
 
+    /**
+     * Gets the global winner's name
+     *
+     * @return the global winner's name
+     */
     String getGlobalWinnerName(String global_winner) {
         if (global_winner.equals("Player 1"))
             return activity.P1Name + " wins";
@@ -39,6 +61,13 @@ class UltTTTGameStateScanner {
         return "None";
     }
 
+    /**
+     * Gets the number of occurrences of certain string
+     *
+     * @param str  the string to be find
+     * @param list the list contains the string str
+     * @return the number of occurrences of string str in list
+     */
     private int findOccurrences(String str, ArrayList list) {
         String curr_item;
         int num_occurrences;

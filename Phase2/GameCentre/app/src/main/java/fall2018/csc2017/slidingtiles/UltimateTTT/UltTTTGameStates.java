@@ -4,15 +4,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 class UltTTTGameStates {
-
+    /**
+     * The initializer for ultimate tic tac toe game
+     */
     private UltTTTBackendInit initializer;
+    /**
+     * The scanner for ultimate tic tac toe game
+     */
     private UltTTTGameStateScanner scanner;
 
+    /**
+     * Game states for Ultimate TTT
+     *
+     * @param initializer the initializer for ultimate tic tac toe game
+     * @param scanner     the scanner for ultimate tic tac toe game
+     */
     UltTTTGameStates(UltTTTBackendInit initializer, UltTTTGameStateScanner scanner) {
         this.initializer = initializer;
         this.scanner = scanner;
     }
 
+    /**
+     * Convert information to jsonObject
+     *
+     * @return JSONObject
+     */
     JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         try {
@@ -35,10 +51,22 @@ class UltTTTGameStates {
         return jsonObject;
     }
 
+    /**
+     * Add moves to history
+     *
+     * @param move_json the move just taken
+     */
     void updateHistory(JSONObject move_json) {
         initializer.history.push(move_json);
     }
 
+    /**
+     * Update the board
+     *
+     * @param blockNumber the block number
+     * @param row         the row number
+     * @param column      the column number
+     */
     void updateBoard(int blockNumber, int row, int column) {
         if (blockNumber >= 0 && blockNumber <= 8)
             if (initializer.isP1Turn)
@@ -47,14 +75,28 @@ class UltTTTGameStates {
                 initializer.boardStatus[blockNumber][row][column] = 1;
     }
 
+    /**
+     * Update the score
+     *
+     * @param num the score
+     */
     void updateScore(int num) {
         ++initializer.score[num];
     }
 
+    /**
+     * Update the turn
+     */
     void updateTurn() {
         initializer.isP1Turn = !initializer.isP1Turn;
     }
 
+    /**
+     * Gets the winner
+     *
+     * @param block_num block number
+     * @return the winner or null depends on different situations
+     */
     String getWinner(int block_num) {
         for (int i = 0; i < 3; i++) {
             if (initializer.boardStatus[block_num][i][0] == initializer.boardStatus[block_num][i][1] &&
@@ -80,12 +122,23 @@ class UltTTTGameStates {
         return "None";
     }
 
+    /**
+     * Gets which player is playing next
+     *
+     * @return which player is playing next
+     */
     private String getTurn() {
         if (initializer.isP1Turn)
             return "Player 1";
         return "Player 2";
     }
 
+    /**
+     * Gets the next active block
+     *
+     * @param cell_number the cell number
+     * @return the next active block
+     */
     int getNextActiveBlock(int cell_number) {
         int nab = cell_number % 9;
         if (initializer.disabledBlocks[nab])
@@ -93,6 +146,11 @@ class UltTTTGameStates {
         return initializer.no_terms[cell_number / 9] == 9 ? Integer.MAX_VALUE : nab;
     }
 
+    /**
+     * Gets string format of disable blocks
+     *
+     * @return the string format of disable blocks
+     */
     private String getDisableBlockString() {
         String result = "";
         for (int i = 0; i < 9; i++)
@@ -102,12 +160,23 @@ class UltTTTGameStates {
         return result;
     }
 
+    /**
+     * Gets the player's id
+     *
+     * @param num
+     * @return the player's id
+     */
     private String getPlayerID(int num) {
         if (num == 0)
             return "Player 1";
         return "Player 2";
     }
 
+    /**
+     * Gets the scanner for ultimate ttt game
+     *
+     * @return the scanner for ultimate ttt game
+     */
     UltTTTGameStateScanner getScanner() {
         return scanner;
     }
