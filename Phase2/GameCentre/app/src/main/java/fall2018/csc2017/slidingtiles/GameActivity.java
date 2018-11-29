@@ -107,7 +107,10 @@ public class GameActivity extends AppCompatActivity implements Observer {
      * scoring system for the game
      */
     private ScoringSystem scoringSystem = new ScoringSystem();
-    public static ArrayList<Bitmap> IMAGE_SET; //TODO: make javadoc
+    /**
+     * Broken up image for background of tiles
+     */
+    public static ArrayList<Bitmap> IMAGE_SET;
     /**
      * Set up the background image for each button based on the master list
      * of positions, and then call the adapter to set the view.

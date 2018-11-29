@@ -250,7 +250,7 @@ public final class UtilityManager {
      * @param account the current account to be saved in
      * @param score the score of the game that will be save
      */
-    public static void saveObDodgerScoresToAccounts(Context ctx, Account account, int score){ //TODO: combine with saveScoresToAccounts (need to change Accounts!!)
+    public static void saveObDodgerScoresToAccounts(Context ctx, Account account, int score){
         List<Account> accountList = new ArrayList<Account>();
         try {
             InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);

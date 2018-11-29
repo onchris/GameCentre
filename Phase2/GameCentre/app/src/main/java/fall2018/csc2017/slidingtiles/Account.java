@@ -178,7 +178,7 @@ public class Account implements Serializable {
      * Add a score from a game of obstacle dodger to the list of user's scores
      * @param score the score to add to sliding games
      */
-    public void addToObDodgeGameScores(int score) { //TODO: combine with addToSlidingGameScores to make save easier
+    public void addToObDodgeGameScores(int score) {
         this.obstacleDodgerScores.add(score);
         sortGameScores();
     }
