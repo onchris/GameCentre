@@ -12,10 +12,25 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A general scoreboard to view scores
+ */
 public class GeneralScoreboard extends AppCompatActivity {
+    /**
+     * the viewpager for the this general scoreboard
+     */
     private ViewPager viewPager;
+    /**
+     * adapter for the viewpager
+     */
     private FragmentPagerAdapter fragmentPagerAdapter;
+    /**
+     * username of the account holder
+     */
     private String username;
+    /**
+     * the extview for the username
+     */
     private TextView displayUsername;
 
     @Override
@@ -37,9 +52,16 @@ public class GeneralScoreboard extends AppCompatActivity {
         getSupportFragmentManager().popBackStack();;
     }
 
+    /**
+     * A fragment pager adapter for different games
+     */
     public class FragmentPagerAdapter extends FragmentStatePagerAdapter{
         private List<Fragment> fragments = new ArrayList<>();
 
+        /**
+         * Constructor for this fragment pager adapter
+         * @param fm the fragment manager
+         */
         public FragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             fragments.add(ScoreFragment.newInstance("Sliding Tiles", username));

@@ -21,21 +21,56 @@ import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
 import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
 
+/**
+ * A popup dialog offering sliding tiles board options
+ */
 public class DialogManager implements PopupMenu.OnMenuItemClickListener{
+    /**
+     * the current activity
+     */
     private final Activity currentActivity;
+    /**
+     * the dialog resource id
+     */
     private int dialogResourceId;
+    /**
+     * the list of boards from the account
+     */
     private List<BoardManager> boardList;
+    /**
+     * loader adapter for display
+     */
     private LoaderAdapter adapter;
+    /**
+     * account of the player
+     */
     private Account account;
+
+    /**
+     * Constructor for a new dialog manager
+     * @param currentActivity the current activity to use the dialog manager in
+     */
     public DialogManager(Activity currentActivity){
         this.currentActivity = currentActivity;
     }
+
+    /**
+     * Create a new dialog popup
+     * @param popupResourceId the resource id
+     * @param view the view
+     * @param onClicker a listener for on click
+     */
     public void createDialog(int popupResourceId, View view, PopupMenu.OnMenuItemClickListener onClicker){
         PopupMenu popupMenu = new PopupMenu(currentActivity, view);
         popupMenu.setOnMenuItemClickListener(onClicker);
         popupMenu.inflate(popupResourceId);
         popupMenu.show();
     }
+
+    /**
+     * Make a board of the selected option
+     * @param dialogPosition the position of the selected board option
+     */
     public void generateBoard(int dialogPosition){
         switch (dialogPosition){
             case 1:
@@ -58,14 +93,33 @@ public class DialogManager implements PopupMenu.OnMenuItemClickListener{
                 break;
         }
     }
+
+    /**
+     * set the layout of the dialog
+     * @param dialogResourceId the dialog resource id
+     */
     public void setDialogLayout(int dialogResourceId){
         this.dialogResourceId = dialogResourceId;
     }
+
+    /**
+     * set up all the components of this dialog manager
+     * @param boardList the list of boards for the account
+     * @param adapter the loader adapter
+     * @param account the account
+     */
     public void setupComponents(List<BoardManager> boardList, LoaderAdapter adapter, Account account){
         this.boardList = boardList;
         this.adapter = adapter;
         this.account = account;
     }
+
+    /**
+     * Checking that all inputs are filled
+     * @param row the input for the number of rows of a new board
+     * @param column the input for the columns of a new board
+     * @return whether the user has filled out all the information needed to make a new board
+     */
     private boolean checkValidDialogInputs(String row, String column){
         if (row.equals("")||column.equals("")) {
             makeCustomToastText("Fields must not be empty", null);
