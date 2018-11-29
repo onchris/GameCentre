@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -149,17 +150,25 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      */
     public void ultTTTGameButtonOnClick(View v) {
         if (IS_GUEST) {
-            saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
+//            saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
             Intent tmp = new Intent(this, UltimateTTTGameActivity.class);
             startActivity(tmp);
         } else {
-            setContentView(R.layout.activity_loadedgamelist);
-            gameListDisplay = findViewById(R.id.scrollable_loadablegames);
-            loaderAdapter = new LoaderAdapter((ArrayList<BoardManager>) boardList/*TODO: make this an ultTTTgamelist*/, this);
-            loaderAdapter.account = currentAccount;
-
-            gameListDisplay.setAdapter(loaderAdapter);
-            atLoadGameScreen = true;
+            Intent tmp = new Intent(this, UltimateTTTGameActivity.class);
+//            tmp.putExtra("currentUsername", currentUsername);
+            tmp.putExtra("account", currentAccount);
+//            if (currentAccount.getUltimateTTTList().size() != 0) {
+//                tmp.putExtra("ultTTTBoardManagers", (Serializable) currentAccount.getUltimateTTTList());
+//                tmp.putExtra("ultTTTBoardNum", currentAccount.getUltimateTTTList().size() - 1);
+//            }
+            startActivity(tmp);
+//            setContentView(R.layout.activity_loadedgamelist);
+//            gameListDisplay = findViewById(R.id.scrollable_loadablegames);
+//            loaderAdapter = new LoaderAdapter((ArrayList<BoardManager>) boardList/*TODO: make this an ultTTTgamelist*/, this);
+//            loaderAdapter.account = currentAccount;
+//
+//            gameListDisplay.setAdapter(loaderAdapter);
+//            atLoadGameScreen = true;
         }
     }
 

@@ -1,5 +1,7 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -51,5 +53,9 @@ class UltTTTGameStateScanner {
                 num_occurrences++;
         }
         return num_occurrences;
+    }
+
+    public UltimateTTTGameActivity getActivity() {
+        return activity;
     }
 }

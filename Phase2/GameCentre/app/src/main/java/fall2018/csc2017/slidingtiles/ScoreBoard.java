@@ -77,6 +77,10 @@ public class ScoreBoard extends AppCompatActivity{
             scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"), //TODO: make this for obstacledodger
                     scoreList.getContext(),
                     Integer.parseInt(getIntent().getStringExtra("currentScore")));
+        } else if (currentGame.equals("ultTTT")) {
+            scoreManager = new UltTTTScoreManager(getIntent().getStringExtra("currentUsername"),
+                    scoreList.getContext(),
+                    Integer.parseInt(getIntent().getStringExtra("currentScore")));
         }
         displayGameScoresList = scoreManager.getDisplayGameScoresList();
         displayUserScoresList = scoreManager.getDisplayUserScoresList();

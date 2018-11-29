@@ -11,6 +11,10 @@ import android.widget.TableLayout;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import fall2018.csc2017.slidingtiles.Account;
 import fall2018.csc2017.slidingtiles.GameSelection;
 import fall2018.csc2017.slidingtiles.R;
@@ -26,12 +30,15 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
     private UltTTTConnector connector;
     private ImageButton[] ImageButtons;
     private TableLayout tables[];
+    private List<UltTTTConnector> ultTTTBoardManagers = new ArrayList<>();
+    private int boardNum;
 
     private Account currentAccount;
-    private boolean IS_GUEST = false;
+    boolean IS_GUEST = false;
 
     String P1Name;
     String P2Name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,20 +48,40 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_uttt_main);
 
-        connector = new UltTTTConnector(this);
+        if (getIntent().hasExtra("account")) {
+            IS_GUEST = false;
+            currentAccount = (Account) getIntent().getSerializableExtra("account");
+            P1Name = currentAccount.getUsername();
+            P2Name = "Guest";
+        } else {
+            IS_GUEST = true;
+            P1Name = "Guest1";
+            P2Name = "Guest2";
+        }
+
+        connector = new UltTTTConnector(this );
         ImageButtons = connector.getImageButtons();
         tables = connector.getTables();
         initialize();
 
-        if (GameSelection.IS_GUEST) {
-            IS_GUEST = true;
-            P1Name = "Guest1";
-            P2Name = "Guest2";
-        } else {
-            currentAccount = (Account) getIntent().getSerializableExtra("account");
-            P1Name = currentAccount.getUsername();
-            P2Name = "Guest";
-        }
+//        try {
+//            ultTTTBoardManagers = currentAccount.getUltimateTTTList();
+//            boardNum = getIntent().getIntExtra("ultTTTBoardNum", ultTTTBoardManagers.size() - 1);
+//            if (boardNum > -1) {
+////                ultTTTBoard = ultTTTBoardManagers.remove(boardNum);
+////                ultTTTBoardManager = new UltTTTBoardManager(ultTTTBoard, connector);
+//                connector = new UltTTTConnector(this, ultTTTBoardManagers.remove(boardNum).getBackend());
+//            }
+//            ImageButtons = connector.getImageButtons();
+//            tables = connector.getTables();
+//            initialize(connector);
+//        } catch (Exception e) {
+//            connector = new UltTTTConnector(this);
+//            ImageButtons = connector.getImageButtons();
+//            tables = connector.getTables();
+//            initialize();
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -66,6 +93,20 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
             ImageButton.setBackgroundResource(R.drawable.ult_clearimage);
         }
         for (TableLayout tableLayout : tables)
+            tableLayout.setBackgroundColor(Color.BLACK);
+        connector.breset.setOnClickListener(this);
+        connector.breset.setEnabled(true);
+        connector.bundo.setOnClickListener(this);
+        connector.bundo.setEnabled(true);
+    }
+
+    private void initialize(UltTTTConnector connector) {
+
+        for (ImageButton ImageButton : connector.getImageButtons()) {
+            ImageButton.setOnClickListener(this);
+            ImageButton.setBackgroundResource(R.drawable.ult_clearimage);
+        }
+        for (TableLayout tableLayout : connector.getTables())
             tableLayout.setBackgroundColor(Color.BLACK);
         connector.breset.setOnClickListener(this);
         connector.breset.setEnabled(true);
@@ -87,11 +128,39 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
 
     public void runFrontEnd(int index) {
         JSONObject response;
-        response = connector.backend.executer.execute(index);
+        if (GameSelection.IS_GUEST) {
+            response = connector.backend.executer.execute(index);
+        } else {
+            response = currentAccount.getUltimateTTTSave();
+        }
         ultTTTBoardManager = new UltTTTBoardManager(UltimateTTTInfoManager.parseJson(response), connector);
         if (!IS_GUEST) {
-            UtilityManager.saveUltimateTTTUltTTTBoardManager(this, currentAccount, currentAccount.getUltimateTTTList());
+            UtilityManager.saveUltTTTBoardManager(this, currentAccount,currentAccount.getUltimateTTTSave() );
+//            if (boardNum < 0) {
+//                ultTTTBoardManagers.add(connector);
+//                boardNum ++;
+//            } else {
+//                ultTTTBoardManagers.add(boardNum, connector);
+//                UtilityManager.saveUltTTTBoardManager(this, currentAccount, ultTTTBoardManagers);
+//            }
         }
     }
 
+    @Override
+    public void onBackPressed() {
+//        if (!IS_GUEST) {
+//            if (ultTTTBoardManagers.size() == 0) {
+//                ultTTTBoardManagers.add(connector);
+//            } else {
+//                ultTTTBoardManagers.add(boardNum, connector);
+//                UtilityManager.saveUltTTTBoardManager(this, currentAccount, ultTTTBoardManagers);
+//            }
+//        }
+        super.onBackPressed();
+        finish();
+    }
+
+    public Account getCurrentAccount() {
+        return currentAccount;
+    }
 }

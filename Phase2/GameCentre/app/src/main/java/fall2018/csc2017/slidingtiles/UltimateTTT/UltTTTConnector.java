@@ -24,6 +24,12 @@ public class UltTTTConnector {
         bind();
     }
 
+    UltTTTConnector(UltimateTTTGameActivity activity, UltimateTTTBackend backend) {
+        this.activity = activity;
+        bind();
+        this.backend = backend;
+    }
+
     private void bind() {
         scoreP1 = activity.findViewById(R.id.textView3);
         scoreP2 = activity.findViewById(R.id.textView4);
@@ -114,4 +120,7 @@ public class UltTTTConnector {
         return -1;
     }
 
+    public UltimateTTTBackend getBackend() {
+        return this.backend;
+    }
 }
