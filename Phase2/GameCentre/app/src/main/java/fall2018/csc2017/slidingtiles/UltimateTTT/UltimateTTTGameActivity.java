@@ -22,15 +22,37 @@ import fall2018.csc2017.slidingtiles.UtilityManager;
  */
 
 public class UltimateTTTGameActivity extends AppCompatActivity implements View.OnClickListener {
+    /**
+     * The board manager for ultimate tic tac toe game
+     */
     private UltTTTBoardManager ultTTTBoardManager;
+    /**
+     * The connector for ultimate tic tac toe game
+     */
     private UltTTTConnector connector;
+    /**
+     * The image buttons
+     */
     private ImageButton[] ImageButtons;
+    /**
+     * The tables
+     */
     private TableLayout tables[];
-
+    /**
+     * The current account
+     */
     private Account currentAccount;
+    /**
+     * A check if the user is a guest
+     */
     private boolean IS_GUEST = false;
-
+    /**
+     * The player1's name
+     */
     String P1Name;
+    /**
+     * The player2's name
+     */
     String P2Name;
 
     @Override
@@ -57,7 +79,9 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         }
     }
 
-
+    /**
+     * Initialize connector with scores and button states
+     */
     public void initialize() {
         connector.scoreP1.setText("0");
         connector.scoreP2.setText("0");
@@ -85,6 +109,11 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
     }
 
 
+    /**
+     * Responds to the button pressed
+     *
+     * @param index the index of button pressed
+     */
     public void runFrontEnd(int index) {
         JSONObject response;
         response = connector.backend.executer.execute(index);
