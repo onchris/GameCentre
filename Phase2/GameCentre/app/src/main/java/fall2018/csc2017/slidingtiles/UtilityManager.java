@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +17,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTBoardManager;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTConnector;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -147,7 +153,14 @@ public final class UtilityManager {
             Log.e("UM: saveScoresToAccounts", "File contained unexpected data type: " + e.toString());
         }
     }
-    public static void saveUltimateTTTUltTTTBoardManager(Context ctx, Account account, List<UltTTTBoardManager> userResponses){
+
+    /**
+     * save function to save a new ultimate ttt game to the account
+     * @param ctx the context
+     * @param account the account of the user
+     * @param ultTTTSave the modified list of ultttt games
+     */
+    public static void saveUltTTTBoardManager(Context ctx, Account account, JSONObject ultTTTSave){
         List<Account> accountList = new ArrayList<Account>();
         try {
             InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);
@@ -159,7 +172,7 @@ public final class UtilityManager {
             for(Account acc:accountList)
             {
                 if(acc.equals(account)){
-                    acc.setUltimateTTTList((ArrayList<UltTTTBoardManager>) userResponses);
+                    acc.setUltimateTTTSave((JSONObject) ultTTTSave);
                 }
             }
             ObjectOutputStream outputStream =
@@ -167,11 +180,11 @@ public final class UtilityManager {
             outputStream.writeObject(accountList);
             outputStream.close();
         } catch (FileNotFoundException e) {
-            Log.e("UM: saveBoardsToAccounts", "File not found: " + e.toString());
+            Log.e("UM: saveUltTTTBoardsToAccounts", "File not found: " + e.toString());
         } catch (IOException e) {
-            Log.e("UM: saveBoardsToAccounts", "Can not read file: " + e.toString());
+            Log.e("UM: saveUltTTTBoardsToAccounts", "Can not read file: " + e.toString());
         } catch (ClassNotFoundException e) {
-            Log.e("UM: saveBoardsToAccounts", "File contained unexpected data type: " + e.toString());
+            Log.e("UM: saveUltTTTBoardsToAccounts", "File contained unexpected data type: " + e.toString());
         }
     }
 
@@ -240,7 +253,7 @@ public final class UtilityManager {
      * @param account the current account to be saved in
      * @param score the score of the game that will be save
      */
-    public static void saveObDodgerScoresToAccounts(Context ctx, Account account, int score){ //TODO: combine with saveScoresToAccounts (need to change Accounts!!)
+    public static void saveObDodgerScoresToAccounts(Context ctx, Account account, int score){
         List<Account> accountList = new ArrayList<Account>();
         try {
             InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);

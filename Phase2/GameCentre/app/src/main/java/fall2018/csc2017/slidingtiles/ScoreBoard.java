@@ -71,7 +71,11 @@ public class ScoreBoard extends AppCompatActivity{
                     scoreList.getContext(),
                     currentUserScore);
         } else if (currentGame.equals("obDodger")) {
-            scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"), //TODO: make this for obstacledodger
+            scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"),
+                    scoreList.getContext(),
+                    currentUserScore);
+        } else if (currentGame.equals("ultTTT")) {
+            scoreManager = new UltTTTScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
                     currentUserScore);
         }
@@ -83,7 +87,7 @@ public class ScoreBoard extends AppCompatActivity{
         if(scoreManager.getCurrentAccount() != null) {
             IS_GUEST = false;
             currentAccount = scoreManager.getCurrentAccount();
-            if (getIntent().hasExtra("board")) { //TODO: board???
+            if (getIntent().hasExtra("board")) {
                 board = (Board) getIntent().getSerializableExtra("board");
             }
         } else {
@@ -129,7 +133,7 @@ public class ScoreBoard extends AppCompatActivity{
             IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             if (IS_GUEST) {
                 Toast.makeText(scoreList.getContext(), getString(R.string.gsb_no_score), Toast.LENGTH_SHORT).show();
-                IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
+                //IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             }
         } else {
             ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,

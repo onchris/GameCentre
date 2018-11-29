@@ -202,29 +202,42 @@ public class UltTTTBoardManager {
      */
     private void gameOver(String global_winner) {
         cellManager.disableAll();
-        AlertDialog ad = new AlertDialog.Builder(activity)
-                .setTitle("WINNER!!!")
-                .setMessage(connector.backend.scanner.getGlobalWinnerName(global_winner))
-                .setPositiveButton("Restart Game", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Restart Game
-                        activity.initialize();
-                        cellManager.enableAll();
-                        connector.backend.executer.execute(100);
-                    }
-                })
-                .setNegativeButton("Main Menu", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(activity, ScoreBoard.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        activity.startActivity(i);
-                    }
-                })
-                //.setIcon(R.drawable.trophy)
-                .show();
-        ad.setCanceledOnTouchOutside(false);
+        Intent tmp = new Intent(this.activity, ScoreBoard.class);
+        tmp.putExtra("currentGame","ultTTT");
+        if (activity.IS_GUEST) {
+            tmp.putExtra("currentUsername", "-1");
+        } else{
+            tmp.putExtra("currentUsername", activity.P1Name);
+        }
+        if (global_winner.equals(activity.P1Name)) {
+            tmp.putExtra("currentScore", "1");
+        } else {
+            tmp.putExtra("currentScore", "0");
+        } //TODO: save score to account if there is one
+        activity.startActivity(tmp);
+//        AlertDialog ad = new AlertDialog.Builder(activity)
+//                .setTitle("WINNER!!!")
+//                .setMessage(connector.backend.scanner.getGlobalWinnerName(global_winner))
+//                .setPositiveButton("Restart Game", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //Restart Game
+//                        activity.initialize();
+//                        cellManager.enableAll();
+//                        connector.backend.executer.execute(100);
+//                    }
+//                })
+//                .setNegativeButton("Main Menu", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Intent i = new Intent(activity, ScoreBoard.class);
+//                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        activity.startActivity(i);
+//                    }
+//                })
+//                //.setIcon(R.drawable.trophy)
+//                .show();
+//        ad.setCanceledOnTouchOutside(false);
     }
 
     /**
@@ -234,4 +247,7 @@ public class UltTTTBoardManager {
         tv.setText(s);
     }
 
+    public UltTTTConnector getConnector() {
+        return connector;
+    }
 }

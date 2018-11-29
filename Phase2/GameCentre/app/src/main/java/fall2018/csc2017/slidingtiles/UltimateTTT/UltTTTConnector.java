@@ -51,6 +51,12 @@ public class UltTTTConnector {
         bind();
     }
 
+    UltTTTConnector(UltimateTTTGameActivity activity, UltimateTTTBackend backend) {
+        this.activity = activity;
+        bind();
+        this.backend = backend;
+    }
+
     /**
      * Bind activity information with views
      */
@@ -165,4 +171,7 @@ public class UltTTTConnector {
         return -1;
     }
 
+    public UltimateTTTBackend getBackend() {
+        return this.backend;
+    }
 }

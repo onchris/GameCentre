@@ -15,6 +15,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * modified intent service to handle splitting an image
+ */
 public class ImageServiceIntent extends IntentService {
     /**
      * The bundle that this intent will be sending to a receiver

@@ -15,15 +15,26 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.GridView;
 
+/**
+ * Gridview with logic for handling swipes between buttons
+ */
 public class GestureDetectGridView extends GridView {
     public static final int SWIPE_MIN_DISTANCE = 100;
     public static final int SWIPE_MAX_OFF_PATH = 100;
     public static final int SWIPE_THRESHOLD_VELOCITY = 100;
     private GestureDetector gDetector;
+    /**
+     * movement controller for this grid view
+     */
     private MovementController mController;
+    /**
+     * if the movement fling is confirmed
+     */
     private boolean mFlingConfirmed = false;
-    private float mTouchX;
-    private float mTouchY;
+    /**
+     * movement touch x and y coordinates
+     */
+    private float mTouchX, mTouchY;
     private BoardManager boardManager;
 
     public GestureDetectGridView(Context context) {

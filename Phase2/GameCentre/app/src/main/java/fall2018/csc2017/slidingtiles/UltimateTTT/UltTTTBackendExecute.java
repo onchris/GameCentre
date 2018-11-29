@@ -4,6 +4,8 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import fall2018.csc2017.slidingtiles.UtilityManager;
+
 class UltTTTBackendExecute {
     /**
      * The initializer for ultimate tic tac toe
@@ -83,6 +85,7 @@ class UltTTTBackendExecute {
         curr_state = gamestates.toJson();
         gamestates.updateTurn();
         gamestates.updateHistory(curr_state);
+        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), gamestates.toJson());
         return curr_state;
     }
 
