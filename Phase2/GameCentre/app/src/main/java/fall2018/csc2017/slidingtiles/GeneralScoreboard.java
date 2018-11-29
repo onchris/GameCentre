@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeneralScoreboard extends AppCompatActivity implements ScoreFragment.OnFragmentInteractionListener {
+public class GeneralScoreboard extends AppCompatActivity {
     private ViewPager viewPager;
     private FragmentPagerAdapter fragmentPagerAdapter;
     private String username;
@@ -39,20 +39,7 @@ public class GeneralScoreboard extends AppCompatActivity implements ScoreFragmen
         getSupportFragmentManager().popBackStack();;
     }
 
-    @Override
-    public void onScoreboardClick(View v) {
-        getSupportFragmentManager();
-    }
 
-//    @Override
-//    public void onAttachFragment(Fragment fragment) {
-//        if(fragment instanceof ScoreFragment)
-//        {
-//            if(((ScoreFragment) fragment).getScoreboardGame().equals("Sliding Tiles")) {
-//
-//            }
-//        }
-//    }
 
     public class FragmentPagerAdapter extends FragmentStatePagerAdapter{
         private List<Fragment> fragments = new ArrayList<>();

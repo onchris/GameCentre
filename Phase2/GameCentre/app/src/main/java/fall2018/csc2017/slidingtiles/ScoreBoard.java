@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fall2018.csc2017.slidingtiles.ObstacleDodger.ObGameActivity;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltimateTTTGameActivity;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
@@ -56,6 +57,9 @@ public class ScoreBoard extends AppCompatActivity{
      * The board for the game
      */
     private Board board;
+    /**
+     * the last game played
+     */
     private String currentGame;
 
     @Override
@@ -71,7 +75,11 @@ public class ScoreBoard extends AppCompatActivity{
                     scoreList.getContext(),
                     currentUserScore);
         } else if (currentGame.equals("obDodger")) {
-            scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"), //TODO: make this for obstacledodger
+            scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra("currentUsername"),
+                    scoreList.getContext(),
+                    currentUserScore);
+        } else if (currentGame.equals("ultTTT")) {
+            scoreManager = new UltTTTScoreManager(getIntent().getStringExtra("currentUsername"),
                     scoreList.getContext(),
                     currentUserScore);
         }
@@ -82,7 +90,7 @@ public class ScoreBoard extends AppCompatActivity{
         if(scoreManager.getCurrentAccount() != null) {
             IS_GUEST = false;
             currentAccount = scoreManager.getCurrentAccount();
-            if (getIntent().hasExtra("board")) { //TODO: board???
+            if (getIntent().hasExtra("board")) {
                 board = (Board) getIntent().getSerializableExtra("board");
             }
         } else {
@@ -116,7 +124,7 @@ public class ScoreBoard extends AppCompatActivity{
             IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             if (IS_GUEST) {
                 Toast.makeText(scoreList.getContext(), getString(R.string.gsb_no_score), Toast.LENGTH_SHORT).show();
-                IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
+                //IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
             }
         } else {
             ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
@@ -165,6 +173,22 @@ public class ScoreBoard extends AppCompatActivity{
                         startActivity(tmp);
                     } else {
                         Intent tmp = new Intent(v.getContext(), ObGameActivity.class);
+                        tmp.putExtra("account", currentAccount);
+                        startActivity(tmp);
+                    }
+                    finish();
+                }
+            });
+        } else {
+            Button newGameButton = findViewById(R.id.button_new_game);
+            newGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (IS_GUEST) {
+                        Intent tmp = new Intent(v.getContext(), UltimateTTTGameActivity.class);
+                        startActivity(tmp);
+                    } else {
+                        Intent tmp = new Intent(v.getContext(), UltimateTTTGameActivity.class);
                         tmp.putExtra("account", currentAccount);
                         startActivity(tmp);
                     }

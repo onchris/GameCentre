@@ -11,7 +11,7 @@ import java.util.Stack;
 /**
  * Manage a board, including swapping tiles, checking for a win, and managing taps.
  */
-public class BoardManager implements Serializable, Undoable { //TODO: want to save ultimate TTT states as board manager possibly?
+public class BoardManager implements Serializable, Undoable {
 
     /**
      * The board being managed.
@@ -38,8 +38,14 @@ public class BoardManager implements Serializable, Undoable { //TODO: want to sa
      */
     private Stack<Integer> availableUndoSteps = new Stack<>();
 
-    
+    /**
+     * The images that users want to use.
+     */
     private transient ArrayList<Bitmap> customImageSet;
+
+    /**
+     * A check if the user want to use images.
+     */
     private transient boolean useImage;
 
     /**
@@ -81,26 +87,47 @@ public class BoardManager implements Serializable, Undoable { //TODO: want to sa
         this.board = new Board(tiles);
     }
 
+    /**
+     * Return if the user want to use images.
+     * @return if the user want to use images.
+     */
     public boolean isUseImage() {
         return useImage;
     }
 
+    /**
+     * Sets if the user want to use images
+     */
     public void setUseImage(boolean useImage) {
         this.useImage = useImage;
     }
 
+    /**
+     * Gets the set of images that users want to use
+     * @return the set of images that users want to use
+     */
     public ArrayList<Bitmap> getCustomImageSet() {
         return customImageSet;
     }
 
+    /**
+     * Sets the set of images that users want to use
+     */
     public void setCustomImageSet(ArrayList<Bitmap> customImageSet) {
         this.customImageSet = customImageSet;
     }
 
+    /**
+     * Gets the time spent
+     * @return the time spent
+     */
     public long getTimeSpent() {
         return timeSpent;
     }
 
+    /**
+     * Sets the time spent
+     */
     public void setTimeSpent(long timeSpent) {
         this.timeSpent = timeSpent;
     }

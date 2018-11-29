@@ -8,6 +8,13 @@ import java.util.Map;
 
 class UltimateTTTInfoManager {
     //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/json/jsonparser.java
+
+    /**
+     * Stores data in map
+     *
+     * @param json_data data to be stored in map
+     * @return the map with all data entered
+     */
     static Map<String, String> parseJson(JSONObject json_data) {
         HashMap<String, String> map;
         JSONObject jsonObject;

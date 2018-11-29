@@ -7,6 +7,9 @@ import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+/**
+ * manager for storing and retrieving preferences
+ */
 public class PreferenceManager {
     /**
      * SharedPreferences editor that handles storing preferences

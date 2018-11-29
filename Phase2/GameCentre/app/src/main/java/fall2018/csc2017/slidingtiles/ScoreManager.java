@@ -10,13 +10,37 @@ import java.util.List;
  * scores and prep lists of scores for display
  */
 abstract class ScoreManager {
+    /**
+     * the current account holder
+     */
     protected Account currentAccount;
+    /**
+     * all accounts with scores
+     */
     protected List<Account> accountsList;
+    /**
+     * list of the user's scores
+     */
     protected List<Integer> userScores = new ArrayList<>();
+    /**
+     * list of user's own scores for display
+     */
     protected List<String> displayUserScoresList = new ArrayList<>();
+    /**
+     * list of game-wide scores
+     */
     protected List<Pair<Integer, String>> gameScores = new ArrayList<>();
+    /**
+     * list of game-wide scores for display
+     */
     protected List<String> displayGameScoresList = new ArrayList<>();
+    /**
+     * A check if the player is a guest
+     */
     protected boolean IS_GUEST;
+    /**
+     * the score of the player
+     */
     protected Integer score;
 
     /**

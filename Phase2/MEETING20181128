@@ -1,0 +1,15 @@
+Meeting: november 28, 2018
+
+# what was done:
+- set up scoreboard and scores
+- unittesting for sliding tiles and some other classes
+- connecting ult ttt to Game Selection for account holders
+
+# what needs to be done:
+- set up loader adapter
+- saving games
+- fix layout for activity_games and launchcentre
+- fix picture overlapping on log in page
+- fix general scoreboard
+- as always: javadocs, readme file, team file, and walkthrough.pdf
+- look for android warnings, code smells and todos

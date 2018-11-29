@@ -4,18 +4,41 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-class UltTTTBackendExecute {
+import fall2018.csc2017.slidingtiles.UtilityManager;
 
+class UltTTTBackendExecute {
+    /**
+     * The initializer for ultimate tic tac toe
+     */
     private UltTTTBackendInit initializer;
+    /**
+     * The game state for ultimate tic tac toe
+     */
     private UltTTTGameStates gamestates;
+    /**
+     * The scanner for ultimate tic tac toe
+     */
     private UltTTTGameStateScanner scanner;
 
+    /**
+     * Initialize backend execute for ultimate tic tac toe
+     *
+     * @param initializer the initializer for ultimate tic tac toe
+     * @param gamestates  the game state for ultimate tic tac toe
+     */
     UltTTTBackendExecute(UltTTTBackendInit initializer, UltTTTGameStates gamestates) {
         this.initializer = initializer;
         this.gamestates = gamestates;
         scanner = gamestates.getScanner();
     }
 
+
+    /**
+     * Execute movements depends on button press
+     *
+     * @param cell_number the cell number
+     * @return JSONObject the game state
+     */
     JSONObject execute(int cell_number) {
         int row, column;
         JSONObject curr_state;
@@ -62,13 +85,20 @@ class UltTTTBackendExecute {
         curr_state = gamestates.toJson();
         gamestates.updateTurn();
         gamestates.updateHistory(curr_state);
+        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), gamestates.toJson());
         return curr_state;
     }
 
+    /**
+     * Reset to initial state
+     */
     private void executeReset() {
         initializer.initialize();
     }
 
+    /**
+     * Undo the execute
+     */
     private void executeUndo() {
         Map previous_values;
         Map current_values;
@@ -116,18 +146,42 @@ class UltTTTBackendExecute {
         }
     }
 
+    /**
+     * Gets the column number that current cell is in
+     *
+     * @param cell_number the cell number
+     * @return the column number that current cell is in
+     */
     private int getColumnNumber(int cell_number) {
         return (cell_number % 9) % 3;
     }
 
+    /**
+     * Gets the row number that current cell is in
+     *
+     * @param cell_number the cell number
+     * @return the row number that current cell is in
+     */
     private int getRowNumber(int cell_number) {
         return (cell_number % 9) / 3;
     }
 
+    /**
+     * Gets the block number that current cell is in
+     *
+     * @param cell_number the cell number
+     * @return the block number that current cell is in
+     */
     private int getBlockNumber(int cell_number) {
         return cell_number / 9;
     }
 
+    /**
+     * Gets the button pressed
+     *
+     * @param cell_number the cell number
+     * @return the button pressed
+     */
     private String getButtonPressed(int cell_number) {
         if (cell_number >= 0 && cell_number <= 80)
             return "GameButton";
