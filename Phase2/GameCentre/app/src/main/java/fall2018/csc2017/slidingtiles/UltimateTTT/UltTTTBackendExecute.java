@@ -32,7 +32,6 @@ class UltTTTBackendExecute {
         scanner = gamestates.getScanner();
     }
 
-
     /**
      * Execute movements depends on button press
      *
@@ -85,7 +84,7 @@ class UltTTTBackendExecute {
         currState = gamestates.toJson();
         gamestates.updateTurn();
         gamestates.updateHistory(currState);
-        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), UltimateTTTInfoManager.parseJson(gamestates.toJson())); //TODO: may need to switch back to json (remove parse Json)
+        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), cell_number);
         return currState;
     }
 
@@ -191,4 +190,6 @@ class UltTTTBackendExecute {
             return "Undo";
         return "None";
     }
+
+
 }
