@@ -10,40 +10,45 @@ import android.view.SurfaceHolder;
 
 public class MainThread extends Thread {
 
-    /*
-    The Max fps for the thread.
+    /**
+     * The Max fps for the thread.
      */
     private static final int MAX_FPS = 30;
 
-    /*
-    The surface holder for the thread.
+    /**
+     * The surface holder for the thread.
      */
     private final SurfaceHolder surfaceHolder;
 
-    /*
-    The game panel for the thread.
+    /**
+     * The game panel for the thread.
      */
     private GamePanel gamePanel;
 
-    /*
-    Boolean indicating whether the thread is running.
+    /**
+     * Boolean indicating whether the thread is running.
      */
     private boolean running;
 
-    /*
-    The static variable for the game canvas.
+    /**
+     * The static variable for the game canvas.
      */
     public static Canvas canvas;
 
-    /*
-    Sets the running boolean variable.
+    /**
+     * Sets the running boolean variable.
+     *
+     * @param running the variable indicating whether the thread is running.
      */
     void setRunning(boolean running) {
         this.running = running;
     }
 
-    /*
-    Creates a main thread for the game.
+    /**
+     * Creates a main thread for the game.
+     *
+     * @param surfaceHolder the surface holder for the thread
+     * @param gamePanel     the game panel for the thread
      */
     MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel) {
         super();
