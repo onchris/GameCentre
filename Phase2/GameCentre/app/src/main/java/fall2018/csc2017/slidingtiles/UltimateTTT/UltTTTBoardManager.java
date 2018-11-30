@@ -133,13 +133,15 @@ class UltTTTBoardManager {
             cellManager.enableAll();
             return;
         } else if (buttonPressed.equals("Undo")) {
-            if (resetCells.equals("All"))
+            if (resetCells.equals("All")) {
                 activity.initialize();
+                return;
+            }
             else {
                 ImageButtons[Integer.parseInt(resetCells)].
                         setBackgroundResource(R.drawable.ult_clearimage);
             }
-            if (resetBlockColor.equals("None")) {
+            if (!resetBlockColor.equals("None")) {
                 if (Integer.parseInt(resetBlockColor) != Integer.MAX_VALUE)
                     tables[Integer.parseInt(resetBlockColor)].
                             setBackgroundColor(Color.BLACK);
