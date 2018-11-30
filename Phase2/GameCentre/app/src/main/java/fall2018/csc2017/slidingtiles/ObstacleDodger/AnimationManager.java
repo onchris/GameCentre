@@ -10,25 +10,29 @@ import android.graphics.Rect;
 
 public class AnimationManager {
 
-    /*
-    An array containing animations.
+    /**
+     * An array containing animations.
      */
     private Animation[] animations;
 
-    /*
-    The index of an animation.
+    /**
+     * The index of an animation.
      */
     private int animationIndex = 0;
 
-    /*
-    Constructs a new animation manager.
+    /**
+     * Constructs a new animation manager.
+     *
+     * @param animations the animations of the manager.
      */
     AnimationManager(Animation[] animations) {
         this.animations = animations;
     }
 
-    /*
-    Plays the animation that is in the input index.
+    /**
+     * Plays the animation that is in the input index.
+     *
+     * @param index the index to be played.
      */
     void playAnim(int index) {
         for (int i = 0; i < animations.length; i++) {
@@ -43,8 +47,11 @@ public class AnimationManager {
         animationIndex = index;
     }
 
-    /*
-    Draws the animation at the animation index.
+    /**
+     * Draws the animation at the animation index.
+     *
+     * @param canvas the canvas to be drawn.
+     * @param rect   the rect to be drawn.
      */
     public void draw(Canvas canvas, Rect rect) {
         if (animations[animationIndex].isPlaying()) {
@@ -52,8 +59,8 @@ public class AnimationManager {
         }
     }
 
-    /*
-    Updates the animation at the animation index.
+    /**
+     * Updates the animation at the animation index.
      */
     public void update() {
         if (animations[animationIndex].isPlaying()) {
