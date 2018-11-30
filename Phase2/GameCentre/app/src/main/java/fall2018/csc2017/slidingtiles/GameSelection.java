@@ -91,7 +91,7 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
         currentUserTextView = findViewById(R.id.text_loggedas);
-        if (!getIntent().getStringExtra("currentUser").equals("-1")) {
+        if (getIntent().getStringExtra("currentUser") != null && !getIntent().getStringExtra("currentUser").equals("-1")) {
             accountManager = new AccountManager(loadAccountList(this));
             currentUsername = getIntent().getStringExtra("currentUser");
             currentUserTextView.setText(currentUsername);
