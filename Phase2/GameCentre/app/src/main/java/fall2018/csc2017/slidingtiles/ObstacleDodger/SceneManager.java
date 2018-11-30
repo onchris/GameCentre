@@ -1,4 +1,5 @@
 package fall2018.csc2017.slidingtiles.ObstacleDodger;
+
 /*
 Adapted from:
 https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
@@ -8,24 +9,27 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manage the scene, including receive touch movement from player, draw, update and get the scene.
  */
 public class SceneManager {
+
     /**
      * List of scenes
      */
-    private ArrayList<Scene> scenes = new ArrayList<>();
+    private List<Scene> scenes = new ArrayList<>();
+
     /**
      * The active scene
      */
-    public static int ACTIVE_SCENE;
+    private static int ACTIVE_SCENE;
 
     /**
      * Manager of the scene
      */
-    public SceneManager() {
+    SceneManager() {
         ACTIVE_SCENE = 0;
         scenes.add(new GameplayScene());
     }
@@ -35,7 +39,7 @@ public class SceneManager {
      *
      * @param event the motion taken by player
      */
-    public void receiveTouch(MotionEvent event) {
+    void receiveTouch(MotionEvent event) {
         scenes.get(ACTIVE_SCENE).receiveTouch(event);
     }
 
@@ -60,7 +64,7 @@ public class SceneManager {
      *
      * @return the game play scene
      */
-    public GameplayScene getGamePlayScene() {
+    GameplayScene getGamePlayScene() {
         if (scenes.get(ACTIVE_SCENE) instanceof GameplayScene)
             return (GameplayScene) scenes.get(ACTIVE_SCENE);
         return null;
