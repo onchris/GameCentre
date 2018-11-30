@@ -9,26 +9,30 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 /**
- * Interface for game scenes.
+ * Interface for Obstacle Dodger game play scene
  */
 public interface Scene {
-
     /**
-     * Updates the game scene.
+     * Updates a scene
      */
-    void update();
+    public void update();
 
     /**
-     * Draws the game scene
+     * Draws a game scene.
      *
-     * @param canvas The canvas that is drawn.
+     * @param canvas the canvas to be drawn.
      */
-    void draw(Canvas canvas);
+    public void draw(Canvas canvas);
 
     /**
-     * The action that is made to the scene.
-     *
-     * @param event The action made.
+     * To terminate a scene
      */
-    void receiveTouch(MotionEvent event);
+    public void terminate();
+
+    /**
+     * Receive the touch from player
+     *
+     * @param event the motion taken by player
+     */
+    public void receiveTouch(MotionEvent event);
 }
