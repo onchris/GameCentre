@@ -11,7 +11,7 @@ import android.widget.TableLayout;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import fall2018.csc2017.slidingtiles.Account;
 import fall2018.csc2017.slidingtiles.R;
@@ -71,7 +71,7 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
             P1Name = currentAccount.getUsername();
             P2Name = "Guest";
             if (currentAccount.getUltimateTTTSave().size() != 0) {
-                ArrayList saveFile = currentAccount.getUltimateTTTSave();
+                List saveFile = currentAccount.getUltimateTTTSave();
                 connector = new UltTTTConnector(this);
                 ImageButtons = connector.getImageButtons();
                 tables = connector.getTables();
@@ -134,7 +134,7 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         ultTTTBoardManager = new UltTTTBoardManager(UltimateTTTInfoManager.parseJson(response), connector);
     }
 
-    public void runFrontEnd(ArrayList<Integer> index) {
+    public void runFrontEnd(List<Integer> index) {
         JSONObject response;
         for (int i : index) {
             response = connector.backend.executer.execute(i);

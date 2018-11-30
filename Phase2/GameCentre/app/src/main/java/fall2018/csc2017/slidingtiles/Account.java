@@ -25,7 +25,7 @@ public class Account implements Serializable {
     /**
      * Account's saved ultimate tic tac toe games
      */
-    private ArrayList ultimateTTTSave = new ArrayList();
+    private List<Integer> ultimateTTTSave = new ArrayList<>();
 
     /**
      * Account's sliding tile games' scores as a list
@@ -128,7 +128,7 @@ public class Account implements Serializable {
      */
     public void setUltimateTTTSave(int ultTTTUserResponses) {
         if (ultTTTUserResponses < 0)
-            this.ultimateTTTSave = new ArrayList();
+            this.ultimateTTTSave = new ArrayList<>();
         else {
             this.ultimateTTTSave.add(ultTTTUserResponses);
         }
@@ -173,7 +173,7 @@ public class Account implements Serializable {
         sortGameScores();
     }
 
-    public ArrayList getUltimateTTTSave() {
+    public List getUltimateTTTSave() {
         return ultimateTTTSave;
     }
 
