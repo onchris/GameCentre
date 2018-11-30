@@ -12,30 +12,32 @@ import android.graphics.Rect;
 
 public class Animation {
 
-    /*
-    The bitmap array for the animation frames.
+    /**
+     * The bitmap array for the animation frames.
      */
     private Bitmap[] frames;
 
-    /*
-    The index for the animation frame.
+    /**
+     * The index for the animation frame.
      */
     private int frameIndex;
 
-    /*
-    The boolean indicating if the animation is playing.
+    /**
+     * The boolean indicating if the animation is playing.
      */
     private boolean isPlaying = false;
 
-    /*
-    Return whether the animation is playing.
+    /**
+     * Return whether the animation is playing.
+     *
+     * @return boolean indicating whether animation is playing
      */
     boolean isPlaying() {
         return isPlaying;
     }
 
-    /*
-    Plays the animation.
+    /**
+     * Plays the animation.
      */
     void play() {
         isPlaying = true;
@@ -43,25 +45,28 @@ public class Animation {
         lastFrame = System.currentTimeMillis();
     }
 
-    /*
-    Stops the animation.
+    /**
+     * Stops the animation.
      */
     void stop() {
         isPlaying = false;
     }
 
-    /*
-    The long representing the frame time.
+    /**
+     * The long representing the frame time.
      */
     private float frameTime;
 
-    /*
-    The long representing the last frame.
+    /**
+     * The long representing the last frame.
      */
     private long lastFrame;
 
-    /*
-    Creates a new animation.
+    /**
+     * Creates a new animation.
+     *
+     * @param frames   the frames of the animation.
+     * @param animTime the animation time.
      */
     Animation(Bitmap[] frames, float animTime) {
         this.frames = frames;
@@ -72,8 +77,11 @@ public class Animation {
         lastFrame = System.currentTimeMillis();
     }
 
-    /*
-    Draws the animation.
+    /**
+     * Draws the animation.
+     *
+     * @param canvas      the canvas to be drawn.
+     * @param destination the destination of the rect
      */
     public void draw(Canvas canvas, Rect destination) {
         if (!isPlaying) {
@@ -85,8 +93,10 @@ public class Animation {
         canvas.drawBitmap(frames[frameIndex], null, destination, new Paint());
     }
 
-    /*
-    Scales a rectangle.
+    /**
+     * Scales a rectangle.
+     *
+     * @param rect a rect.
      */
     private void scaleRect(Rect rect) {
         float whRatio = (float) (frames[frameIndex].getWidth()) / frames[frameIndex].getHeight();
@@ -97,8 +107,8 @@ public class Animation {
         }
     }
 
-    /*
-    Updates the animation.
+    /**
+     * Updates the animation.
      */
     public void update() {
         if (!isPlaying) {
