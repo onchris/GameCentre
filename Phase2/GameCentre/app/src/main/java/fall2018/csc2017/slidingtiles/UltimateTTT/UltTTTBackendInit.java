@@ -1,12 +1,16 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
-//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
 
+/**
+ * Class for Ultimate Tic Tac Toe backend initializer.
+ */
 class UltTTTBackendInit {
     /**
      * The winner of current round
@@ -19,7 +23,7 @@ class UltTTTBackendInit {
     /**
      * The current active block
      */
-    int currentActiveBlock = Integer.MAX_VALUE; //In Board?
+    int currentActiveBlock = Integer.MAX_VALUE;
     /**
      * The next active block
      */
@@ -96,7 +100,7 @@ class UltTTTBackendInit {
         resetCells = "All";
         buttonPressed = null;
         isP1Turn = true;
-        resetBlockColor = "None"; //TODO: is this like tile?
+        resetBlockColor = "None";
 
         boardStatus = new int[9][3][3]; //Making ultTTTBoard
         no_terms = new int[9];
@@ -111,6 +115,5 @@ class UltTTTBackendInit {
 
         Arrays.fill(no_terms, 0);
         Arrays.fill(disabledBlocks, false);
-
     }
 }
