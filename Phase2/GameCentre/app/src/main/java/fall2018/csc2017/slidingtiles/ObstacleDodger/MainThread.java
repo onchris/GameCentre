@@ -6,22 +6,46 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
  */
 
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class MainThread extends Thread {
-    public static final int MAX_FPS = 30;
-    private double averageFPS;
-    private SurfaceHolder surfaceHolder;
+
+    /*
+    The Max fps for the thread.
+     */
+    private static final int MAX_FPS = 30;
+
+    /*
+    The surface holder for the thread.
+     */
+    private final SurfaceHolder surfaceHolder;
+
+    /*
+    The game panel for the thread.
+     */
     private GamePanel gamePanel;
+
+    /*
+    Boolean indicating whether the thread is running.
+     */
     private boolean running;
+
+    /*
+    The static variable for the game canvas.
+     */
     public static Canvas canvas;
 
-    public void setRunning(boolean running) {
+    /*
+    Sets the running boolean variable.
+     */
+    void setRunning(boolean running) {
         this.running = running;
     }
 
-    public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel) {
+    /*
+    Creates a main thread for the game.
+     */
+    MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
@@ -39,8 +63,7 @@ public class MainThread extends Thread {
         while (running) {
             startTime = System.nanoTime();
             canvas = null;
-            if(!running)
-            {
+            if (!running) {
                 return;
             }
             try {
@@ -65,14 +88,14 @@ public class MainThread extends Thread {
         waitTime = targetTime - timeMillis;
         try {
             if (waitTime > 0)
-                this.sleep(waitTime);
+                sleep(waitTime);
         } catch (Exception e) {
             e.printStackTrace();
         }
         totalTime += System.nanoTime() - startTime;
         frameCount++;
         if (frameCount == MAX_FPS) {
-            averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
+            double averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
             frameCount = 0;
             totalTime = 0;
             System.out.println(averageFPS);
