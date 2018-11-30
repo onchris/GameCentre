@@ -82,7 +82,8 @@ public final class UtilityManager {
      * @param ctx          the current context
      */
     public static void makeCustomToastText(String displayText, Context ctx) {
-        Toast.makeText(ctx, displayText, Toast.LENGTH_SHORT).show();
+        if(ctx != null && ctx.getApplicationContext() != null)
+            Toast.makeText(ctx, displayText, Toast.LENGTH_SHORT).show();
     }
 
     /**
