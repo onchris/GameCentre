@@ -9,7 +9,7 @@
         android:id="@+id/vp_scores"
         android:layout_width="match_parent"
         android:layout_height="592dp"
-        android:layout_above="@+id/imageView3"
+        android:layout_above="@+id/iv_bg"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="0dp">
@@ -18,7 +18,7 @@
     </android.support.v4.view.ViewPager>
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/iv_bg"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
@@ -26,6 +26,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
+        android:onClick="backgroundImageViewOnClick"
         android:scaleType="fitXY"
         app:srcCompat="@drawable/bg_simplebg2" />
 
