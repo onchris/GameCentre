@@ -387,6 +387,38 @@ public class GameSelectionTest {
         onView(allOf(withId(R.id.adapter_loader))).check(matches(isDisplayed())).perform(doubleClick());
         onView(allOf(withId(android.R.id.button1))).perform(click());
     }
+
+    @Test
+    public void test6_createImageTiles() throws Exception{
+        Intent intent = new Intent();
+        intent.putExtra("currentUser", "123");
+        testRule.launchActivity(intent);
+        onView(withId(R.id.text_loggedas)).check(matches(withText("123")));
+        onView(withId(R.id.button_gameselect1)).perform(click());
+        onView(withId(R.id.button_slidingreset)).check(matches(isDisplayed())).perform(click());
+        onView(withText("Delete all games?")).inRoot(isDialog()).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.button1))).perform(click());
+        onView(withId(R.id.button_newgame)).check(matches(isDisplayed())).perform(click());
+        onView(withText("Other...")).inRoot(isPlatformPopup()).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.text_row)).perform(replaceText("5"));
+        onView(withId(R.id.text_column)).perform(replaceText("5"));
+        //TEST IMAGE
+        onView(withId(R.id.et_Url)).perform(replaceText("https://cdn.zmescience.com/wp-content/uploads/2018/11/grape.w700.h467.jpg"));
+        onView(withId(R.id.cb_useImage)).perform(click());
+        onView(withId(R.id.button_loadImage)).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.button_confirm_difficulty)).perform(click());
+        onView(allOf(withText("Load Game"), instanceOf(Button.class))).check(matches(isDisplayed())).perform(click());
+        intended(hasComponent(GameActivity.class.getName()));
+        Espresso.pressBack();
+        onView(withId(R.id.button_gameselect1)).perform(click());
+        onView(withId(R.id.button_slidingreset)).check(matches(isDisplayed())).perform(click());
+        onView(withText("Delete all games?")).inRoot(isDialog()).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.button1))).perform(click());
+        GameActivity.IMAGE_SET = null;
+        testRule.finishActivity();
+
+    }
     private static TypeSafeMatcher<Root> toastMatch(){
         return new TypeSafeMatcher<Root>() {
             @Override
