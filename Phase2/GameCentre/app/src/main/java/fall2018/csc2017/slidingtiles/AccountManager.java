@@ -1,6 +1,7 @@
 package fall2018.csc2017.slidingtiles;
 
 import android.app.Activity;
+import android.content.Context;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -33,7 +34,7 @@ public class AccountManager {
      * @return whether if account already exists
      */
     public boolean checkExistingUser(String username){
-        if(accountsList == null ||accountsList.isEmpty())
+        if(accountsList == null || accountsList.isEmpty())
             return false;
         for(Account existingAccount: accountsList)
         {
@@ -68,6 +69,8 @@ public class AccountManager {
      * @return the account of the username
      */
     public Account getAccountFromUsername(String name){
+        if(accountsList == null || accountsList.isEmpty())
+            return null;
         for(Account acc: accountsList)
         {
             if(name.equals(acc.getUsername())){
@@ -96,23 +99,49 @@ public class AccountManager {
     public Account createNewAccount(String username, String password, Activity activity){
         Account account;
         if(username.equals("Guest") || username.equals("guest")){
-            makeCustomToastText(activity.getString(R.string.am_guest_reserved), activity);
+            makeToastMessage(ToastConstant.TOAST_RESERVED, activity);
         } else if (username.equals("") || username.equals("")){
-            makeCustomToastText(activity.getString(R.string.am_empty_field), activity);
+            makeToastMessage(ToastConstant.TOAST_EMPTY, activity);
         } else if (username.length() < 3 || password.length() < 3 ) {
-            makeCustomToastText(activity.getString(R.string.am_invalid_field), activity);
+            makeToastMessage(ToastConstant.TOAST_LEAST, activity);
         } else if (!checkExistingUser(username)){
             account = new Account(username, password);
             accountsList.add(account);
-            makeCustomToastText(activity.getString(R.string.am_register_succ), activity);
+            makeToastMessage(ToastConstant.TOAST_SUCCESS, activity);
             return account;
-        } else if (checkExistingUser(username))
-        {
-            makeCustomToastText(activity.getString(R.string.am_existing_user), activity);
         }
+        makeToastMessage(ToastConstant.TOAST_EXIST, activity);
         return null;
     }
+    public enum ToastConstant{
+        TOAST_RESERVED,
+        TOAST_EMPTY,
+        TOAST_LEAST,
+        TOAST_EXIST,
+        TOAST_SUCCESS
+    }
 
+    private void makeToastMessage(ToastConstant toastMessage, Activity activity){
+        if(activity == null)
+            return;
+        switch (toastMessage){
+            case TOAST_EMPTY:
+                makeCustomToastText(activity.getString(R.string.am_empty_field), activity);
+                break;
+            case TOAST_EXIST:
+                makeCustomToastText(activity.getString(R.string.am_existing_user), activity);
+                break;
+            case TOAST_LEAST:
+                makeCustomToastText(activity.getString(R.string.am_invalid_field), activity);
+                break;
+            case TOAST_RESERVED:
+                makeCustomToastText(activity.getString(R.string.am_guest_reserved), activity);
+                break;
+            case TOAST_SUCCESS:
+                makeCustomToastText(activity.getString(R.string.am_register_succ), activity);
+                break;
+        }
+    }
     /**
      * Saves current list of accounts to fileName
      * @param fileName the name of the file
