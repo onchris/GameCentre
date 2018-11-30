@@ -94,7 +94,7 @@ public final class UtilityManager {
      * @param boardList the list of boards that it will save
      */
     public static void saveBoardsToAccounts(Context ctx, Account account, List<BoardManager> boardList) {
-        List<Account> accountList = new ArrayList<Account>();
+        List<Account> accountList = new ArrayList<>();
         try {
             InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);
             if (inputStream != null) {
@@ -266,7 +266,7 @@ public final class UtilityManager {
      * @param score   the score of the game that will be save
      */
     public static void saveObDodgerScoresToAccounts(Context ctx, Account account, int score) {
-        List<Account> accountList = new ArrayList<Account>();
+        List<Account> accountList = new ArrayList<>();
         try {
             InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);
             if (inputStream != null) {
