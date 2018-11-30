@@ -47,10 +47,6 @@ public class ObstacleManager {
      * The score
      */
     private int score = 0;
-    /**
-     * List of all scores
-     */
-    public static ArrayList<Integer> allScores = new ArrayList<>();
 
     /**
      * Manage obstacles
@@ -79,7 +75,6 @@ public class ObstacleManager {
     boolean playerCollide(RectPlayer player) {
         for (Obstacle ob : obstacles) {
             if (ob.playerCollide(player))
-                //allScores.add(score);
                 return true;
         }
         return false;
