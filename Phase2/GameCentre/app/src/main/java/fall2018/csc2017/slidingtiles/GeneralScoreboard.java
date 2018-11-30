@@ -23,18 +23,55 @@ import java.util.Objects;
 import static fall2018.csc2017.slidingtiles.UtilityManager.loadAccountList;
 import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
 
+/**
+ * The class for general score board which shows the scores for all three games
+ */
 public class GeneralScoreboard extends AppCompatActivity implements ScoreFragment.OnFragmentInteractionListener {
+    /**
+     * The viewpager
+     */
     private ViewPager viewPager;
+    /**
+     * The fragment pager adapter
+     */
     private FragmentPagerAdapter fragmentPagerAdapter;
+    /**
+     * The username
+     */
     private String username;
+    /**
+     * The text view of user name
+     */
     private TextView displayUsername;
+    /**
+     * The current fragment
+     */
     private Fragment currentFragment;
+    /**
+     * The list view for current score
+     */
     private ListView currentScoreDisplay;
+    /**
+     * A check whether the user is guest or not
+     */
     private boolean isGuest;
+    /**
+     * A check whether the scoreboard is global or not
+     */
     private boolean isGlobalScoreboard;
+    /**
+     * The current account
+     */
     private Account currentAccount;
+    /**
+     * The list of user's scores
+     */
     private List<String> displayUserScoresList, defaultList;
+    /**
+     * The fragment score manager
+     */
     private ScoreManager fragmentScoreManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +91,16 @@ public class GeneralScoreboard extends AppCompatActivity implements ScoreFragmen
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        getSupportFragmentManager().popBackStack();;
+        getSupportFragmentManager().popBackStack();
+        ;
     }
 
-    public void backgroundImageViewOnClick(View view){
+    /**
+     * Performing when background image view is clicked
+     *
+     * @param view the view for general score board
+     */
+    public void backgroundImageViewOnClick(View view) {
         if (isGuest) {
             makeCustomToastText(getString(R.string.gsb_no_score), this);
             return;
@@ -71,10 +114,9 @@ public class GeneralScoreboard extends AppCompatActivity implements ScoreFragmen
             currentScoreDisplay.setAdapter(arrayAdapter);
             arrayAdapter.notifyDataSetChanged();
             isGlobalScoreboard = !isGlobalScoreboard;
-        }
-        else {
+        } else {
             ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
-                R.layout.activity_scorelist, defaultList);
+                    R.layout.activity_scorelist, defaultList);
             currentScoreDisplay.setAdapter(arrayAdapter);
             arrayAdapter.notifyDataSetChanged();
             isGlobalScoreboard = !isGlobalScoreboard;
@@ -84,14 +126,25 @@ public class GeneralScoreboard extends AppCompatActivity implements ScoreFragmen
     @Override
     public void getDisplayScoreboard() {
         currentFragment = fragmentPagerAdapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment instanceof ScoreFragment){
+        if (currentFragment instanceof ScoreFragment) {
             currentScoreDisplay = ((ScoreFragment) currentFragment).getScoresListDisplay();
         }
     }
 
-    public class FragmentPagerAdapter extends FragmentStatePagerAdapter{
+    /**
+     * The class for fragment pager adapter
+     */
+    public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
+        /**
+         * The list of fragments
+         */
         private List<Fragment> fragments = new ArrayList<>();
 
+        /**
+         * The fragment pager adapter
+         *
+         * @param fm the fragment manager
+         */
         public FragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             fragments.add(ScoreFragment.newInstance("Sliding Tiles", username));
