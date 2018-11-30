@@ -1,9 +1,9 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
-import android.content.Context;
-
 import java.util.ArrayList;
 import java.util.Iterator;
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
+
 
 class UltTTTGameStateScanner {
 
