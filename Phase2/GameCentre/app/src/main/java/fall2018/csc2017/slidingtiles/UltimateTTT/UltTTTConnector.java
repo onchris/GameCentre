@@ -6,6 +6,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import fall2018.csc2017.slidingtiles.R;
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+
 
 public class UltTTTConnector {
     /**
