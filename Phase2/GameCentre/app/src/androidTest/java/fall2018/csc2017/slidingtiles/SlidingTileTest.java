@@ -384,6 +384,16 @@ public class SlidingTileTest {
         }
     }
 
+    @Test
+    public void test4_allDirectionTileTest(){
+        GameSelection.IS_GUEST = false;
+        testRule.getActivity().setCurrentAccount(new Account("123","123"));
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(14).perform(click());
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(10).perform(click());
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(11).perform(click());
+        onData(instanceOf(Button.class)).inAdapterView(withId(R.id.grid)).atPosition(15).perform(click());
+    }
+
     private static TypeSafeMatcher<Root> toastMatch(){
         return new TypeSafeMatcher<Root>() {
             @Override
