@@ -16,43 +16,43 @@ import java.util.Observable;
 
 public class GameplayScene extends Observable implements Scene {
 
-    /*
-    The rectangle that contains the player animation.
+    /**
+     * The rectangle that contains the player animation.
      */
     private Rect r = new Rect();
 
-    /*
-    The rect player.
+    /**
+     * The rect player.
      */
     private RectPlayer player;
 
-    /*
-    The point where the rectangle spawns.
+    /**
+     * The point where the rectangle spawns.
      */
     private Point playerPoint;
 
-    /*
-    The obstacle manager for the current game.
+    /**
+     * The obstacle manager for the current game.
      */
     private ObstacleManager obstacleManager;
 
-    /*
-    Boolean that represents whether the player is moving.
+    /**
+     * Boolean that represents whether the player is moving.
      */
     private boolean movingPlayer = false;
 
-    /*
-    Boolean that represents whether game is over.
+    /**
+     * Boolean that represents whether game is over.
      */
     private boolean gameOver = false;
 
-    /*
-    The long representing the time after game finished.
+    /**
+     * The long representing the time after game finished.
      */
     private long gameOverTime;
 
-    /*
-    Creates a new gameplay scene.
+    /**
+     * Creates a new gameplay scene.
      */
     GameplayScene() {
         player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));
@@ -61,8 +61,8 @@ public class GameplayScene extends Observable implements Scene {
         obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
     }
 
-    /*
-    Resets the gameplay scene, placing the player back at the start position and create new obstacles.
+    /**
+     * Resets the gameplay scene, placing the player back at the start position and create new obstacles.
      */
     private void reset() {
         playerPoint = new Point(ObUtilityManager.getScreenWidth() / 2, 3 * ObUtilityManager.getScreenHeight() / 4);
@@ -79,7 +79,7 @@ public class GameplayScene extends Observable implements Scene {
 
     @Override
     public void receiveTouch(MotionEvent event) {
-        if(!gameOver)
+        if (!gameOver)
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if (!gameOver && player.getRectangle().contains((int) event.getX(), (int) event.getY()))
@@ -130,8 +130,12 @@ public class GameplayScene extends Observable implements Scene {
         }
     }
 
-    /*
-    Draws a text in the center of the screen.
+    /**
+     * Draws a text in the center of the screen.
+     *
+     * @param canvas the canvas to be drawn.
+     * @param paint  the paint for the canvas.
+     * @param text   the text to be drawn.
      */
     private void drawCenterText(Canvas canvas, Paint paint, String text) {
         paint.setTextAlign(Paint.Align.LEFT);
