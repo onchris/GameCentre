@@ -1,14 +1,17 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+
 import android.app.Activity;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import fall2018.csc2017.slidingtiles.R;
-//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
 
-
+/**
+ * Class for Ultimate Tic Tac Toe Connector.
+ */
 public class UltTTTConnector {
     /**
      * The game activity of Ultimate Tic Tac Toe game
@@ -51,12 +54,6 @@ public class UltTTTConnector {
     UltTTTConnector(UltimateTTTGameActivity activity) {
         this.activity = activity;
         bind();
-    }
-
-    UltTTTConnector(UltimateTTTGameActivity activity, UltimateTTTBackend backend) {
-        this.activity = activity;
-        bind();
-        this.backend = backend;
     }
 
     /**
@@ -171,9 +168,5 @@ public class UltTTTConnector {
         if (b.equals(bundo))
             return 200;
         return -1;
-    }
-
-    public UltimateTTTBackend getBackend() {
-        return this.backend;
     }
 }
