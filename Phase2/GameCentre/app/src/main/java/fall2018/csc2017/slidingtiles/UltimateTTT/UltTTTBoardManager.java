@@ -214,9 +214,9 @@ public class UltTTTBoardManager {
             UtilityManager.saveUltTTTBoardManager(this.activity, activity.getCurrentAccount(), -1);
         }
         if (global_winner.equals(activity.P1Name)) {
-            tmp.putExtra("currentScore", "1");
+            tmp.putExtra("currentScore", 1);
         } else {
-            tmp.putExtra("currentScore", "0");
+            tmp.putExtra("currentScore", 0);
         }
         activity.finish();
         activity.startActivity(tmp);
