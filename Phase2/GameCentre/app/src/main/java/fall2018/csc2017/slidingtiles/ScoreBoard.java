@@ -83,7 +83,6 @@ public class ScoreBoard extends AppCompatActivity{
                     scoreList.getContext(),
                     currentUserScore);
         }
-        addChangeScoreboardViewButton();
         addNewGameButtonListener();
         displayGameScoresList = scoreManager.getDisplayGameScoresList();
         displayUserScoresList = scoreManager.getDisplayUserScoresList();
@@ -111,18 +110,6 @@ public class ScoreBoard extends AppCompatActivity{
         arrayAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * A button to allow the user can switch between the game-wide scoreboard to per-user scoreboard
-     */
-    public void addChangeScoreboardViewButton(){
-        Button changeScoreboardView = findViewById(R.id.button_new_game);
-        changeScoreboardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.activity_score_board);
-            }
-        });
-    }
 
     /**
      * On click function for the change scoreboard view button

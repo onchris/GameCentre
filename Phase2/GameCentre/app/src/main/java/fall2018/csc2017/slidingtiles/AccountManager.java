@@ -33,7 +33,7 @@ public class AccountManager {
      * @return whether if account already exists
      */
     public boolean checkExistingUser(String username){
-        if(accountsList.isEmpty())
+        if(accountsList == null ||accountsList.isEmpty())
             return false;
         for(Account existingAccount: accountsList)
         {
@@ -44,6 +44,9 @@ public class AccountManager {
     }
     public void setAccountsList(List<Account> accountsList) {
         this.accountsList = accountsList;
+    }
+    public List<Account> getAccountsList(){
+        return accountsList;
     }
     /**
      * Authenticates the user with it's corresponding login details input
@@ -101,6 +104,7 @@ public class AccountManager {
         } else if (!checkExistingUser(username)){
             account = new Account(username, password);
             accountsList.add(account);
+            makeCustomToastText(activity.getString(R.string.am_register_succ), activity);
             return account;
         } else if (checkExistingUser(username))
         {
@@ -120,7 +124,6 @@ public class AccountManager {
                     new ObjectOutputStream(currentActivity.openFileOutput(fileName, MODE_PRIVATE));
             outputStream.writeObject(accountsList);
             outputStream.close();
-            makeCustomToastText(currentActivity.getString(R.string.am_credentials_saved), currentActivity);
         } catch (IOException e){
             makeCustomToastText(currentActivity.getString(R.string.am_error_save), currentActivity);
         }
