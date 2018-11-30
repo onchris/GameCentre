@@ -218,6 +218,7 @@ public class UltTTTBoardManager {
         } else {
             tmp.putExtra("currentScore", "0");
         }
+        activity.finish();
         activity.startActivity(tmp);
     }
 
