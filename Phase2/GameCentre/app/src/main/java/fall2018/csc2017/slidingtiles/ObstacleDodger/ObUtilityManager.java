@@ -4,24 +4,26 @@ Adapted from:
 https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
  */
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 
 /**
  * Manage obstacle utility, including get the height and width of screen
  */
-public class ObUtilityManager {
+class ObUtilityManager {
     /**
      * The current context
      */
-    public static Context CURRENT_CONTEXT;
+    @SuppressLint("StaticFieldLeak")
+    static Context CURRENT_CONTEXT;
 
     /**
      * Gets the screen width
      *
      * @return the screen width
      */
-    public static int getScreenWidth() {
+    static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
@@ -30,7 +32,7 @@ public class ObUtilityManager {
      *
      * @return the screen height
      */
-    public static int getScreenHeight() {
+    static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 }
