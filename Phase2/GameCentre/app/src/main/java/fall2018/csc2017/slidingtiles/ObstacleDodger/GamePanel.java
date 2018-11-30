@@ -21,6 +21,9 @@ import android.view.SurfaceView;
 
 import fall2018.csc2017.slidingtiles.R;
 
+/**
+ * Class for Obstacle Dodger game panel.
+ */
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     /**

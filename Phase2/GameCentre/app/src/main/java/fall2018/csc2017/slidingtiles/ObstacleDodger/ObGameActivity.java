@@ -14,6 +14,9 @@ import android.view.WindowManager;
 import fall2018.csc2017.slidingtiles.Account;
 import fall2018.csc2017.slidingtiles.ScoreBoard;
 
+/**
+ * Class for Obstacle Dodger game activity.
+ */
 public class ObGameActivity extends AppCompatActivity {
 
     /**
