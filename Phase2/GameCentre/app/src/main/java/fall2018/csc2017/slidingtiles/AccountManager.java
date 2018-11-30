@@ -3,6 +3,7 @@ package fall2018.csc2017.slidingtiles;
 import android.app.Activity;
 import android.content.Context;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -110,7 +111,8 @@ public class AccountManager {
             makeToastMessage(ToastConstant.TOAST_SUCCESS, activity);
             return account;
         }
-        makeToastMessage(ToastConstant.TOAST_EXIST, activity);
+        else
+            makeToastMessage(ToastConstant.TOAST_EXIST, activity);
         return null;
     }
     public enum ToastConstant{
@@ -118,7 +120,8 @@ public class AccountManager {
         TOAST_EMPTY,
         TOAST_LEAST,
         TOAST_EXIST,
-        TOAST_SUCCESS
+        TOAST_SUCCESS,
+        TOAST_ERROR_SAVE
     }
 
     private void makeToastMessage(ToastConstant toastMessage, Activity activity){
@@ -140,6 +143,9 @@ public class AccountManager {
             case TOAST_SUCCESS:
                 makeCustomToastText(activity.getString(R.string.am_register_succ), activity);
                 break;
+            case TOAST_ERROR_SAVE:
+                makeCustomToastText(activity.getString(R.string.am_error_save), activity);
+                break;
         }
     }
     /**
@@ -149,12 +155,16 @@ public class AccountManager {
      */
     public void saveCredentials(String fileName, Activity currentActivity){
         try{
-            ObjectOutputStream outputStream =
-                    new ObjectOutputStream(currentActivity.openFileOutput(fileName, MODE_PRIVATE));
+            ObjectOutputStream outputStream;
+            if(currentActivity == null || currentActivity.getApplicationContext() == null) {
+                outputStream = new ObjectOutputStream(new FileOutputStream(fileName));
+            }else {
+                outputStream = new ObjectOutputStream(currentActivity.openFileOutput(fileName, MODE_PRIVATE));
+            }
             outputStream.writeObject(accountsList);
             outputStream.close();
         } catch (IOException e){
-            makeCustomToastText(currentActivity.getString(R.string.am_error_save), currentActivity);
+            makeToastMessage(ToastConstant.TOAST_ERROR_SAVE, currentActivity);
         }
     }
 }
