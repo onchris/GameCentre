@@ -23,58 +23,60 @@ import fall2018.csc2017.slidingtiles.R;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
-    /*
-    The thread for the game panel.
+    /**
+     * The thread for the game panel.
      */
     private MainThread thread;
 
-    /*
-    The SceneManager for the game panel.
+    /**
+     * The SceneManager for the game panel.
      */
     private SceneManager manager;
 
-    /*
-    Indicates whether a game panel is created
+    /**
+     * Indicates whether a game panel is created
      */
     Boolean receive;
 
-    /*
-    A bitmap image.
+    /**
+     * A bitmap image.
      */
     Bitmap bgr;
 
-    /*
-    A default bitmap overlay.
+    /**
+     * A default bitmap overlay.
      */
     Bitmap overlayDefault;
 
-    /*
-    A bitmap overlay.
+    /**
+     * A bitmap overlay.
      */
     Bitmap overlay;
 
-    /*
-    A Paint object.
+    /**
+     * A paint object.
      */
     Paint pTouch;
 
-    /*
-    The bitmaps X coordinate.
+    /**
+     * The bitmaps X coordinate.
      */
     int X = -100;
 
-    /*
-    The bitmaps Y Coordinate
+    /**
+     * The bitmaps Y Coordinate.
      */
     int Y = -100;
 
-    /*
-    A canvas for the logo.
+    /**
+     * A canvas for the logo.
      */
     Canvas c2;
 
-    /*
-    Creates a new game panel.
+    /**
+     * Creates a new game panel.
+     *
+     * @param context the context for the game panel
      */
     public GamePanel(Context context) {
         super(context);
@@ -149,14 +151,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             case MotionEvent.ACTION_UP:
                 break;
         }
-        if(!receive)
+        if (!receive)
             return false;
         manager.receiveTouch(event);
         return true;
     }
 
-    /*
-    Updates the Scene Manager.
+    /**
+     * Updates the Scene Manager.
      */
     public void update() {
         manager.update();
@@ -167,22 +169,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         manager.draw(canvas);
 
-        //create the logo
         canvas.drawBitmap(bgr, getWidth() - bgr.getWidth(), 0, null);
         c2.drawBitmap(overlayDefault, getWidth() - bgr.getWidth(), 0, null);
         c2.drawCircle(X, Y, 80, pTouch);
         canvas.drawBitmap(overlay, getWidth() - bgr.getWidth(), 0, null);
     }
 
-    /*
-    Returns the Scene Manager.
+    /**
+     * Returns the Scene Manager.
+     *
+     * @return returns the Scene Manager
      */
     public SceneManager getManager() {
         return manager;
     }
 
-    /*
-    Returns the main thread.
+    /**
+     * Returns the main thread.
+     *
+     * @return returns the thread.
      */
     public MainThread getThread() {
         return thread;
