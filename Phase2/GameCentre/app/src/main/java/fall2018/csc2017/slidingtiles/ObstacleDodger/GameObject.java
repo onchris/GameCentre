@@ -7,6 +7,9 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
 
 import android.graphics.Canvas;
 
+/**
+ * Interface for Obstacle Dodger game objects.
+ */
 public interface GameObject {
 
     /**

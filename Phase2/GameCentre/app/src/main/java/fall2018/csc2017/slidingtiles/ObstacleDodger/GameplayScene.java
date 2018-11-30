@@ -14,6 +14,9 @@ import android.view.MotionEvent;
 
 import java.util.Observable;
 
+/**
+ * Class for Obstacle Dodger Gameplay scenes.
+ */
 public class GameplayScene extends Observable implements Scene {
 
     /**

@@ -8,6 +8,9 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+/**
+ * Class for Obstacle Dodger Animation Manager.
+ */
 public class AnimationManager {
 
     /**

@@ -10,6 +10,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+/**
+ * Class for Obstacle Dodger Animation.
+ */
 public class Animation {
 
     /**

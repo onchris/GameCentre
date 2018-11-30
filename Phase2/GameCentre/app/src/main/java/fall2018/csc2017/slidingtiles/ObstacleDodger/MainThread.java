@@ -8,6 +8,9 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+/**
+ * Class for Obstacle Dodger main thread.
+ */
 public class MainThread extends Thread {
 
     /**
