@@ -8,12 +8,28 @@ https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Ga
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
+/**
+ * Interface for game scenes.
+ */
 public interface Scene {
-    public void update();
 
-    public void draw(Canvas canvas);
+    /**
+     * Updates the game scene.
+     */
+    void update();
 
-    public void terminate();
+    /**
+     * Draws the game scene
+     *
+     * @param canvas The canvas that is drawn.
+     */
+    void draw(Canvas canvas);
 
-    public void receiveTouch(MotionEvent event);
+    /**
+     * The action that is made to the scene.
+     *
+     * @param event The action made.
+     */
+    void receiveTouch(MotionEvent event);
 }
+

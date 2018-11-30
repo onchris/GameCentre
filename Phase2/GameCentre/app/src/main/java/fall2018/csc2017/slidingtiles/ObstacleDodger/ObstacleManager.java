@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Manage obstacles, check colliding and update
  */
 public class ObstacleManager {
-    //higher index = lower on screen = higher y value
+
     /**
      * List of obstacles
      */
@@ -60,7 +60,7 @@ public class ObstacleManager {
      * @param obstacleHeight height of obstacle
      * @param color          the color og obstacle
      */
-    public ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight, int color) {
+    ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight, int color) {
         this.playerGap = playerGap;
         this.obstacleGap = obstacleGap;
         this.obstacleHeight = obstacleHeight;
@@ -76,7 +76,7 @@ public class ObstacleManager {
      * @param player the player
      * @return if the player collides with the obstacle
      */
-    public boolean playerCollide(RectPlayer player) {
+    boolean playerCollide(RectPlayer player) {
         for (Obstacle ob : obstacles) {
             if (ob.playerCollide(player))
                 //allScores.add(score);

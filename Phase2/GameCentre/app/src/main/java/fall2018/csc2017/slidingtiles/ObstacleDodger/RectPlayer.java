@@ -14,38 +14,58 @@ import android.graphics.Rect;
 
 import fall2018.csc2017.slidingtiles.R;
 
+/**
+ * Class for a rect player.
+ */
 public class RectPlayer implements GameObject {
 
+    /**
+     * The player rectangle.
+     */
     private Rect rectangle;
+
+    /**
+     * The player color.
+     */
     private int color;
 
-    private Animation idle;
-    private Animation walkRight;
-    private Animation walkLeft;
+    /**
+     * The animation manager for player rectangle.
+     */
     private AnimationManager animManager;
 
-    public Rect getRectangle() {
+    /**
+     * Returns the rectangle.
+     *
+     * @return Rectangle is returned.
+     */
+    Rect getRectangle() {
         return rectangle;
     }
 
-    public RectPlayer(Rect rectangle, int color) {
+    /**
+     * Create a new rect player.
+     *
+     * @param rectangle The rectangle of the player.
+     * @param color     The color of the player.
+     */
+    RectPlayer(Rect rectangle, int color) {
         this.rectangle = rectangle;
         this.color = color;
 
-        BitmapFactory bf = new BitmapFactory();
-        Bitmap idleImg = bf.decodeResource(ObUtilityManager.CURRENT_CONTEXT.getResources(), R.drawable.aliengreen);
-        Bitmap walk1 = bf.decodeResource(ObUtilityManager.CURRENT_CONTEXT.getResources(), R.drawable.aliengreen_walk1);
-        Bitmap walk2 = bf.decodeResource(ObUtilityManager.CURRENT_CONTEXT.getResources(), R.drawable.aliengreen_walk2);
+        Bitmap idleImg = BitmapFactory.decodeResource(ObUtilityManager.CURRENT_CONTEXT.getResources(), R.drawable.aliengreen);
+        Bitmap walk1 = BitmapFactory.decodeResource(ObUtilityManager.CURRENT_CONTEXT.getResources(), R.drawable.aliengreen_walk1);
+        Bitmap walk2 = BitmapFactory.decodeResource(ObUtilityManager.CURRENT_CONTEXT.getResources(), R.drawable.aliengreen_walk2);
 
-        idle = new Animation(new Bitmap[]{idleImg}, 2);
-        walkRight = new Animation(new Bitmap[]{walk1, walk2}, 0.5f);
+        Animation idle = new Animation(new Bitmap[]{idleImg}, 2);
+        Animation walkRight = new Animation(new Bitmap[]{walk1, walk2}, 0.5f);
 
         Matrix m = new Matrix();
         m.preScale(-1, 1);
         walk1 = Bitmap.createBitmap(walk1, 0, 0, walk1.getWidth(), walk1.getHeight(), m, false);
         walk2 = Bitmap.createBitmap(walk2, 0, 0, walk1.getWidth(), walk2.getHeight(), m, false);
 
-        walkLeft = new Animation(new Bitmap[]{walk1, walk2}, 0.5f);
+        Animation walkLeft = new Animation(new Bitmap[]{walk1, walk2}, 0.5f);
 
         animManager = new AnimationManager(new Animation[]{idle, walkRight, walkLeft});
     }
@@ -60,6 +80,11 @@ public class RectPlayer implements GameObject {
         animManager.update();
     }
 
+    /**
+     * Update the point of the rectangle.
+     *
+     * @param point a coordinate point.
+     */
     public void update(Point point) {
         float oldLeft = rectangle.left;
 

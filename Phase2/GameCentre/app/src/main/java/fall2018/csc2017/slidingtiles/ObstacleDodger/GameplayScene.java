@@ -75,12 +75,6 @@ public class GameplayScene extends Observable implements Scene {
     }
 
     @Override
-    public void terminate() {
-        SceneManager.ACTIVE_SCENE = 0;
-        deleteObservers();
-    }
-
-    @Override
     public void receiveTouch(MotionEvent event) {
         if (!gameOver)
             switch (event.getAction()) {
