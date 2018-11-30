@@ -106,7 +106,7 @@ public class GameActivity extends AppCompatActivity implements Observer {
      */
     private ScoringSystem scoringSystem = new ScoringSystem();
     /**
-     * Broken up image for background of tiles
+     * Broken up images for background of tiles
      */
     public static ArrayList<Bitmap> IMAGE_SET;
     /**
@@ -339,9 +339,11 @@ public class GameActivity extends AppCompatActivity implements Observer {
 
     @Override
     public void onBackPressed() {
+        IMAGE_SET = null;
         pauseChronometer(chronometer);
-        if(boardManager!=null)
+        if(boardManager!=null) {
             boardManager.setTimeSpent(pauseTime);
+        }
         if(currentAccount != null) {
             onClickSaveBoard(getCurrentFocus(), false);
             if(timer != null && timerTask != null) {
@@ -349,7 +351,6 @@ public class GameActivity extends AppCompatActivity implements Observer {
                 timerTask.cancel();
             }
         }
-        IMAGE_SET = null;
         super.onBackPressed();
         finish();
     }
