@@ -14,20 +14,52 @@ import android.graphics.Rect;
 
 import fall2018.csc2017.slidingtiles.R;
 
+/**
+ * The rectangle player
+ */
 public class RectPlayer implements GameObject {
 
+    /**
+     * The rectangle
+     */
     private Rect rectangle;
+    /**
+     * The color of rectangle
+     */
     private int color;
 
+    /**
+     * The animation for idle
+     */
     private Animation idle;
+    /**
+     * The animation for walk right
+     */
     private Animation walkRight;
+    /**
+     * The animation for walk left
+     */
     private Animation walkLeft;
+    /**
+     * The animation manager
+     */
     private AnimationManager animManager;
 
+    /**
+     * Gets a rectangle
+     *
+     * @return a rectangle
+     */
     public Rect getRectangle() {
         return rectangle;
     }
 
+    /**
+     * The rectangle player
+     *
+     * @param rectangle a rectangle
+     * @param color     the color for the rectangle player
+     */
     public RectPlayer(Rect rectangle, int color) {
         this.rectangle = rectangle;
         this.color = color;
