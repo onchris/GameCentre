@@ -2,14 +2,22 @@ package fall2018.csc2017.slidingtiles;
 
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Unit testing for Account class
+ */
 public class AccountTest {
+    /**
+     * Initializes an account for assertion
+     */
     private Account initialAccount = new Account("123", "dummy_password");
+    /**
+     * Initializes an empty score list for assertion
+     */
     private List<Integer> emptyScore = new ArrayList<>();
 
     /**
@@ -29,6 +37,9 @@ public class AccountTest {
         assertEquals(new ArrayList(), initialAccount.getUltimateTTTSave());
     }
 
+    /**
+     * Test for number of UltimateTTT wins for initial account
+     */
     @Test
     public void ultimateTTTWinUpdate() {
         assertEquals(new Integer(0), initialAccount.getUltimateTTTScores());
@@ -38,6 +49,9 @@ public class AccountTest {
         assertEquals(new Integer(1), initialAccount.getUltimateTTTScores());
     }
 
+    /**
+     * Tests for setting board list on an account
+     */
     @Test
     public void setBoardList() {
         List<BoardManager> boardList = new ArrayList<>();
@@ -48,6 +62,9 @@ public class AccountTest {
         assertEquals(boardList, initialAccount.getBoardList());
     }
 
+    /**
+     * Tests for UltimateTTT saves
+     */
     @Test
     public void setUltimateTTTSave() {
         assertEquals(new ArrayList(), initialAccount.getUltimateTTTSave());
@@ -59,6 +76,10 @@ public class AccountTest {
         assertEquals(arrayList, initialAccount.getUltimateTTTSave());
     }
 
+    /**
+     * Equality test between two accounts, where equals() returns true when account name is
+     * neither null or the same. Password is disregarded based on implementation of Account
+     */
     @Test
     public void equals() {
         Account secondAccount = new Account("Bogus", "123");
@@ -68,6 +89,9 @@ public class AccountTest {
         assertFalse(initialAccount.equals(null));
     }
 
+    /**
+     * Tests for adding Sliding Tiles game scores
+     */
     @Test
     public void addToSlidingGameScores() {
         ArrayList<Integer> scoreList = new ArrayList<>();
@@ -83,6 +107,9 @@ public class AccountTest {
         assertEquals(0, (int) initialAccount.getSlidingGameScores().get(2));
     }
 
+    /**
+     * Tests for adding Obstacle dodger scores
+     */
     @Test
     public void addToObDodgeGameScores() {
         assertEquals(emptyScore, initialAccount.getObstacleDodgerScores());
