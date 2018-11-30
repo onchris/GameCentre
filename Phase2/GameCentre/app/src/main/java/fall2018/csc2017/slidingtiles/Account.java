@@ -35,7 +35,7 @@ public class Account implements Serializable {
     /**
      * Account's saved ultimate tic tac toe games
      */
-    private JSONObject ultimateTTTSave = new JSONObject();
+    private transient JSONObject ultimateTTTSave = new JSONObject();
 
     /**
      * Account's sliding tile games' scores as a list
