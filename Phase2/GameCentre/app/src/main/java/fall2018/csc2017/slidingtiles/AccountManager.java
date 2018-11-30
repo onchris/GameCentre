@@ -44,9 +44,20 @@ public class AccountManager {
         }
         return false;
     }
+
+    /**
+     * Sets the account lists based on different implementation of loading accountsList
+     * Part of dependency-injection usage.
+     * @param accountsList
+     */
     public void setAccountsList(List<Account> accountsList) {
         this.accountsList = accountsList;
     }
+
+    /**
+     * Retrieves the current accounts lists
+     * @return List<Account> the list of accounts.
+     */
     public List<Account> getAccountsList(){
         return accountsList;
     }
@@ -115,6 +126,10 @@ public class AccountManager {
             makeToastMessage(ToastConstant.TOAST_EXIST, activity);
         return null;
     }
+
+    /**
+     * ToastConstant for assigning cases of toasts messages
+     */
     public enum ToastConstant{
         TOAST_RESERVED,
         TOAST_EMPTY,
@@ -124,6 +139,12 @@ public class AccountManager {
         TOAST_ERROR_SAVE
     }
 
+    /**
+     * Makes custom toast message based on different ToastConstant. This allows checking for
+     * null activity yet allows account creating and saving without relying on a valid activity.
+     * @param toastMessage ToastConstant that refers to different toast message to be shown
+     * @param activity activity that toast would show in
+     */
     private void makeToastMessage(ToastConstant toastMessage, Activity activity){
         if(activity == null)
             return;
