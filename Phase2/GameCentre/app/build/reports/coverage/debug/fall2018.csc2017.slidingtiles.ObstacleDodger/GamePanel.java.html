@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GamePanel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.ObstacleDodger</a> &gt; <span class="el_source">GamePanel.java</span></div><h1>GamePanel.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.ObstacleDodger;
+
+/*
+Adapted from:
+https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
+ */
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+
+import fall2018.csc2017.slidingtiles.R;
+
+/**
+ * Class for Obstacle Dodger game panel.
+ */
+public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
+
+    /**
+     * The thread for the game panel.
+     */
+    private MainThread thread;
+
+    /**
+     * The SceneManager for the game panel.
+     */
+    private SceneManager manager;
+
+    /**
+     * Indicates whether a game panel is created
+     */
+    Boolean receive;
+
+    /**
+     * A bitmap image.
+     */
+    Bitmap bgr;
+
+    /**
+     * A default bitmap overlay.
+     */
+    Bitmap overlayDefault;
+
+    /**
+     * A bitmap overlay.
+     */
+    Bitmap overlay;
+
+    /**
+     * A paint object.
+     */
+    Paint pTouch;
+
+    /**
+     * The bitmaps X coordinate.
+     */
+<span class="fc" id="L67">    int X = -100;</span>
+
+    /**
+     * The bitmaps Y Coordinate.
+     */
+<span class="fc" id="L72">    int Y = -100;</span>
+
+    /**
+     * A canvas for the logo.
+     */
+    Canvas c2;
+
+    /**
+     * Creates a new game panel.
+     *
+     * @param context the context for the game panel
+     */
+    public GamePanel(Context context) {
+<span class="fc" id="L85">        super(context);</span>
+<span class="fc" id="L86">        receive = true;</span>
+<span class="fc" id="L87">        bgr = BitmapFactory.decodeResource(getResources(), R.drawable.aliengreen);</span>
+<span class="fc" id="L88">        overlayDefault = BitmapFactory.decodeResource(getResources(), R.drawable.tile_16).copy(Bitmap.Config.ARGB_8888, true);</span>
+<span class="fc" id="L89">        overlay = BitmapFactory.decodeResource(getResources(), R.drawable.aliengreen).copy(Bitmap.Config.ARGB_8888, true);</span>
+<span class="fc" id="L90">        c2 = new Canvas(overlay);</span>
+<span class="fc" id="L91">        pTouch = new Paint(Paint.ANTI_ALIAS_FLAG);</span>
+<span class="fc" id="L92">        pTouch.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));</span>
+<span class="fc" id="L93">        pTouch.setColor(Color.TRANSPARENT);</span>
+<span class="fc" id="L94">        pTouch.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));</span>
+
+<span class="fc" id="L96">        getHolder().addCallback(this);</span>
+
+<span class="fc" id="L98">        ObUtilityManager.CURRENT_CONTEXT = context;</span>
+
+<span class="fc" id="L100">        thread = new MainThread(getHolder(), this);</span>
+
+<span class="fc" id="L102">        manager = new SceneManager();</span>
+
+<span class="fc" id="L104">        setFocusable(true);</span>
+<span class="fc" id="L105">    }</span>
+
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+<span class="fc" id="L111">    }</span>
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+<span class="fc" id="L115">        thread = new MainThread(getHolder(), this);</span>
+
+<span class="fc" id="L117">        thread.setRunning(true);</span>
+<span class="fc" id="L118">        thread.start();</span>
+<span class="fc" id="L119">    }</span>
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+<span class="fc" id="L123">        boolean retry = true;</span>
+        while (true) {
+            try {
+<span class="fc" id="L126">                receive = false;</span>
+<span class="fc" id="L127">                thread.interrupt();</span>
+<span class="fc" id="L128">                thread.setRunning(false);</span>
+<span class="fc" id="L129">                retry = false;</span>
+<span class="fc" id="L130">                return;</span>
+<span class="nc" id="L131">            } catch (Exception e) {</span>
+<span class="nc" id="L132">                e.printStackTrace();</span>
+            }
+<span class="nc" id="L134">            retry = false;</span>
+        }
+    }
+
+    @SuppressLint(&quot;ClickableViewAccessibility&quot;)
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+<span class="nc bnc" id="L141" title="All 3 branches missed.">        switch (event.getAction()) {</span>
+            case MotionEvent.ACTION_DOWN: {
+<span class="nc" id="L143">                X = (int) event.getX();</span>
+<span class="nc" id="L144">                Y = (int) event.getY();</span>
+<span class="nc" id="L145">                invalidate();</span>
+            }
+<span class="nc" id="L147">            break;</span>
+            case MotionEvent.ACTION_MOVE: {
+<span class="nc" id="L149">                X = (int) event.getX();</span>
+<span class="nc" id="L150">                Y = (int) event.getY();</span>
+<span class="nc" id="L151">                invalidate();</span>
+<span class="nc" id="L152">                break;</span>
+            }
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (!receive)</span>
+<span class="nc" id="L158">            return false;</span>
+<span class="nc" id="L159">        manager.receiveTouch(event);</span>
+<span class="nc" id="L160">        return true;</span>
+    }
+
+    /**
+     * Updates the Scene Manager.
+     */
+    public void update() {
+<span class="fc" id="L167">        manager.update();</span>
+<span class="fc" id="L168">    }</span>
+
+    @Override
+    public void draw(Canvas canvas) {
+<span class="fc" id="L172">        super.draw(canvas);</span>
+<span class="fc" id="L173">        manager.draw(canvas);</span>
+
+<span class="fc" id="L175">        canvas.drawBitmap(bgr, getWidth() - bgr.getWidth(), 0, null);</span>
+<span class="fc" id="L176">        c2.drawBitmap(overlayDefault, getWidth() - bgr.getWidth(), 0, null);</span>
+<span class="fc" id="L177">        c2.drawCircle(X, Y, 80, pTouch);</span>
+<span class="fc" id="L178">        canvas.drawBitmap(overlay, getWidth() - bgr.getWidth(), 0, null);</span>
+<span class="fc" id="L179">    }</span>
+
+    /**
+     * Returns the Scene Manager.
+     *
+     * @return returns the Scene Manager
+     */
+    public SceneManager getManager() {
+<span class="fc" id="L187">        return manager;</span>
+    }
+
+    /**
+     * Returns the main thread.
+     *
+     * @return returns the thread.
+     */
+    public MainThread getThread() {
+<span class="nc" id="L196">        return thread;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

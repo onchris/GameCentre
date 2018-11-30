@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ObDodgerScoreManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">ObDodgerScoreManager.java</span></div><h1>ObDodgerScoreManager.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.content.Context;
+import android.util.Pair;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+/**
+ * Object to manage the scores of the accounts for display
+ */
+
+class ObDodgerScoreManager extends ScoreManager {
+
+    /**
+     * Constructor for a new obstacle dodger score manager
+     * @param username
+     * @param ctx
+     * @param score
+     */
+    ObDodgerScoreManager(String username, Context ctx, Integer score) {
+<span class="fc" id="L23">        super(username, ctx, score);</span>
+<span class="fc bfc" id="L24" title="All 4 branches covered.">        if (!username.equals(&quot;-1&quot;) &amp;&amp; currentAccount != null) {</span>
+<span class="fc" id="L25">            userScores = currentAccount.getObstacleDodgerScores();</span>
+<span class="fc" id="L26">            buildDisplayUserScoresList();</span>
+        }
+<span class="fc" id="L28">    }</span>
+
+    @Override
+    void buildGameScoresList() {
+        Pair&lt;Integer, String&gt; p;
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if (gameScores.size() == 0) {</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            for (Account account : accountsList) {</span>
+<span class="fc" id="L35">                List&lt;Integer&gt; accountScores = account.getObstacleDodgerScores();</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">                for (int i = 0; i &lt;= accountScores.size() - 1; i++) {</span>
+<span class="fc" id="L37">                    p = new Pair&lt;&gt;(accountScores.get(i), account.getUsername());</span>
+<span class="fc" id="L38">                    gameScores.add(p);</span>
+                }
+<span class="fc" id="L40">            }</span>
+        }
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (IS_GUEST) {</span>
+            try {
+<span class="fc" id="L44">                p = new Pair&lt;&gt;(score, &quot;Guest&quot;);</span>
+<span class="fc" id="L45">                gameScores.add(p);</span>
+<span class="nc" id="L46">            } catch (NumberFormatException e) {</span>
+<span class="nc" id="L47">                e.printStackTrace();</span>
+<span class="fc" id="L48">            }</span>
+        }
+<span class="fc" id="L50">        Collections.sort(gameScores, new Comparator&lt;Pair&lt;Integer, String&gt;&gt;() {</span>
+            @Override
+            public int compare(Pair&lt;Integer, String&gt; p1, Pair&lt;Integer, String&gt; p2) {
+<span class="fc" id="L53">                return p2.first.compareTo(p1.first);</span>
+            }
+        });
+<span class="fc" id="L56">    }</span>
+
+    @Override
+    void buildDisplayGameScoresList() {
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (displayGameScoresList.size() == 0) {</span>
+<span class="fc" id="L61">            String sep = &quot;:      &quot;;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            for (int i = 0; i &lt;= gameScores.size() - 1; i++) {</span>
+<span class="fc" id="L63">                Pair&lt;Integer, String&gt; score = gameScores.get(i);</span>
+<span class="fc" id="L64">                String displayScore = score.second + sep + score.first.toString();</span>
+<span class="fc" id="L65">                displayGameScoresList.add(displayScore);</span>
+            }
+        }
+<span class="fc" id="L68">    }</span>
+
+    @Override
+    void buildDisplayUserScoresList() {
+<span class="fc" id="L72">        currentAccount.sortGameScores();</span>
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (displayUserScoresList.size() == 0) {</span>
+<span class="fc" id="L74">            String sep = &quot;:      &quot;;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            for (int i = 0; i &lt;= userScores.size() - 1; i++) {</span>
+<span class="fc" id="L76">                Integer score = userScores.get(i);</span>
+<span class="fc" id="L77">                String displayScore = currentAccount.getUsername() + sep + score.toString();</span>
+<span class="fc" id="L78">                displayUserScoresList.add(displayScore);</span>
+            }
+        }
+<span class="fc" id="L81">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

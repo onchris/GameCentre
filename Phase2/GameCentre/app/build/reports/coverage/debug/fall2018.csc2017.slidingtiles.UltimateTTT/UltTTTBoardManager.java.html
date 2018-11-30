@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UltTTTBoardManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.UltimateTTT</a> &gt; <span class="el_source">UltTTTBoardManager.java</span></div><h1>UltTTTBoardManager.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.UltimateTTT;
+
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Map;
+
+import fall2018.csc2017.slidingtiles.R;
+import fall2018.csc2017.slidingtiles.ScoreBoard;
+import fall2018.csc2017.slidingtiles.UtilityManager;
+
+/**
+ * Class for Ultimate Tic Tac Toe board manager.
+ */
+class UltTTTBoardManager {
+    /**
+     * The winner of current round
+     */
+    private String winner;
+    /**
+     * The winner of the game
+     */
+    private String globalWinner;
+    /**
+     * The current active block
+     */
+    private int currentActiveBlock;
+    /**
+     * The next active block
+     */
+    private int nextActiveBlock;
+    /**
+     * The disable block
+     */
+    private String disableBlock;
+    /**
+     * The score of player1
+     */
+    private int scoreP1;
+    /**
+     * The score of player2
+     */
+    private int scoreP2;
+    /**
+     * The current cell
+     */
+    private int currentCell;
+    /**
+     * The used cells
+     */
+    private String usedCells[];
+    /**
+     * The cells to be reset
+     */
+    private String resetCells;
+    /**
+     * A check if it is player1's turn
+     */
+    private String isP1Turn;
+    /**
+     * The button that is pressed
+     */
+    private String buttonPressed;
+    /**
+     * The block color to reset
+     */
+    private String resetBlockColor;
+    /**
+     * List of image buttons
+     */
+    private ImageButton[] ImageButtons;
+    /**
+     * The tables
+     */
+    private TableLayout tables[];
+    /**
+     * The connector of Ultimate Tic Tac Toe game
+     */
+    private UltTTTConnector connector;
+    /**
+     * The game activity of Ultimate Tic Tac Toe game
+     */
+    private UltimateTTTGameActivity activity;
+    /**
+     * The cell manager of Ultimate Tic Tac Toe game
+     */
+    private UltTTTCellManager cellManager;
+
+    /**
+     * Manage the board of Ultimate Tic Tac Toe game
+     *
+     * @param result    the result
+     * @param connector the connector of Ultimate Tic Tac Toe game
+     */
+<span class="nc" id="L101">    UltTTTBoardManager(Map result, UltTTTConnector connector) {</span>
+<span class="nc" id="L102">        winner = (String) result.get(&quot;CurrentWinner&quot;);</span>
+<span class="nc" id="L103">        globalWinner = (String) result.get(&quot;GlobalWinner&quot;);</span>
+
+<span class="nc" id="L105">        currentActiveBlock = Integer.parseInt((String) result.get(&quot;CurrentActiveBlock&quot;));</span>
+<span class="nc" id="L106">        nextActiveBlock = Integer.parseInt((String) result.get(&quot;NextActiveBlock&quot;));</span>
+<span class="nc" id="L107">        disableBlock = (String) result.get(&quot;DisableBlock&quot;);</span>
+
+<span class="nc" id="L109">        currentCell = Integer.parseInt((String) result.get(&quot;CurrentCell&quot;));</span>
+<span class="nc" id="L110">        usedCells = ((String) result.get(&quot;DisableList&quot;)).split(&quot;::::&quot;);</span>
+<span class="nc" id="L111">        resetCells = (String) result.get(&quot;ResetList&quot;);</span>
+
+<span class="nc" id="L113">        scoreP1 = Integer.parseInt((String) result.get(&quot;ScoreP1&quot;));</span>
+<span class="nc" id="L114">        scoreP2 = Integer.parseInt((String) result.get(&quot;ScoreP2&quot;));</span>
+
+<span class="nc" id="L116">        buttonPressed = (String) result.get(&quot;ButtonPressed&quot;);</span>
+<span class="nc" id="L117">        isP1Turn = (String) result.get(&quot;Turn&quot;);</span>
+<span class="nc" id="L118">        resetBlockColor = (String) result.get(&quot;ResetBlockColor&quot;);</span>
+
+<span class="nc" id="L120">        this.connector = connector;</span>
+<span class="nc" id="L121">        ImageButtons = connector.getImageButtons();</span>
+<span class="nc" id="L122">        tables = connector.getTables();</span>
+<span class="nc" id="L123">        activity = (UltimateTTTGameActivity) connector.getActivity();</span>
+<span class="nc" id="L124">        cellManager = new UltTTTCellManager(connector);</span>
+<span class="nc" id="L125">    }</span>
+
+    /**
+     * Operate the board
+     */
+    void operate() {
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (buttonPressed.equals(&quot;Reset&quot;)) {</span>
+<span class="nc" id="L132">            activity.initialize();</span>
+<span class="nc" id="L133">            cellManager.enableAll();</span>
+<span class="nc" id="L134">            return;</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        } else if (buttonPressed.equals(&quot;Undo&quot;)) {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">            if (resetCells.equals(&quot;All&quot;))</span>
+<span class="nc" id="L137">                activity.initialize();</span>
+            else {
+<span class="nc" id="L139">                ImageButtons[Integer.parseInt(resetCells)].</span>
+<span class="nc" id="L140">                        setBackgroundResource(R.drawable.ult_clearimage);</span>
+            }
+<span class="nc bnc" id="L142" title="All 2 branches missed.">            if (resetBlockColor.equals(&quot;None&quot;)) {</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">                if (Integer.parseInt(resetBlockColor) != Integer.MAX_VALUE)</span>
+<span class="nc" id="L144">                    tables[Integer.parseInt(resetBlockColor)].</span>
+<span class="nc" id="L145">                            setBackgroundColor(Color.BLACK);</span>
+            }
+        }
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (buttonPressed.equals(&quot;GameButton&quot;)) {</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            if (isP1Turn.equals(&quot;Player 1&quot;)) {</span>
+<span class="nc" id="L150">                ImageButtons[currentCell].setBackgroundResource(R.drawable.ult_cross);</span>
+            } else {
+<span class="nc" id="L152">                ImageButtons[currentCell].setBackgroundResource(R.drawable.ult_o);</span>
+            }
+        }
+<span class="nc" id="L155">        changeTableColor(nextActiveBlock, currentActiveBlock,</span>
+                isP1Turn, buttonPressed);
+<span class="nc" id="L157">        cellManager.disableAll();</span>
+<span class="nc" id="L158">        cellManager.enableBlock(nextActiveBlock);</span>
+<span class="nc" id="L159">        cellManager.disableWinnerBlocks(disableBlock);</span>
+<span class="nc" id="L160">        cellManager.disableUsedCells(usedCells);</span>
+<span class="nc" id="L161">        setText(connector.scoreP1, Integer.toString(scoreP1));</span>
+<span class="nc" id="L162">        setText(connector.scoreP2, Integer.toString(scoreP2));</span>
+
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (winner.equals(&quot;Player 1&quot;))</span>
+<span class="nc" id="L165">            Toast.makeText(activity, activity.P1Name + &quot; won this round&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        else if (winner.equals(&quot;Player 2&quot;))</span>
+<span class="nc" id="L167">            Toast.makeText(activity, activity.P2Name + &quot; won this round&quot;, Toast.LENGTH_SHORT).show();</span>
+
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (!globalWinner.equals(&quot;None&quot;))</span>
+<span class="nc" id="L170">            gameOver(winner);</span>
+<span class="nc" id="L171">    }</span>
+
+    /**
+     * Change table's color
+     *
+     * @param nextActiveBlock    the next active block
+     * @param currentActiveBlock the current active block
+     * @param player             the current player
+     * @param buttonPressed      the button pressed
+     */
+    private void changeTableColor(int nextActiveBlock, int currentActiveBlock, String player,
+                                  String buttonPressed) {
+        int color;
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (player.equals(&quot;Player 1&quot;))</span>
+<span class="nc" id="L185">            color = Color.GREEN;</span>
+        else
+<span class="nc" id="L187">            color = Color.RED;</span>
+
+<span class="nc bnc" id="L189" title="All 4 branches missed.">        if (player.equals(&quot;Player 1&quot;) &amp;&amp; buttonPressed.equals(&quot;Undo&quot;))</span>
+<span class="nc" id="L190">            color = Color.RED;</span>
+<span class="nc bnc" id="L191" title="All 4 branches missed.">        else if (player.equals(&quot;Player 2&quot;) &amp;&amp; buttonPressed.equals(&quot;Undo&quot;))</span>
+<span class="nc" id="L192">            color = Color.GREEN;</span>
+
+
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (currentActiveBlock != Integer.MAX_VALUE)</span>
+<span class="nc" id="L196">            tables[currentActiveBlock].setBackgroundColor(Color.BLACK);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (nextActiveBlock != Integer.MAX_VALUE)</span>
+<span class="nc" id="L198">            tables[nextActiveBlock].setBackgroundColor(color);</span>
+<span class="nc" id="L199">    }</span>
+
+    /**
+     * Manage the board when game is over
+     *
+     * @param global_winner the winner of the game
+     */
+    private void gameOver(String global_winner) {
+<span class="nc" id="L207">        cellManager.disableAll();</span>
+<span class="nc" id="L208">        Intent tmp = new Intent(this.activity, ScoreBoard.class);</span>
+<span class="nc" id="L209">        tmp.putExtra(&quot;currentGame&quot;, &quot;ultTTT&quot;);</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (activity.IS_GUEST) {</span>
+<span class="nc" id="L211">            tmp.putExtra(&quot;currentUsername&quot;, &quot;-1&quot;);</span>
+        } else {
+<span class="nc" id="L213">            tmp.putExtra(&quot;currentUsername&quot;, activity.P1Name);</span>
+<span class="nc" id="L214">            UtilityManager.saveUltTTTWinUpdate(this.activity, activity.getCurrentAccount(), global_winner.equals(&quot;Player 1&quot;));</span>
+<span class="nc" id="L215">            UtilityManager.saveUltTTTBoardManager(this.activity, activity.getCurrentAccount(), -1);</span>
+        }
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (global_winner.equals(activity.P1Name)) {</span>
+<span class="nc" id="L218">            tmp.putExtra(&quot;currentScore&quot;, &quot;1&quot;);</span>
+        } else {
+<span class="nc" id="L220">            tmp.putExtra(&quot;currentScore&quot;, &quot;0&quot;);</span>
+        }
+<span class="nc" id="L222">        activity.finish();</span>
+<span class="nc" id="L223">        activity.startActivity(tmp);</span>
+<span class="nc" id="L224">    }</span>
+
+    /**
+     * Sets the text
+     *
+     * @param tv the text view that will be changed
+     * @param s  the string
+     */
+    private void setText(TextView tv, String s) {
+<span class="nc" id="L233">        tv.setText(s);</span>
+<span class="nc" id="L234">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

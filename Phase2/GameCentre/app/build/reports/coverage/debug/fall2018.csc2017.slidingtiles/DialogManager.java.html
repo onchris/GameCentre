@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DialogManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">DialogManager.java</span></div><h1>DialogManager.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+
+import java.util.List;
+
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
+
+/**
+ * A popup dialog offering sliding tiles board options
+ */
+public class DialogManager implements PopupMenu.OnMenuItemClickListener{
+    /**
+     * the current activity
+     */
+    private final Activity currentActivity;
+    /**
+     * the dialog resource id
+     */
+    private int dialogResourceId;
+    /**
+     * the list of boards from the account
+     */
+    private List&lt;BoardManager&gt; boardList;
+    /**
+     * loader adapter for display
+     */
+    private LoaderAdapter adapter;
+    /**
+     * account of the player
+     */
+    private Account account;
+
+    /**
+     * Constructor for a new dialog manager
+     * @param currentActivity the current activity to use the dialog manager in
+     */
+<span class="fc" id="L53">    public DialogManager(Activity currentActivity){</span>
+<span class="fc" id="L54">        this.currentActivity = currentActivity;</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Create a new dialog popup
+     * @param popupResourceId the resource id
+     * @param view the view
+     * @param onClicker a listener for on click
+     */
+    public void createDialog(int popupResourceId, View view, PopupMenu.OnMenuItemClickListener onClicker){
+<span class="fc" id="L64">        PopupMenu popupMenu = new PopupMenu(currentActivity, view);</span>
+<span class="fc" id="L65">        popupMenu.setOnMenuItemClickListener(onClicker);</span>
+<span class="fc" id="L66">        popupMenu.inflate(popupResourceId);</span>
+<span class="fc" id="L67">        popupMenu.show();</span>
+<span class="fc" id="L68">    }</span>
+
+    /**
+     * Make a board of the selected option
+     * @param dialogPosition the position of the selected board option
+     */
+    public void generateBoard(int dialogPosition){
+<span class="pc bpc" id="L75" title="1 of 4 branches missed.">        switch (dialogPosition){</span>
+            case 1:
+<span class="fc" id="L77">                boardList.add(new BoardManager(newRandomBoard(3,3)));</span>
+<span class="fc" id="L78">                adapter.notifyDataSetChanged();</span>
+<span class="fc" id="L79">                saveBoardsToAccounts(currentActivity, account, boardList);</span>
+<span class="fc" id="L80">                makeCustomToastText(&quot;3x3&quot;, currentActivity);</span>
+<span class="fc" id="L81">                break;</span>
+            case 2:
+<span class="fc" id="L83">                boardList.add(new BoardManager(newRandomBoard(4,4)));</span>
+<span class="fc" id="L84">                adapter.notifyDataSetChanged();</span>
+<span class="fc" id="L85">                saveBoardsToAccounts(currentActivity, account, boardList);</span>
+<span class="fc" id="L86">                makeCustomToastText(&quot;4x4&quot;, currentActivity);</span>
+<span class="fc" id="L87">                break;</span>
+            case 3:
+<span class="fc" id="L89">                boardList.add(new BoardManager(newRandomBoard(3,3)));</span>
+<span class="fc" id="L90">                adapter.notifyDataSetChanged();</span>
+<span class="fc" id="L91">                saveBoardsToAccounts(currentActivity, account, boardList);</span>
+<span class="fc" id="L92">                makeCustomToastText(&quot;5x5&quot;, currentActivity);</span>
+                break;
+        }
+<span class="fc" id="L95">    }</span>
+
+    /**
+     * set the layout of the dialog
+     * @param dialogResourceId the dialog resource id
+     */
+    public void setDialogLayout(int dialogResourceId){
+<span class="fc" id="L102">        this.dialogResourceId = dialogResourceId;</span>
+<span class="fc" id="L103">    }</span>
+
+    /**
+     * set up all the components of this dialog manager
+     * @param boardList the list of boards for the account
+     * @param adapter the loader adapter
+     * @param account the account
+     */
+    public void setupComponents(List&lt;BoardManager&gt; boardList, LoaderAdapter adapter, Account account){
+<span class="fc" id="L112">        this.boardList = boardList;</span>
+<span class="fc" id="L113">        this.adapter = adapter;</span>
+<span class="fc" id="L114">        this.account = account;</span>
+<span class="fc" id="L115">    }</span>
+
+    /**
+     * Checking that all inputs are filled
+     * @param row the input for the number of rows of a new board
+     * @param column the input for the columns of a new board
+     * @return whether the user has filled out all the information needed to make a new board
+     */
+    private boolean checkValidDialogInputs(String row, String column){
+<span class="pc bpc" id="L124" title="1 of 4 branches missed.">        if (row.equals(&quot;&quot;)||column.equals(&quot;&quot;)) {</span>
+<span class="fc" id="L125">            makeCustomToastText(currentActivity.getString(R.string.d_toast_empty_fields), currentActivity);</span>
+<span class="fc" id="L126">            return false;</span>
+<span class="pc bpc" id="L127" title="1 of 4 branches missed.">        } else if (Integer.parseInt(row) &lt; 3 || Integer.parseInt(column) &lt; 3){</span>
+<span class="fc" id="L128">            makeCustomToastText(currentActivity.getString(R.string.d_toast_let_3), currentActivity);</span>
+<span class="fc" id="L129">            return false;</span>
+<span class="pc bpc" id="L130" title="1 of 4 branches missed.">        } else if (Integer.parseInt(row) &gt; 31 || Integer.parseInt(column) &gt; 31){</span>
+<span class="fc" id="L131">            makeCustomToastText(currentActivity.getString(R.string.d_toast_lat_31), currentActivity);</span>
+<span class="fc" id="L132">            return false;</span>
+        }
+<span class="fc" id="L134">        return true;</span>
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+<span class="fc" id="L139">        int dialogPosition = item.getItemId();</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        if(dialogPosition == R.id.item1) {</span>
+<span class="fc" id="L141">            generateBoard(1);</span>
+<span class="fc" id="L142">            return true;</span>
+        }
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        else if(dialogPosition == R.id.item2) {</span>
+<span class="fc" id="L145">            generateBoard(2);</span>
+<span class="fc" id="L146">            return true;</span>
+        }
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        else if(dialogPosition == R.id.item3){</span>
+<span class="fc" id="L149">            generateBoard(3);</span>
+<span class="fc" id="L150">            return true;</span>
+        }
+        else {
+<span class="fc" id="L153">            AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);</span>
+<span class="fc" id="L154">            LayoutInflater inflater = currentActivity.getLayoutInflater();</span>
+<span class="fc" id="L155">            builder.setView(inflater.inflate(dialogResourceId, null));</span>
+<span class="fc" id="L156">            final Dialog dialog = builder.create();</span>
+<span class="fc" id="L157">            dialog.show();</span>
+
+<span class="fc" id="L159">            Button confirmButton = dialog.findViewById(R.id.button_confirm_difficulty);</span>
+<span class="fc" id="L160">            Button loadImageButton = dialog.findViewById(R.id.button_loadImage);</span>
+<span class="fc" id="L161">            final ImageView imagePreview = dialog.findViewById(R.id.iv_preview);</span>
+<span class="fc" id="L162">            final EditText rows = dialog.findViewById(R.id.text_row);</span>
+<span class="fc" id="L163">            final EditText columns = dialog.findViewById(R.id.text_column);</span>
+<span class="fc" id="L164">            final EditText undos = dialog.findViewById(R.id.text_undos);</span>
+<span class="fc" id="L165">            final EditText etUrl = dialog.findViewById(R.id.et_Url);</span>
+<span class="fc" id="L166">            final ImageResultReceiver resultReceiver = new ImageResultReceiver(new Handler(), imagePreview);</span>
+<span class="fc" id="L167">            resultReceiver.setReceiver(resultReceiver);</span>
+
+<span class="fc" id="L169">            loadImageButton.setOnClickListener(new View.OnClickListener() {</span>
+                @Override
+                public void onClick(View v) {
+<span class="nc" id="L172">                    String url = etUrl.getText().toString();</span>
+<span class="nc" id="L173">                    Intent imageIntent = new Intent(v.getContext(), ImageServiceIntent.class);</span>
+<span class="nc" id="L174">                    imageIntent.putExtra(&quot;receiver&quot;, resultReceiver);</span>
+<span class="nc" id="L175">                    imageIntent.putExtra(&quot;url&quot;, url);</span>
+<span class="nc" id="L176">                    imageIntent.putExtra(&quot;rows&quot;, 0);</span>
+<span class="nc" id="L177">                    imageIntent.putExtra(&quot;columns&quot;, 0);</span>
+<span class="nc" id="L178">                    currentActivity.startService(imageIntent);</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">                    if(resultReceiver.contentReceived())</span>
+<span class="nc" id="L180">                        makeCustomToastText(currentActivity.getString(R.string.d_toast_succ_load), currentActivity);</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">                    else if (resultReceiver.invalidImageLink())</span>
+<span class="nc" id="L182">                        makeCustomToastText(currentActivity.getString(R.string.d_toast_invalid_url), currentActivity);</span>
+                    else
+<span class="nc" id="L184">                        makeCustomToastText(currentActivity.getString(R.string.d_toast_racecar), currentActivity);</span>
+<span class="nc" id="L185">                }</span>
+            });
+<span class="fc" id="L187">            confirmButton.setOnClickListener(new View.OnClickListener() {</span>
+                @Override
+                public void onClick(View v) {
+<span class="fc" id="L190">                    CheckBox useImage = dialog.findViewById(R.id.cb_useImage);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">                    int parsedUndo = undos.getText().toString().equals(&quot;&quot;) ? 0 : Integer.parseInt(undos.getText().toString());</span>
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">                    if(useImage.isChecked()){</span>
+<span class="nc bnc" id="L193" title="All 4 branches missed.">                        if(resultReceiver.contentReceived() &amp;&amp; checkValidDialogInputs(rows.getText().toString(),columns.getText().toString() )){</span>
+<span class="nc" id="L194">                            int rowsInt = Integer.parseInt(rows.getText().toString());</span>
+<span class="nc" id="L195">                            int colsInt = Integer.parseInt(columns.getText().toString());</span>
+<span class="nc" id="L196">                            BoardManager bm = new BoardManager(newRandomBoard(rowsInt, colsInt));</span>
+<span class="nc" id="L197">                            bm.setCustomImageSet(resultReceiver.getBitmapList(</span>
+                                    ImageServiceIntent.bitmapSplitter
+<span class="nc" id="L199">                                    (resultReceiver.getUnprocessedBitmap(), rowsInt , colsInt)));</span>
+<span class="nc" id="L200">                            bm.setNumCanUndo(parsedUndo);</span>
+<span class="nc" id="L201">                            bm.setUseImage(true);</span>
+<span class="nc" id="L202">                            boardList.add(bm);</span>
+<span class="nc" id="L203">                            adapter.notifyDataSetChanged();</span>
+<span class="nc" id="L204">                            saveBoardsToAccounts(currentActivity, account, boardList);</span>
+<span class="nc" id="L205">                            makeCustomToastText(rowsInt + &quot;x&quot; +colsInt, currentActivity);</span>
+<span class="nc" id="L206">                            dialog.dismiss();</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">                    } else if (resultReceiver.invalidImageLink()) {</span>
+<span class="nc" id="L208">                        makeCustomToastText(currentActivity.getString(R.string.d_toast_fix_url), currentActivity);</span>
+                    } else {
+<span class="nc" id="L210">                        makeCustomToastText(currentActivity.getString(R.string.d_toast_wait_url), currentActivity);</span>
+                    }
+<span class="fc bfc" id="L212" title="All 2 branches covered.">                    } else if (checkValidDialogInputs(rows.getText().toString(), columns.getText().toString())) {</span>
+<span class="fc" id="L213">                        Board randomBoard = newRandomBoard(Integer.parseInt(rows.getText().toString()),</span>
+<span class="fc" id="L214">                                Integer.parseInt(columns.getText().toString()));</span>
+<span class="fc" id="L215">                        BoardManager bm = new BoardManager(randomBoard);</span>
+<span class="fc" id="L216">                        bm.setNumCanUndo(parsedUndo);</span>
+<span class="fc" id="L217">                        boardList.add(bm);</span>
+<span class="fc" id="L218">                        adapter.notifyDataSetChanged();</span>
+<span class="fc" id="L219">                        saveBoardsToAccounts(currentActivity, account, boardList);</span>
+<span class="fc" id="L220">                        makeCustomToastText(randomBoard.getTilesDimension(), currentActivity);</span>
+<span class="fc" id="L221">                        dialog.dismiss();</span>
+                    }
+<span class="fc" id="L223">                }</span>
+            });
+<span class="fc" id="L225">            return true;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

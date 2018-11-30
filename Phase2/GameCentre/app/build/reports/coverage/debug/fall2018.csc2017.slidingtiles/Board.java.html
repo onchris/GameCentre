@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Board.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">Board.java</span></div><h1>Board.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+
+import java.util.Observable;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * The sliding tiles board.
+ */
+public class Board extends Observable implements Serializable, Iterable&lt;Tile&gt; {
+
+    /**
+     * The number of rows.
+     */
+    private int numRows;
+
+    /**
+     * The number of columns.
+     */
+    private int numColumns;
+
+    /**
+     * The tiles on the board in row-major order.
+     */
+    private Tile[][] tiles;
+
+    /**
+     * A new board of tiles in row-major order.
+     * Precondition: len(tiles) == NUM_ROWS * NUM_COLS
+     *
+     * @param tiles the tiles for the board
+     */
+<span class="fc" id="L35">    public Board(List&lt;Tile&gt; tiles) {</span>
+<span class="fc" id="L36">        setNumRows(4);</span>
+<span class="fc" id="L37">        setNumColumns(4);</span>
+<span class="fc" id="L38">        this.tiles = new Tile[4][4];</span>
+<span class="fc" id="L39">        Iterator&lt;Tile&gt; iter = tiles.iterator();</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (int row = 0; row != 4; row++) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            for (int col = 0; col != 4; col++) {</span>
+<span class="fc" id="L42">                this.tiles[row][col] = iter.next();</span>
+            }
+        }
+<span class="fc" id="L45">    }</span>
+    /**
+     * A new board of tiles in row-major order.
+     * Precondition: len(tiles) == NUM_ROWS * NUM_COLS
+     *
+     * @param tiles the tiles for the board
+     * @param rows the number of rows of the board
+     * @param columns the number of columns of the board
+     */
+<span class="fc" id="L54">    public Board(List&lt;Tile&gt; tiles, int rows, int columns){</span>
+<span class="fc" id="L55">        setNumRows(rows);</span>
+<span class="fc" id="L56">        setNumColumns(columns);</span>
+<span class="fc" id="L57">        this.tiles = new Tile[rows][columns];</span>
+<span class="fc" id="L58">        Iterator&lt;Tile&gt; iter = tiles.iterator();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (int row = 0; row != rows; row++) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            for (int col = 0; col != columns; col++) {</span>
+<span class="fc" id="L61">                this.tiles[row][col] = iter.next();</span>
+            }
+        }
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * Return the number of tiles on the board.
+     * @return the number of tiles on the board
+     */
+    int numTiles() {
+<span class="fc" id="L71">        return tiles.length * tiles[0].length;</span>
+    }
+
+    /**
+     * Return the tile at (row, col)
+     *
+     * @param row the tile row
+     * @param col the tile column
+     * @return the tile at (row, col)
+     */
+    Tile getTile(int row, int col) {
+<span class="fc" id="L82">        return tiles[row][col];</span>
+    }
+
+    /**
+     * Swap the tiles at (row1, col1) and (row2, col2)
+     *
+     * @param row1 the first tile row
+     * @param col1 the first tile col
+     * @param row2 the second tile row
+     * @param col2 the second tile col
+     */
+    void swapTiles(int row1, int col1, int row2, int col2) {
+<span class="fc" id="L94">        Tile firstTile = getTile(row1, col1);</span>
+<span class="fc" id="L95">        Tile secondTile = getTile(row2, col2);</span>
+<span class="fc" id="L96">        tiles[row1][col1] = secondTile;</span>
+<span class="fc" id="L97">        tiles[row2][col2] = firstTile;</span>
+<span class="fc" id="L98">        setChanged();</span>
+<span class="fc" id="L99">        notifyObservers();</span>
+<span class="fc" id="L100">    }</span>
+
+    /**
+     * toString method that returns tiles of this board in row-major order
+     * @return String of tile orders
+     */
+    @Override
+    public String toString() {
+<span class="nc" id="L108">        String tileOrder = &quot;&quot;;</span>
+<span class="nc" id="L109">        Iterator tileIterator = this.iterator();</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        while(tileIterator.hasNext()){</span>
+<span class="nc" id="L111">            tileOrder += tileIterator.next();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if(tileIterator.hasNext())</span>
+<span class="nc" id="L113">                tileOrder += &quot;, &quot;;</span>
+        }
+<span class="nc" id="L115">        return &quot;Board{&quot; +</span>
+                &quot;tiles=&quot; + tileOrder +
+                '}';
+    }
+
+    /**
+     * Iterator method that allows iteration through tiles in row-major order
+     * @return A tile iterator
+     */
+    @Override
+    public Iterator&lt;Tile&gt; iterator(){
+<span class="fc" id="L126">        return new Iterator&lt;Tile&gt;() {</span>
+<span class="fc" id="L127">            private int jIndex = 0, kIndex = 0;</span>
+<span class="fc" id="L128">            private int jLength = tiles.length, kLength = tiles[0].length;</span>
+            @Override
+            public boolean hasNext() {
+<span class="nc bnc" id="L131" title="All 2 branches missed.">                return (jLength + kLength - 1) &gt; (jIndex + kIndex);</span>
+            }
+
+            @Override
+            public Tile next() {
+<span class="fc bfc" id="L136" title="All 2 branches covered.">                if(kIndex &gt;= kLength)</span>
+                {
+<span class="fc" id="L138">                    kIndex = 0;</span>
+<span class="fc" id="L139">                    jIndex++;</span>
+                }
+<span class="fc" id="L141">                return tiles[jIndex][kIndex++];</span>
+            }
+        };
+    }
+
+    /**
+     * Return the dimensions of tiles on the board.
+     * @return the dimensions of tiles on the board as String
+     */
+    public String getTilesDimension(){
+<span class="fc" id="L151">        String returnString = tiles.length + &quot;x&quot; + tiles[0].length;</span>
+<span class="fc" id="L152">        return returnString;</span>
+    }
+
+    /**
+     * Get the number of rows.
+     */
+    public int getNumRows() {
+<span class="fc" id="L159">        return numRows;</span>
+    }
+
+    /**
+     * Set the number of rows.
+     */
+    public void setNumRows(int numRows) {
+<span class="fc" id="L166">        this.numRows = numRows;</span>
+<span class="fc" id="L167">    }</span>
+
+    /**
+     * Get the number of columns.
+     */
+    public int getNumColumns() {
+<span class="fc" id="L173">        return numColumns;</span>
+    }
+
+    /**
+     * Set the number of columns.
+     */
+    public void setNumColumns(int numColumns) {
+<span class="fc" id="L180">        this.numColumns = numColumns;</span>
+<span class="fc" id="L181">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

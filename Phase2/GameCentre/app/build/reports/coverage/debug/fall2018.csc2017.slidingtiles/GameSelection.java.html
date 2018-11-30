@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameSelection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">GameSelection.java</span></div><h1>GameSelection.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+//import fall2018.csc2017.slidingtiles.ObstacleDodger.TiltGameActivity;
+import fall2018.csc2017.slidingtiles.ObstacleDodger.ObGameActivity;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltimateTTTGameActivity;
+
+import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
+import static fall2018.csc2017.slidingtiles.UtilityManager.alertDialogBuilder;
+import static fall2018.csc2017.slidingtiles.UtilityManager.loadAccountList;
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
+
+/**
+ * The game selection screen where user chooses a game to play
+ */
+<span class="fc" id="L47">public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {</span>
+    /**
+     * TextView for showing current user's username
+     */
+    private TextView currentUserTextView;
+    /**
+     * The current user's username
+     */
+    private String currentUsername;
+    /**
+     * Current user's board list
+     */
+    public List&lt;BoardManager&gt; boardList;
+    /**
+     * Current user's account
+     */
+    private Account currentAccount;
+    /**
+     * State of whether user is a guest.
+     */
+<span class="fc" id="L67">    public static boolean IS_GUEST = false;</span>
+    /**
+     * State of whether user is at loading screen.
+     */
+<span class="fc" id="L71">    private boolean atLoadGameScreen = false;</span>
+    /**
+     * Custom scroll view for displaying list of games
+     */
+    private CustomScrollView gameListDisplay;
+    /**
+     * Custom adapter for displaying list of games by hooking up to CustomScrollView
+     */
+    private LoaderAdapter loaderAdapter;
+    /**
+     * The account manager
+     */
+    private AccountManager accountManager;
+    /**
+     * The dialog manager
+     */
+    private DialogManager dialogManager;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="fc" id="L91">        super.onCreate(savedInstanceState);</span>
+<span class="fc" id="L92">        setContentView(R.layout.activity_games);</span>
+<span class="fc" id="L93">        currentUserTextView = findViewById(R.id.text_loggedas);</span>
+<span class="fc bfc" id="L94" title="All 4 branches covered.">        if (getIntent().getStringExtra(&quot;currentUser&quot;) != null &amp;&amp; !getIntent().getStringExtra(&quot;currentUser&quot;).equals(&quot;-1&quot;)) {</span>
+<span class="fc" id="L95">            accountManager = new AccountManager(loadAccountList(this));</span>
+<span class="fc" id="L96">            currentUsername = getIntent().getStringExtra(&quot;currentUser&quot;);</span>
+<span class="fc" id="L97">            currentUserTextView.setText(currentUsername);</span>
+<span class="fc" id="L98">            currentAccount = accountManager.getAccountFromUsername(currentUsername);</span>
+        } else {
+<span class="fc" id="L100">            accountManager = new AccountManager(new ArrayList&lt;Account&gt;());</span>
+<span class="fc" id="L101">            currentUserTextView.setText(getString(R.string.ga_guest_user));</span>
+        }
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        IS_GUEST = currentUsername == null;</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        boardList = accountManager.getCurrentAccountBoardList(currentAccount, accountManager == null);</span>
+<span class="fc" id="L105">        dialogManager = new DialogManager(this);</span>
+<span class="fc" id="L106">    }</span>
+
+    /**
+     * On click function for the new game button
+     *
+     * @param v the current view(Called by application)
+     */
+    public void newGameButtonOnClick(View v) {
+<span class="fc" id="L114">        dialogManager.createDialog(R.menu.menu_sliding_difficulty, v, this);</span>
+<span class="fc" id="L115">    }</span>
+
+    /**
+     * Handles the function when a menu item is chosen
+     *
+     * @param menuItem the menu item that user clicks on
+     * @return whether the user successfully chose an item in the menu
+     */
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+<span class="fc" id="L125">        dialogManager.setDialogLayout(R.layout.dialog_slidingdifficulty);</span>
+<span class="fc" id="L126">        dialogManager.setupComponents(boardList, loaderAdapter, currentAccount);</span>
+<span class="fc" id="L127">        return dialogManager.onMenuItemClick(menuItem);</span>
+    }
+
+
+    /**
+     * On click function for SlidingTile game selection button
+     *
+     * @param v the current view(Called by application)
+     */
+    public void slidingGameButtonOnClick(View v) {
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (IS_GUEST) {</span>
+<span class="fc" id="L138">            saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,</span>
+<span class="fc" id="L139">                    new BoardManager(newRandomBoard(4, 4)), this);</span>
+<span class="fc" id="L140">            Intent tmp = new Intent(this, GameActivity.class);</span>
+<span class="fc" id="L141">            this.startActivity(tmp);</span>
+<span class="fc" id="L142">        } else {</span>
+<span class="fc" id="L143">            setContentView(R.layout.activity_loadedgamelist);</span>
+<span class="fc" id="L144">            gameListDisplay = findViewById(R.id.scrollable_loadablegames);</span>
+<span class="fc" id="L145">            loaderAdapter = new LoaderAdapter((ArrayList&lt;BoardManager&gt;) boardList, this);</span>
+<span class="fc" id="L146">            loaderAdapter.account = currentAccount;</span>
+
+<span class="fc" id="L148">            gameListDisplay.setAdapter(loaderAdapter);</span>
+<span class="fc" id="L149">            atLoadGameScreen = true;</span>
+        }
+<span class="fc" id="L151">    }</span>
+
+    /**
+     * On click function for Ultimate Tic Tac Toe game selection button
+     *
+     * @param v the current view(Called by application)
+     */
+    public void ultTTTGameButtonOnClick(View v) {
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (IS_GUEST) {</span>
+//            saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,new BoardManager(newRandomBoard(4,4)), this);
+<span class="fc" id="L161">            Intent tmp = new Intent(this, UltimateTTTGameActivity.class);</span>
+<span class="fc" id="L162">            startActivity(tmp);</span>
+<span class="fc" id="L163">        } else {</span>
+<span class="fc" id="L164">            Intent tmp = new Intent(this, UltimateTTTGameActivity.class);</span>
+//            tmp.putExtra(&quot;currentUsername&quot;, currentUsername);
+<span class="fc" id="L166">            tmp.putExtra(&quot;account&quot;, currentAccount);</span>
+//            if (currentAccount.getUltimateTTTList().size() != 0) {
+//                tmp.putExtra(&quot;ultTTTBoardManagers&quot;, (Serializable) currentAccount.getUltimateTTTList());
+//                tmp.putExtra(&quot;ultTTTBoardNum&quot;, currentAccount.getUltimateTTTList().size() - 1);
+//            }
+<span class="fc" id="L171">            startActivity(tmp);</span>
+//            setContentView(R.layout.activity_loadedgamelist);
+//            gameListDisplay = findViewById(R.id.scrollable_loadablegames);
+//            loaderAdapter = new LoaderAdapter((ArrayList&lt;BoardManager&gt;) boardList, this);
+//            loaderAdapter.account = currentAccount;
+//
+//            gameListDisplay.setAdapter(loaderAdapter);
+//            atLoadGameScreen = true;
+        }
+<span class="fc" id="L180">    }</span>
+
+    /**
+     * On click function for Obstacle Dodger game selection button
+     *
+     * @param v the current view(Called by application)
+     */
+    public void obDodgerGameButtonOnClick(View v) {
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (IS_GUEST) {</span>
+<span class="fc" id="L189">            Intent tmp = new Intent(this, ObGameActivity.class);</span>
+<span class="fc" id="L190">            startActivity(tmp);</span>
+<span class="fc" id="L191">        } else {</span>
+<span class="fc" id="L192">            Intent tmp = new Intent(this, ObGameActivity.class);</span>
+<span class="fc" id="L193">            tmp.putExtra(&quot;account&quot;, currentAccount);</span>
+<span class="fc" id="L194">            startActivity(tmp);</span>
+        }
+<span class="fc" id="L196">    }</span>
+
+
+    /**
+     * On click function for SlidingTile game selection button
+     *
+     * @param v the current view(Called by application)
+     */
+    public void resetOnClick(View v) {
+<span class="fc" id="L205">        final Context ctx = this;</span>
+<span class="fc" id="L206">        AlertDialog ad = alertDialogBuilder(null, &quot;There is no going back, son&quot;, ctx);</span>
+<span class="fc" id="L207">        ad.setButton(AlertDialog.BUTTON_POSITIVE, &quot;Yes&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+<span class="fc" id="L210">                boardList.clear();</span>
+<span class="fc" id="L211">                loaderAdapter.notifyDataSetChanged();</span>
+<span class="fc" id="L212">                saveBoardsToAccounts(ctx, currentAccount, boardList);</span>
+<span class="fc" id="L213">            }</span>
+        });
+<span class="fc" id="L215">        ad.setButton(AlertDialog.BUTTON_NEGATIVE, &quot;No&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+<span class="fc" id="L218">                dialogInterface.dismiss();</span>
+<span class="fc" id="L219">            }</span>
+        });
+<span class="fc" id="L221">        TextView titleText = new TextView(this);</span>
+<span class="fc" id="L222">        titleText.setText(getString(R.string.gs_confirm_deletion));</span>
+<span class="fc" id="L223">        titleText.setPadding(10, 10, 10, 10);</span>
+<span class="fc" id="L224">        titleText.setTextSize(30);</span>
+<span class="fc" id="L225">        titleText.setGravity(Gravity.CENTER);</span>
+<span class="fc" id="L226">        ad.setCustomTitle(titleText);</span>
+<span class="fc" id="L227">        ad.show();</span>
+<span class="fc" id="L228">    }</span>
+
+    /**
+     * Viewing scoreboard
+     *
+     * @param v the view, called by activity
+     */
+    public void scoreboardOnClick(View v) {
+<span class="fc" id="L236">        Intent scoreboardIntent = new Intent(this, GeneralScoreboard.class);</span>
+<span class="fc" id="L237">        scoreboardIntent.putExtra(&quot;username&quot;, currentUsername);</span>
+<span class="fc" id="L238">        startActivity(scoreboardIntent);</span>
+<span class="fc" id="L239">    }</span>
+
+    /**
+     * Handles the functionality of the phone's back button
+     * If at loading screen, back button would send user to the Game Selection screen
+     * instead of login screen, vice versa.
+     */
+    @Override
+    public void onBackPressed() {
+<span class="pc bpc" id="L248" title="1 of 2 branches missed.">        if (atLoadGameScreen) {</span>
+<span class="fc" id="L249">            atLoadGameScreen = false;</span>
+<span class="fc" id="L250">            setContentView(R.layout.activity_games);</span>
+<span class="fc" id="L251">            currentUserTextView = findViewById(R.id.text_loggedas);</span>
+<span class="fc" id="L252">            currentUserTextView.setText(currentUsername);</span>
+        } else {
+<span class="nc" id="L254">            super.onBackPressed();</span>
+        }
+<span class="fc" id="L256">    }</span>
+
+    @Override
+    public void onRestart() {
+<span class="fc" id="L260">        super.onRestart();</span>
+<span class="fc" id="L261">        finish();</span>
+<span class="fc" id="L262">        startActivity(getIntent());</span>
+<span class="fc" id="L263">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScoreManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">ScoreManager.java</span></div><h1>ScoreManager.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.content.Context;
+import android.util.Pair;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A manager for the lists of scores to use in an adapter, orders user scores and game-wide
+ * scores and prep lists of scores for display
+ */
+abstract class ScoreManager {
+    /**
+     * the current account holder
+     */
+    protected Account currentAccount;
+    /**
+     * all accounts with scores
+     */
+    protected List&lt;Account&gt; accountsList;
+    /**
+     * list of the user's scores
+     */
+<span class="fc" id="L24">    protected List&lt;Integer&gt; userScores = new ArrayList&lt;&gt;();</span>
+    /**
+     * list of user's own scores for display
+     */
+<span class="fc" id="L28">    protected List&lt;String&gt; displayUserScoresList = new ArrayList&lt;&gt;();</span>
+    /**
+     * list of game-wide scores
+     */
+<span class="fc" id="L32">    protected List&lt;Pair&lt;Integer, String&gt;&gt; gameScores = new ArrayList&lt;&gt;();</span>
+    /**
+     * list of game-wide scores for display
+     */
+<span class="fc" id="L36">    protected List&lt;String&gt; displayGameScoresList = new ArrayList&lt;&gt;();</span>
+    /**
+     * A check if the player is a guest
+     */
+    protected boolean IS_GUEST;
+    /**
+     * the score of the player
+     */
+    protected Integer score;
+
+    /**
+     * Gets the current account of current user
+     */
+    public Account getCurrentAccount() {
+<span class="fc" id="L50">        return currentAccount;</span>
+    }
+
+    /**
+     * Gets the User's score list for display
+     * @return List&lt;String&gt; of the user's scores
+     */
+    public List&lt;String&gt; getDisplayUserScoresList() {
+<span class="fc" id="L58">        return displayUserScoresList;</span>
+    }
+
+    /**
+     * Gets the scores of everyone in the game
+     * @return List&lt;String&gt; of the user's scores for everyone in the game
+     */
+    public List&lt;String&gt; getDisplayGameScoresList() {
+<span class="fc" id="L66">        return displayGameScoresList;</span>
+    }
+
+    /**
+     * Sorts the lists of scores.
+     * @param username username of the account
+     * @param ctx context of the activity
+     * @param score score for the last game
+     */
+<span class="fc" id="L75">    public ScoreManager(String username, Context ctx, Integer score){</span>
+<span class="fc" id="L76">        this.score = score;</span>
+<span class="fc" id="L77">        accountsList = UtilityManager.loadAccountList(ctx);</span>
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if(!username.equals(&quot;-1&quot;)) {</span>
+<span class="fc" id="L80">            IS_GUEST = false;</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            for(Account account: accountsList) {</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">                if(account.getUsername().equals(username)) {</span>
+<span class="fc" id="L83">                    currentAccount = account;</span>
+<span class="fc" id="L84">                    break;</span>
+                }
+<span class="fc" id="L86">            }</span>
+        } else {
+<span class="fc" id="L88">            IS_GUEST = true;</span>
+        }
+<span class="fc" id="L90">        buildGameScoresList();</span>
+<span class="fc" id="L91">        buildDisplayGameScoresList();</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * A method to populate and sort the GameScoresList with scores of all users playing the game.
+     */
+    abstract void buildGameScoresList();
+
+    /**
+     * A method to prepare the GameScoresList into a list of String.
+     */
+    abstract void buildDisplayGameScoresList();
+
+    /**
+     * A method to perpare the UserScoresList int a list of String.
+     */
+    abstract void buildDisplayUserScoresList();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UtilityManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">UtilityManager.java</span></div><h1>UtilityManager.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.util.Log;
+import android.view.Gravity;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
+
+<span class="nc" id="L21">public final class UtilityManager {</span>
+    /**
+     * A temporary save file.
+     */
+    public static final String TEMP_SAVE_FILENAME = &quot;save_file_tmp.ser&quot;;
+    /**
+     * Account data storage file
+     */
+    public static final String ACCOUNTS_FILENAME = &quot;account_file.ser&quot;;
+
+    /**
+     * Static function for loading a list of accounts
+     *
+     * @param ctx the current context
+     * @return list of accounts
+     */
+    public static List&lt;Account&gt; loadAccountList(Context ctx) {
+<span class="fc" id="L38">        List&lt;Account&gt; returnList = new ArrayList&lt;&gt;();</span>
+        try {
+<span class="fc" id="L40">            InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">            if (inputStream != null) {</span>
+<span class="fc" id="L42">                ObjectInputStream input = new ObjectInputStream(inputStream);</span>
+<span class="fc" id="L43">                returnList = (List&lt;Account&gt;) input.readObject();</span>
+<span class="fc" id="L44">                inputStream.close();</span>
+<span class="fc" id="L45">                return returnList;</span>
+            }
+<span class="nc" id="L47">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L48">            Log.e(&quot;UM: loadAccountList&quot;, &quot;File not found: &quot; + e.toString());</span>
+<span class="nc" id="L49">            ObjectOutputStream os = new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));</span>
+<span class="nc" id="L50">            os.writeObject(new ArrayList&lt;Account&gt;());</span>
+<span class="nc" id="L51">            os.close();</span>
+<span class="nc" id="L52">        } catch (IOException e) {</span>
+<span class="nc" id="L53">            Log.e(&quot;UM: loadAccountList&quot;, &quot;Can not read file: &quot; + e.toString());</span>
+<span class="nc" id="L54">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L55">            Log.e(&quot;UM: loadAccountList&quot;, &quot;File contained unexpected data type: &quot; + e.toString());</span>
+        } finally {
+<span class="pc" id="L57">            return returnList;</span>
+        }
+    }
+
+    /**
+     * Static function for saving a file for BoardManager
+     *
+     * @param fileName directory and name of the file
+     * @param bm       the BoardManager to be saved
+     * @param ctx      the current context
+     */
+    public static void saveBoardManagerToFile(String fileName, BoardManager bm, Context ctx) {
+        try {
+<span class="fc" id="L70">            ObjectOutputStream outputStream = new ObjectOutputStream(ctx.openFileOutput(fileName, MODE_PRIVATE));</span>
+<span class="fc" id="L71">            outputStream.writeObject(bm);</span>
+<span class="fc" id="L72">            outputStream.close();</span>
+<span class="nc" id="L73">        } catch (IOException e) {</span>
+<span class="nc" id="L74">            Log.e(&quot;UM: saveBoardManagerToFile.Exception&quot;, &quot;File write failed: &quot; + e.toString());</span>
+<span class="fc" id="L75">        }</span>
+<span class="fc" id="L76">    }</span>
+
+    /**
+     * Static function for creating custom Toast messages
+     *
+     * @param displayText, the string to be displayed
+     * @param ctx          the current context
+     */
+    public static void makeCustomToastText(String displayText, Context ctx) {
+<span class="pc bpc" id="L85" title="2 of 4 branches missed.">        if(ctx != null &amp;&amp; ctx.getApplicationContext() != null)</span>
+<span class="fc" id="L86">            Toast.makeText(ctx, displayText, Toast.LENGTH_SHORT).show();</span>
+<span class="fc" id="L87">    }</span>
+
+    /**
+     * Static function for saving boards to accounts
+     *
+     * @param ctx,      the current context
+     * @param account   the current account to be saved in
+     * @param boardList the list of boards that it will save
+     */
+    public static void saveBoardsToAccounts(Context ctx, Account account, List&lt;BoardManager&gt; boardList) {
+<span class="fc" id="L97">        List&lt;Account&gt; accountList = new ArrayList&lt;&gt;();</span>
+        try {
+<span class="fc" id="L99">            InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">            if (inputStream != null) {</span>
+<span class="fc" id="L101">                ObjectInputStream input = new ObjectInputStream(inputStream);</span>
+<span class="fc" id="L102">                accountList = (List&lt;Account&gt;) input.readObject();</span>
+<span class="fc" id="L103">                inputStream.close();</span>
+            }
+<span class="fc bfc" id="L105" title="All 2 branches covered.">            for (Account acc : accountList) {</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">                if (acc.equals(account)) {</span>
+<span class="fc" id="L107">                    acc.setBoardList((ArrayList&lt;BoardManager&gt;) boardList);</span>
+                }
+<span class="fc" id="L109">            }</span>
+<span class="fc" id="L110">            ObjectOutputStream outputStream =</span>
+<span class="fc" id="L111">                    new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));</span>
+<span class="fc" id="L112">            outputStream.writeObject(accountList);</span>
+<span class="fc" id="L113">            outputStream.close();</span>
+<span class="nc" id="L114">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L115">            Log.e(&quot;UM: saveBoardsToAccounts&quot;, &quot;File not found: &quot; + e.toString());</span>
+<span class="nc" id="L116">        } catch (IOException e) {</span>
+<span class="nc" id="L117">            Log.e(&quot;UM: saveBoardsToAccounts&quot;, &quot;Can not read file: &quot; + e.toString());</span>
+<span class="nc" id="L118">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L119">            Log.e(&quot;UM: saveBoardsToAccounts&quot;, &quot;File contained unexpected data type: &quot; + e.toString());</span>
+<span class="pc" id="L120">        }</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * Static function for saving scores to accounts
+     *
+     * @param ctx,    the current context
+     * @param account the current account to be saved in
+     * @param score   the score of the game that will be save
+     */
+    public static void saveScoresToAccounts(Context ctx, Account account, int score) {
+<span class="fc" id="L131">        List&lt;Account&gt; accountList = new ArrayList&lt;Account&gt;();</span>
+        try {
+<span class="fc" id="L133">            InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">            if (inputStream != null) {</span>
+<span class="fc" id="L135">                ObjectInputStream input = new ObjectInputStream(inputStream);</span>
+<span class="fc" id="L136">                accountList = (List&lt;Account&gt;) input.readObject();</span>
+<span class="fc" id="L137">                inputStream.close();</span>
+            }
+<span class="fc bfc" id="L139" title="All 2 branches covered.">            for (Account acc : accountList) {</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">                if (acc.equals(account)) {</span>
+<span class="fc" id="L141">                    acc.addToSlidingGameScores(score);</span>
+                }
+<span class="fc" id="L143">            }</span>
+<span class="fc" id="L144">            ObjectOutputStream outputStream =</span>
+<span class="fc" id="L145">                    new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));</span>
+<span class="fc" id="L146">            outputStream.writeObject(accountList);</span>
+<span class="fc" id="L147">            outputStream.close();</span>
+<span class="nc" id="L148">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L149">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;File not found: &quot; + e.toString());</span>
+<span class="nc" id="L150">        } catch (IOException e) {</span>
+<span class="nc" id="L151">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;Can not read file: &quot; + e.toString());</span>
+<span class="nc" id="L152">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L153">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;File contained unexpected data type: &quot; + e.toString());</span>
+<span class="pc" id="L154">        }</span>
+<span class="fc" id="L155">    }</span>
+
+    /**
+     * save function to save a new ultimate ttt game to the account
+     *
+     * @param ctx        the context
+     * @param account    the account of the user
+     * @param ultTTTSave the modified list of ultttt games
+     */
+    public static void saveUltTTTBoardManager(Context ctx, Account account, int ultTTTSave) {
+<span class="nc" id="L165">        List&lt;Account&gt; accountList = new ArrayList&lt;Account&gt;();</span>
+        try {
+<span class="nc" id="L167">            InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">            if (inputStream != null) {</span>
+<span class="nc" id="L169">                ObjectInputStream input = new ObjectInputStream(inputStream);</span>
+<span class="nc" id="L170">                accountList = (List&lt;Account&gt;) input.readObject();</span>
+<span class="nc" id="L171">                inputStream.close();</span>
+            }
+<span class="nc bnc" id="L173" title="All 2 branches missed.">            for (Account acc : accountList) {</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">                if (acc.equals(account)) {</span>
+<span class="nc" id="L175">                    acc.setUltimateTTTSave(ultTTTSave);</span>
+                }
+<span class="nc" id="L177">            }</span>
+<span class="nc" id="L178">            ObjectOutputStream outputStream =</span>
+<span class="nc" id="L179">                    new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));</span>
+<span class="nc" id="L180">            outputStream.writeObject(accountList);</span>
+<span class="nc" id="L181">            outputStream.close();</span>
+<span class="nc" id="L182">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L183">            Log.e(&quot;UM: saveUltTTTBoardsToAccounts&quot;, &quot;File not found: &quot; + e.toString());</span>
+<span class="nc" id="L184">        } catch (IOException e) {</span>
+<span class="nc" id="L185">            Log.e(&quot;UM: saveUltTTTBoardsToAccounts&quot;, &quot;Can not read file: &quot; + e.toString());</span>
+<span class="nc" id="L186">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L187">            Log.e(&quot;UM: saveUltTTTBoardsToAccounts&quot;, &quot;File contained unexpected data type: &quot; + e.toString());</span>
+<span class="nc" id="L188">        }</span>
+<span class="nc" id="L189">    }</span>
+
+    /**
+     * Generates a dialog based on parameters
+     *
+     * @param title   the title the dialog will have
+     * @param message the message of the dialog will have
+     * @param ctx     the context of which the dialog will display on
+     * @return An AlertDialog where it assembles all information provided
+     */
+    public static AlertDialog alertDialogBuilder(String title, String message, Context ctx) {
+<span class="fc" id="L200">        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);</span>
+<span class="fc" id="L201">        AlertDialog ad = builder.create();</span>
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">        if (title != null) {</span>
+<span class="nc" id="L203">            TextView titleText = new TextView(ctx);</span>
+<span class="nc" id="L204">            titleText.setText(title);</span>
+<span class="nc" id="L205">            titleText.setPadding(10, 10, 10, 10);</span>
+<span class="nc" id="L206">            titleText.setTextSize(30);</span>
+<span class="nc" id="L207">            titleText.setGravity(Gravity.CENTER);</span>
+<span class="nc" id="L208">            ad.setCustomTitle(titleText);</span>
+<span class="nc" id="L209">        } else</span>
+<span class="fc" id="L210">            ad.setTitle(&quot; &quot;);</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">        if (message != null) {</span>
+<span class="fc" id="L212">            ad.setMessage(message);</span>
+        } else
+<span class="nc" id="L214">            ad.setMessage(&quot; &quot;);</span>
+<span class="fc" id="L215">        return ad;</span>
+    }
+
+    /**
+     * Generates a new random board with sizes based on parameters passed in
+     *
+     * @param rows    the new game's row properties
+     * @param columns the new game's columns properties
+     * @return A random board with specified dimensions
+     */
+    public static Board newRandomBoard(int rows, int columns) {
+<span class="fc" id="L226">        List&lt;Tile&gt; tiles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L227">        int numTiles = rows * columns;</span>
+<span class="fc" id="L228">        int checkSolvable = 0;</span>
+<span class="fc" id="L229">        int count = 0;</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        for (int tileNum = 0; tileNum != numTiles; tileNum++) {</span>
+<span class="fc" id="L231">            tiles.add(new Tile(tileNum));</span>
+        }
+<span class="fc" id="L233">        Collections.shuffle(tiles);</span>
+        while (true) {
+<span class="fc bfc" id="L235" title="All 2 branches covered.">            for (int tileNum = 0; tileNum &lt; numTiles; tileNum++) {</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">                if (tiles.get(tileNum).getId() == numTiles) {</span>
+<span class="fc" id="L237">                    continue;</span>
+                }
+<span class="fc bfc" id="L239" title="All 2 branches covered.">                for (int x = tileNum + 1; x &lt; numTiles; x++) {</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">                    if (tiles.get(tileNum).getId() == numTiles) {</span>
+<span class="nc" id="L241">                        continue;</span>
+                    }
+<span class="fc bfc" id="L243" title="All 2 branches covered.">                    if (tiles.get(tileNum).getId() &gt; tiles.get(x).getId()) {</span>
+<span class="fc" id="L244">                        count++;</span>
+                    }
+                }
+<span class="fc" id="L247">                checkSolvable += count;</span>
+<span class="fc" id="L248">                count = 0;</span>
+            }
+<span class="fc bfc" id="L250" title="All 2 branches covered.">            if (checkSolvable % 2 == 0) {</span>
+<span class="fc" id="L251">                break;</span>
+            } else {
+<span class="fc" id="L253">                Collections.shuffle(tiles);</span>
+<span class="fc" id="L254">                checkSolvable = 0;</span>
+            }
+        }
+<span class="fc" id="L257">        Board b = new Board(tiles, rows, columns);</span>
+<span class="fc" id="L258">        return b;</span>
+    }
+
+    /**
+     * Static function for saving scores to accounts
+     *
+     * @param ctx,    the current context
+     * @param account the current account to be saved in
+     * @param score   the score of the game that will be save
+     */
+    public static void saveObDodgerScoresToAccounts(Context ctx, Account account, int score) {
+<span class="fc" id="L269">        List&lt;Account&gt; accountList = new ArrayList&lt;&gt;();</span>
+        try {
+<span class="fc" id="L271">            InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);</span>
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">            if (inputStream != null) {</span>
+<span class="fc" id="L273">                ObjectInputStream input = new ObjectInputStream(inputStream);</span>
+<span class="fc" id="L274">                accountList = (List&lt;Account&gt;) input.readObject();</span>
+<span class="fc" id="L275">                inputStream.close();</span>
+            }
+<span class="fc bfc" id="L277" title="All 2 branches covered.">            for (Account acc : accountList) {</span>
+<span class="pc bpc" id="L278" title="1 of 2 branches missed.">                if (acc.equals(account)) {</span>
+<span class="fc" id="L279">                    acc.addToObDodgeGameScores(score);</span>
+                }
+<span class="fc" id="L281">            }</span>
+<span class="fc" id="L282">            ObjectOutputStream outputStream =</span>
+<span class="fc" id="L283">                    new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));</span>
+<span class="fc" id="L284">            outputStream.writeObject(accountList);</span>
+<span class="fc" id="L285">            outputStream.close();</span>
+<span class="nc" id="L286">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L287">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;File not found: &quot; + e.toString());</span>
+<span class="nc" id="L288">        } catch (IOException e) {</span>
+<span class="nc" id="L289">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;Can not read file: &quot; + e.toString());</span>
+<span class="nc" id="L290">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L291">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;File contained unexpected data type: &quot; + e.toString());</span>
+<span class="pc" id="L292">        }</span>
+<span class="fc" id="L293">    }</span>
+
+    /**
+     * Static function for saving scores to accounts
+     *
+     * @param ctx,    the current context
+     * @param account the current account to be saved in
+     * @param won   if the game was won
+     */
+    public static void saveUltTTTWinUpdate(Context ctx, Account account, Boolean won) {
+<span class="nc" id="L303">        List&lt;Account&gt; accountList = new ArrayList&lt;Account&gt;();</span>
+        try {
+<span class="nc" id="L305">            InputStream inputStream = ctx.openFileInput(ACCOUNTS_FILENAME);</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">            if (inputStream != null) {</span>
+<span class="nc" id="L307">                ObjectInputStream input = new ObjectInputStream(inputStream);</span>
+<span class="nc" id="L308">                accountList = (List&lt;Account&gt;) input.readObject();</span>
+<span class="nc" id="L309">                inputStream.close();</span>
+            }
+<span class="nc bnc" id="L311" title="All 2 branches missed.">            for (Account acc : accountList) {</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">                if (acc.equals(account)) {</span>
+<span class="nc" id="L313">                    acc.ultimateTTTWinUpdate(won);</span>
+                }
+<span class="nc" id="L315">            }</span>
+<span class="nc" id="L316">            ObjectOutputStream outputStream =</span>
+<span class="nc" id="L317">                    new ObjectOutputStream(ctx.openFileOutput(ACCOUNTS_FILENAME, MODE_PRIVATE));</span>
+<span class="nc" id="L318">            outputStream.writeObject(accountList);</span>
+<span class="nc" id="L319">            outputStream.close();</span>
+<span class="nc" id="L320">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L321">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;File not found: &quot; + e.toString());</span>
+<span class="nc" id="L322">        } catch (IOException e) {</span>
+<span class="nc" id="L323">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;Can not read file: &quot; + e.toString());</span>
+<span class="nc" id="L324">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L325">            Log.e(&quot;UM: saveScoresToAccounts&quot;, &quot;File contained unexpected data type: &quot; + e.toString());</span>
+<span class="nc" id="L326">        }</span>
+<span class="nc" id="L327">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageResultReceiver.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">ImageResultReceiver.java</span></div><h1>ImageResultReceiver.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
+import android.widget.ImageView;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class ImageResultReceiver extends ResultReceiver {
+    /**
+     * The receiver that this receiver will relay information to.
+     * Usually user has to set it after initialization.
+     * Can be this receiver if functionality relies solely on relaying information in this receiver
+     */
+    private ImageResultReceiver mReceiver;
+    /**
+     * The image view component that this receiver will relay preview image to
+     */
+    private ImageView imageView;
+    /**
+     * The bitmap array which contains bitmaps in order
+     */
+    private Bitmap[][] bmArr;
+    /**
+     * The list of bitmaps that will be converted to from an array
+     */
+    private ArrayList&lt;Bitmap&gt; bmList;
+    /**
+     * The states of which whether this receiver has received
+     * an image, image array, or invalid image url. Respectively.
+     */
+    private boolean recIm, recImArr, recImInvalid;
+    /**
+     * The rows and columns that the images will intend to have regardless
+     * of changed dimensions after receiving an image
+     */
+<span class="fc" id="L39">    private int row = 4, col = 4;</span>
+    /**
+     * Untouched, yet loaded bitmap awaiting for splitting
+     */
+    private Bitmap unprocessedBitmap;
+
+    /**
+     * The constructor for this ImageResultReceiver
+     * @param handler the handler of this receiver
+     * @param imageView the imageView that this receiver will have its image be previewed on
+     */
+    public ImageResultReceiver(Handler handler, ImageView imageView) {
+<span class="fc" id="L51">        super(handler);</span>
+<span class="fc" id="L52">        this.imageView = imageView;</span>
+<span class="fc" id="L53">    }</span>
+    /**
+     * Sets the receiver that this receiver will relay information to
+     * @param r the receiver this receiver will relay information to, usually itself
+     */
+    public void setReceiver(ImageResultReceiver r){
+<span class="fc" id="L59">        mReceiver = r;</span>
+<span class="fc" id="L60">    }</span>
+    /**
+     * Converts the bitmap array to array list of bitmap for ease of iteration
+     * @param bArr the bitmap Array that will be converted from
+     * @return the converted array list of bitmaps
+     */
+    public ArrayList&lt;Bitmap&gt; getBitmapList(final Bitmap[][] bArr){
+<span class="nc" id="L67">        Iterator&lt;Bitmap&gt; bmIt = new Iterator&lt;Bitmap&gt;() {</span>
+<span class="nc" id="L68">            private int jIndex = 0, kIndex = 0;</span>
+<span class="nc" id="L69">            private int jLength = bArr.length, kLength = bArr[0].length;</span>
+            @Override
+            public boolean hasNext() {
+<span class="nc bnc" id="L72" title="All 2 branches missed.">                return (jLength + kLength - 1) &gt; (jIndex + kIndex);</span>
+            }
+
+            @Override
+            public Bitmap next() {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">                if(kIndex &gt;= kLength)</span>
+                {
+<span class="nc" id="L79">                    kIndex = 0;</span>
+<span class="nc" id="L80">                    jIndex++;</span>
+                }
+<span class="nc" id="L82">                return bArr[jIndex][kIndex++];</span>
+            }
+        };
+<span class="nc" id="L85">        ArrayList&lt;Bitmap&gt; bList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        while (bmIt.hasNext()){</span>
+<span class="nc" id="L87">            bList.add(bmIt.next());</span>
+        }
+<span class="nc" id="L89">        return bList;</span>
+    }
+
+    /**
+     * Get the unprocessed bitmap for processing purpose
+     * @return a bitmap
+     */
+    public Bitmap getUnprocessedBitmap() {
+<span class="nc" id="L97">        return unprocessedBitmap;</span>
+    }
+    /**
+     * Returns the array list of bitmaps
+     * @return the array list of bitmaps
+     */
+    public ArrayList&lt;Bitmap&gt; getBitmapArrayList(){
+<span class="nc" id="L104">        return bmList;</span>
+    }
+    /**
+     * Whether or not this receiver has received contents
+     * @return boolean whether or not this receiver has received contents
+     */
+    public boolean contentReceived(){
+<span class="nc bnc" id="L111" title="All 4 branches missed.">        return (recIm || recImArr) ;</span>
+    }
+    /**
+     * Returns whether or not the sender has received invalid image png
+     * @return the boolean of whether or not the sender has received invalid image png
+     */
+    public boolean invalidImageLink(){
+<span class="nc" id="L118">        return recImInvalid;</span>
+    }
+    /**
+     * Returns the rows of the images designed to use for
+     * @return number of rows
+     */
+    public int getRow(){
+<span class="nc" id="L125">        return row;</span>
+    }
+    /**
+     * Returns the columns of the images designed to use for
+     * @return number of columns
+     */
+    public int getCol(){
+<span class="nc" id="L132">        return col;</span>
+    }
+
+    /**
+     * Handles the information sent by its sender
+     * @param resultCode the code of the information from the sender
+     * @param resultData the data from the sender
+     */
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle resultData) {
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (mReceiver != null) {</span>
+<span class="nc bnc" id="L143" title="All 4 branches missed.">            switch(resultCode){</span>
+                case 1:
+<span class="nc" id="L145">                    row = resultData.getIntegerArrayList(&quot;size&quot;).get(0);</span>
+<span class="nc" id="L146">                    col = resultData.getIntegerArrayList(&quot;size&quot;).get(0);</span>
+<span class="nc" id="L147">                    Bitmap bm = resultData.getParcelable(&quot;image&quot;);</span>
+<span class="nc" id="L148">                    imageView.setImageBitmap(bm);</span>
+<span class="nc" id="L149">                    recIm = true;</span>
+<span class="nc" id="L150">                    Bitmap[][] bArr = (Bitmap[][]) resultData.getSerializable(&quot;imagearray&quot;);</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                    if(bArr != null) {</span>
+<span class="nc" id="L152">                        bmArr = bArr;</span>
+<span class="nc" id="L153">                        bmList = getBitmapList(bmArr);</span>
+<span class="nc" id="L154">                        recImArr = true;</span>
+                    }
+                    break;
+                case 2:
+<span class="nc" id="L158">                    recImInvalid = true;</span>
+<span class="nc" id="L159">                    break;</span>
+                case 3:
+<span class="nc" id="L161">                    Bitmap bm1 = resultData.getParcelable(&quot;image&quot;);</span>
+<span class="nc" id="L162">                    imageView.setImageBitmap(bm1);</span>
+<span class="nc" id="L163">                    unprocessedBitmap = bm1;</span>
+<span class="nc" id="L164">                    recIm = true;</span>
+<span class="nc" id="L165">                    recImArr = false;</span>
+<span class="nc" id="L166">                    break;</span>
+                default:
+<span class="nc" id="L168">                    recImArr = false;</span>
+<span class="nc" id="L169">                    recIm = false;</span>
+                    break;
+            }
+        }
+<span class="nc" id="L173">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

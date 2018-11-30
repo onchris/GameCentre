@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScoreFragment.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">ScoreFragment.java</span></div><h1>ScoreFragment.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.support.v4.app.Fragment;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link ScoreFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link ScoreFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ScoreFragment extends Fragment {
+    /**
+     * The game name
+     */
+    private TextView gameName;
+    /**
+     * The user's name
+     */
+    private String username;
+    /**
+     * The score manager
+     */
+    private ScoreManager scoreManager;
+    /**
+     * List of displays
+     */
+<span class="fc" id="L42">    private List&lt;String&gt; displayList = new ArrayList&lt;&gt;();</span>
+    /**
+     * The display of score list
+     */
+    private ListView scoresListDisplay;
+
+    private OnFragmentInteractionListener mListener;
+
+<span class="fc" id="L50">    public ScoreFragment() {</span>
+        // Required empty public constructor
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @return A new instance of fragment ScoreFragment.
+     */
+    public static ScoreFragment newInstance(String game, String account) {
+<span class="fc" id="L61">        ScoreFragment fragment = new ScoreFragment();</span>
+<span class="fc" id="L62">        Bundle args = new Bundle();</span>
+<span class="fc" id="L63">        args.putString(&quot;game&quot;, game);</span>
+<span class="fc" id="L64">        args.putString(&quot;account&quot;, account);</span>
+<span class="fc" id="L65">        fragment.setArguments(args);</span>
+<span class="fc" id="L66">        return fragment;</span>
+    }
+
+    /**
+     * Gets the score manager
+     *
+     * @return the score manager
+     */
+    public ScoreManager getScoreManager() {
+<span class="nc" id="L75">        return scoreManager;</span>
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+<span class="fc" id="L82">        return inflater.inflate(R.layout.fragment_scores, container, false);</span>
+    }
+
+    /**
+     * Gets the score list display
+     *
+     * @return the score list display
+     */
+    public ListView getScoresListDisplay() {
+<span class="nc" id="L91">        return scoresListDisplay;</span>
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+<span class="fc" id="L96">        super.onActivityCreated(savedInstanceState);</span>
+<span class="fc" id="L97">        gameName = getView().findViewById(R.id.frag_textview);</span>
+<span class="fc" id="L98">        scoresListDisplay = getView().findViewById(R.id.lv_scores);</span>
+<span class="fc" id="L99">        String game = getArguments().getString(&quot;game&quot;, &quot;Scoreboard&quot;);</span>
+<span class="fc" id="L100">        gameName.setText(game);</span>
+<span class="fc" id="L101">        username = getArguments().getString(&quot;account&quot;, &quot;Guest&quot;);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (game.equals(&quot;Sliding Tiles&quot;)) {</span>
+<span class="fc" id="L103">            scoreManager = new SlidingTilesScoreManager(username, getContext(), 0);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        } else if (game.equals(&quot;Obstacle Dodger&quot;)) {</span>
+<span class="fc" id="L105">            scoreManager = new ObDodgerScoreManager(username, getContext(), 0);</span>
+        } else {
+<span class="fc" id="L107">            scoreManager = new UltTTTScoreManager(username, getContext(), 0);</span>
+        }
+<span class="fc" id="L109">        displayList = scoreManager.getDisplayGameScoresList();</span>
+<span class="fc" id="L110">        ArrayAdapter adapter</span>
+<span class="fc" id="L111">                = new ArrayAdapter&lt;&gt;(Objects.requireNonNull(getActivity()),</span>
+                R.layout.activity_scorelist, displayList);
+<span class="fc" id="L113">        scoresListDisplay.setAdapter(adapter);</span>
+<span class="fc" id="L114">    }</span>
+
+    @Override
+    public void onDetach() {
+<span class="fc" id="L118">        super.onDetach();</span>
+<span class="fc" id="L119">        mListener = null;</span>
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * Fragment interface for getting instance scoreboard
+     */
+    public interface OnFragmentInteractionListener {
+        void getDisplayScoreboard();
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

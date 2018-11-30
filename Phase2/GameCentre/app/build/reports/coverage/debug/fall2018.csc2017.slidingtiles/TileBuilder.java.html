@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TileBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">TileBuilder.java</span></div><h1>TileBuilder.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Button;
+
+import java.util.ArrayList;
+
+public class TileBuilder implements Tileable{
+    /**
+     * Current BoardManager
+     */
+    private final BoardManager boardManager;
+    /**
+     * How many rows/columns as well as the width of a single tile
+     */
+    private final int rows, columns, columnWidth;
+    /**
+     * Array list of buttons to be created with.
+     */
+    private final ArrayList&lt;Button&gt; tileButtons;
+    /**
+     * The current context this builder is in
+     */
+    private Context currentContext;
+    /**
+     * Whether or not tiles will be using images
+     */
+    private boolean useImages;
+    /**
+     * The set of images the tiles will be using if using images
+     */
+    private ArrayList&lt;Bitmap&gt; imageSet;
+
+    /**
+     * Account constructor
+     * @param boardManager the current boardManager to be building with
+     * @param currentContext the current context
+     * @param columnWidth the width of which tiles will be adjusted to be built on
+     */
+<span class="fc" id="L46">    public TileBuilder(BoardManager boardManager, Context currentContext, int columnWidth){</span>
+<span class="fc" id="L47">        this.boardManager = boardManager;</span>
+<span class="fc" id="L48">        this.tileButtons = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L49">        this.currentContext = currentContext;</span>
+<span class="fc" id="L50">        this.rows = boardManager.getBoard().getNumRows();</span>
+<span class="fc" id="L51">        this.columns = boardManager.getBoard().getNumColumns();</span>
+<span class="fc" id="L52">        this.columnWidth = columnWidth;</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * Sets whether or not to use images and set the image collections
+     * @param useImages whether or not images will be used
+     * @param imageSet the list of split images
+     */
+    public void setUseImages(boolean useImages, ArrayList&lt;Bitmap&gt; imageSet){
+<span class="fc" id="L61">        this.useImages = useImages;</span>
+<span class="fc" id="L62">        this.imageSet = imageSet;</span>
+<span class="fc" id="L63">    }</span>
+
+    /**
+     * returns the list of buttons
+     * @return List of buttons regardless of it's state
+     */
+    public ArrayList&lt;Button&gt; getTileButtons(){
+<span class="fc" id="L70">        return tileButtons;</span>
+    }
+
+    /**
+     * Generates a normal tile's background
+     * @param isBlank whether or not the tile should be blank
+     * @param tile the tile to be generated.
+     * @return A drawable where buttons can set their background to
+     */
+    @Override
+    public Drawable generateBackground(boolean isBlank, Tile tile) {
+<span class="fc" id="L81">        int tileId = tile.getId();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if(isBlank)</span>
+        {
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">            if(!tile.hasBackground())</span>
+<span class="fc" id="L85">                tile.setBackground(currentContext.getDrawable(R.drawable.bg_simplebg));</span>
+<span class="fc" id="L86">            return currentContext.getDrawable(R.drawable.bg_simplebg);</span>
+        }
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        else if(tileId &lt; 10){</span>
+<span class="fc" id="L89">            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_ONES, tileId);</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            if(!tile.hasBackground())</span>
+<span class="fc" id="L91">                tile.setBackground(ld);</span>
+<span class="fc" id="L92">            return ld;</span>
+        }
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        else if (tileId &lt; 100){</span>
+<span class="fc" id="L95">            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_TENS, tileId);</span>
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">            if(!tile.hasBackground())</span>
+<span class="fc" id="L97">                tile.setBackground(ld);</span>
+<span class="fc" id="L98">            return ld;</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        } else if (tileId &lt; 1000)</span>
+        {
+<span class="fc" id="L101">            LayerDrawable ld = generateTileLayers(DigitEnum.DIGIT_THOU, tileId);</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">            if(!tile.hasBackground())</span>
+<span class="fc" id="L103">                tile.setBackground(ld);</span>
+<span class="fc" id="L104">            return ld;</span>
+        }
+<span class="nc" id="L106">        return null;</span>
+    }
+
+    /**
+     * Generates a image tile's background
+     * @param isBlank whether or not the tile should be blank
+     * @param tile the tile to be generated.
+     * @param imageBitmap the image to set the tile with
+     * @return A drawable where buttons can set their background to
+     */
+    @Override
+    public Drawable generateImageBackground(boolean isBlank, Tile tile, @Nullable Bitmap imageBitmap) {
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if(isBlank)</span>
+        {
+<span class="nc bnc" id="L120" title="All 2 branches missed.">            if(!tile.hasBackground())</span>
+<span class="nc" id="L121">                tile.setBackground(currentContext.getDrawable(R.drawable.bg_simplebg));</span>
+<span class="nc" id="L122">            return currentContext.getDrawable(R.drawable.bg_simplebg);</span>
+        } else {
+<span class="nc" id="L124">            Drawable bg = new BitmapDrawable(currentContext.getResources(), imageBitmap);</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (!tile.hasBackground())</span>
+<span class="nc" id="L126">                tile.setBackground(bg);</span>
+<span class="nc" id="L127">            return bg;</span>
+        }
+    }
+
+    /**
+     * Generates layers of drawables including background and digits
+     * @param digitEnum enum for digits to generate
+     * @param tileId the tile number to be genrated.
+     * @return A LayerDrawable where buttons can set their background to
+     */
+    @Override
+    public LayerDrawable generateTileLayers(DigitEnum digitEnum, int tileId) {
+<span class="fc" id="L139">        Drawable bg = currentContext.getDrawable(R.drawable.bg_simplebg);</span>
+        String thouString, tensString, onesString;
+        LayerDrawable ld;
+        int onesNumberPath, tensNumberPath, thouNumberPath;
+<span class="pc bpc" id="L143" title="1 of 4 branches missed.">        switch (digitEnum) {</span>
+            case DIGIT_ONES:
+<span class="fc" id="L145">                onesNumberPath = currentContext.getResources()</span>
+<span class="fc" id="L146">                        .getIdentifier(&quot;ic_&quot;+Integer.toString(tileId),</span>
+<span class="fc" id="L147">                                &quot;drawable&quot;, currentContext.getPackageName());</span>
+<span class="fc" id="L148">                return alignTilesDigits(new LayerDrawable(new Drawable[]</span>
+<span class="fc" id="L149">                                {bg,currentContext.getDrawable(onesNumberPath)}),</span>
+                        digitEnum);
+            case DIGIT_TENS:
+<span class="fc" id="L152">                tensString = Integer.toString(tileId).substring(0,1);</span>
+<span class="fc" id="L153">                onesString = Integer.toString(tileId).substring(1);</span>
+<span class="fc" id="L154">                onesNumberPath = currentContext.getResources()</span>
+<span class="fc" id="L155">                        .getIdentifier(&quot;ic_&quot;+onesString, &quot;drawable&quot;,</span>
+<span class="fc" id="L156">                                currentContext.getPackageName());</span>
+<span class="fc" id="L157">                tensNumberPath = currentContext.getResources()</span>
+<span class="fc" id="L158">                        .getIdentifier(&quot;ic_&quot;+tensString, &quot;drawable&quot;,</span>
+<span class="fc" id="L159">                                currentContext.getPackageName());</span>
+<span class="fc" id="L160">                return alignTilesDigits(new LayerDrawable(new Drawable[]</span>
+<span class="fc" id="L161">                                {bg,currentContext.getDrawable(tensNumberPath),</span>
+<span class="fc" id="L162">                                        currentContext.getDrawable(onesNumberPath)}),</span>
+                        digitEnum);
+            case DIGIT_THOU:
+<span class="fc" id="L165">                thouString = Integer.toString(tileId).substring(0,1);</span>
+<span class="fc" id="L166">                tensString = Integer.toString(tileId).substring(1,2);</span>
+<span class="fc" id="L167">                onesString = Integer.toString(tileId).substring(2);</span>
+<span class="fc" id="L168">                thouNumberPath = currentContext.getResources()</span>
+<span class="fc" id="L169">                        .getIdentifier(&quot;ic_&quot;+thouString, &quot;drawable&quot;,</span>
+<span class="fc" id="L170">                                currentContext.getPackageName());</span>
+<span class="fc" id="L171">                tensNumberPath = currentContext.getResources()</span>
+<span class="fc" id="L172">                        .getIdentifier(&quot;ic_&quot;+tensString, &quot;drawable&quot;,</span>
+<span class="fc" id="L173">                                currentContext.getPackageName());</span>
+<span class="fc" id="L174">                onesNumberPath = currentContext.getResources()</span>
+<span class="fc" id="L175">                        .getIdentifier(&quot;ic_&quot;+onesString, &quot;drawable&quot;,</span>
+<span class="fc" id="L176">                                currentContext.getPackageName());</span>
+<span class="fc" id="L177">                return alignTilesDigits(new LayerDrawable(new Drawable[]</span>
+<span class="fc" id="L178">                                {bg,currentContext.getDrawable(thouNumberPath),</span>
+<span class="fc" id="L179">                                        currentContext.getDrawable(tensNumberPath),</span>
+<span class="fc" id="L180">                                        currentContext.getDrawable(onesNumberPath)}),</span>
+                        digitEnum);
+        }
+<span class="nc" id="L183">        return null;</span>
+    }
+
+    /**
+     * Aligns digits in their correct position
+     * @param generatedLayerDrawable the compiled drawables
+     * @param digitEnum enum for digits to generate
+     * @return A LayerDrawable where buttons can set their background to
+     */
+    @Override
+    public LayerDrawable alignTilesDigits(LayerDrawable generatedLayerDrawable, DigitEnum digitEnum) {
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        if( digitEnum == DigitEnum.DIGIT_ONES) {</span>
+<span class="fc" id="L195">            generatedLayerDrawable.setLayerInset(1, columnWidth / 4, 0, 0, 30);</span>
+<span class="fc" id="L196">            generatedLayerDrawable.setLayerWidth(1, columnWidth / 2);</span>
+<span class="fc" id="L197">            return generatedLayerDrawable;</span>
+        }
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        for(int i = 1; i &lt; generatedLayerDrawable.getNumberOfLayers(); i++)</span>
+        {
+<span class="fc bfc" id="L201" title="All 2 branches covered.">            if(digitEnum == DigitEnum.DIGIT_TENS) {</span>
+<span class="fc" id="L202">                generatedLayerDrawable.setLayerWidth(i, columnWidth / 2 - 5);</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">                generatedLayerDrawable.setLayerInset(i, i == 1 ? 0 : columnWidth/2, 0, 0, 30);</span>
+            }
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">            else if (digitEnum == DigitEnum.DIGIT_THOU){</span>
+<span class="fc" id="L206">                generatedLayerDrawable.setLayerWidth(i, columnWidth / 3 - 5);</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">                generatedLayerDrawable.setLayerInset(i, i == 1 ? 0 : (i-1)*columnWidth/3, 0, 0, 30);</span>
+            }
+        }
+<span class="fc" id="L210">        return generatedLayerDrawable;</span>
+    }
+
+    /**
+     * Builds the tile buttons
+     */
+    @Override
+    public void createTileButtons() {
+<span class="fc" id="L218">        Board board = boardManager.getBoard();</span>
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        ArrayList&lt;Bitmap&gt; imageSet = useImages ? this.imageSet: null;</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">        for (int row = 0; row != rows; row++) {</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">            for (int col = 0; col != columns; col++) {</span>
+<span class="fc" id="L222">                Button tmp = new Button(currentContext);</span>
+<span class="fc" id="L223">                Tile tile = board.getTile(row,col);</span>
+<span class="fc" id="L224">                int tileId = board.getTile(row,col).getId();</span>
+<span class="fc" id="L225">                tmp.setTag(tileId);</span>
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">                if(imageSet != null){</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">                    if(board.getTile(row,col).getId() == columns * rows)</span>
+<span class="nc" id="L228">                        tmp.setBackground(generateImageBackground(true, tile, null));</span>
+<span class="nc" id="L229">                    tmp.setBackground(generateImageBackground(false, tile, imageSet.get(tileId-1)));</span>
+                }
+<span class="fc bfc" id="L231" title="All 2 branches covered.">                else if(board.getTile(row,col).getId() &lt; columns * rows)</span>
+<span class="fc" id="L232">                    tmp.setBackground(generateBackground(false, tile));</span>
+                else
+<span class="fc" id="L234">                    tmp.setBackground(generateBackground(true, tile));</span>
+<span class="fc" id="L235">                this.tileButtons.add(tmp);</span>
+            }
+        }
+<span class="fc" id="L238">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

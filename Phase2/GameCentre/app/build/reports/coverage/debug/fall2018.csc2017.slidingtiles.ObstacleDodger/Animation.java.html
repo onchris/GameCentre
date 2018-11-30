@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Animation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.ObstacleDodger</a> &gt; <span class="el_source">Animation.java</span></div><h1>Animation.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.ObstacleDodger;
+
+/*
+Adapted from:
+https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
+ */
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+
+/**
+ * Class for Obstacle Dodger Animation.
+ */
+public class Animation {
+
+    /**
+     * The bitmap array for the animation frames.
+     */
+    private Bitmap[] frames;
+
+    /**
+     * The index for the animation frame.
+     */
+    private int frameIndex;
+
+    /**
+     * The boolean indicating if the animation is playing.
+     */
+<span class="fc" id="L31">    private boolean isPlaying = false;</span>
+
+    /**
+     * Return whether the animation is playing.
+     *
+     * @return boolean indicating whether animation is playing
+     */
+    boolean isPlaying() {
+<span class="fc" id="L39">        return isPlaying;</span>
+    }
+
+    /**
+     * Plays the animation.
+     */
+    void play() {
+<span class="fc" id="L46">        isPlaying = true;</span>
+<span class="fc" id="L47">        frameIndex = 0;</span>
+<span class="fc" id="L48">        lastFrame = System.currentTimeMillis();</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Stops the animation.
+     */
+    void stop() {
+<span class="fc" id="L55">        isPlaying = false;</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * The long representing the frame time.
+     */
+    private float frameTime;
+
+    /**
+     * The long representing the last frame.
+     */
+    private long lastFrame;
+
+    /**
+     * Creates a new animation.
+     *
+     * @param frames   the frames of the animation.
+     * @param animTime the animation time.
+     */
+<span class="fc" id="L74">    Animation(Bitmap[] frames, float animTime) {</span>
+<span class="fc" id="L75">        this.frames = frames;</span>
+<span class="fc" id="L76">        frameIndex = 0;</span>
+
+<span class="fc" id="L78">        frameTime = animTime / frames.length;</span>
+
+<span class="fc" id="L80">        lastFrame = System.currentTimeMillis();</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Draws the animation.
+     *
+     * @param canvas      the canvas to be drawn.
+     * @param destination the destination of the rect
+     */
+    public void draw(Canvas canvas, Rect destination) {
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (!isPlaying) {</span>
+<span class="nc" id="L91">            return;</span>
+        }
+
+<span class="fc" id="L94">        scaleRect(destination);</span>
+
+<span class="fc" id="L96">        canvas.drawBitmap(frames[frameIndex], null, destination, new Paint());</span>
+<span class="fc" id="L97">    }</span>
+
+    /**
+     * Scales a rectangle.
+     *
+     * @param rect a rect.
+     */
+    private void scaleRect(Rect rect) {
+<span class="fc" id="L105">        float whRatio = (float) (frames[frameIndex].getWidth()) / frames[frameIndex].getHeight();</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (rect.width() &gt; rect.height()) {</span>
+<span class="nc" id="L107">            rect.left = rect.right - (int) (rect.height() * whRatio);</span>
+        } else {
+<span class="fc" id="L109">            rect.top = rect.bottom - (int) (rect.width() * (1 / whRatio));</span>
+        }
+<span class="fc" id="L111">    }</span>
+
+    /**
+     * Updates the animation.
+     */
+    public void update() {
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if (!isPlaying) {</span>
+<span class="nc" id="L118">            return;</span>
+        }
+
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (System.currentTimeMillis() - lastFrame &gt; frameTime * 1000) {</span>
+<span class="fc" id="L122">            frameIndex++;</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">            frameIndex = frameIndex &gt;= frames.length ? 0 : frameIndex;</span>
+<span class="fc" id="L124">            lastFrame = System.currentTimeMillis();</span>
+        }
+<span class="fc" id="L126">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>
