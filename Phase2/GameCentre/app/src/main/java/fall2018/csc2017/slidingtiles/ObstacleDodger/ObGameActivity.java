@@ -50,8 +50,9 @@ public class ObGameActivity extends AppCompatActivity {
 
     /**
      * Creates a scoreboard for the current user.
+     *
      * @param score the score of the user.
-     * @param info the account and game information.
+     * @param info  the account and game information.
      */
     public void createScoreBoard(int score, Bundle info) {
         Intent scoreboard = new Intent(this, ScoreBoard.class);

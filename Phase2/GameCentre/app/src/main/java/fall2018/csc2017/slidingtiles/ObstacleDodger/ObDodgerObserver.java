@@ -31,9 +31,10 @@ public class ObDodgerObserver implements Observer {
 
     /**
      * Creates a new observer.
+     *
      * @param gamePanel the game panel being observed.
-     * @param account the account being observed
-     * @param activity the activity being observed.
+     * @param account   the account being observed
+     * @param activity  the activity being observed.
      */
     ObDodgerObserver(GamePanel gamePanel, Account account, ObGameActivity activity) {
         this.gamePanel = gamePanel;
@@ -46,12 +47,11 @@ public class ObDodgerObserver implements Observer {
         Integer score = (Integer) arg;
         Bundle infoBundle = new Bundle();
 
-        if(currentAccount != null) {
+        if (currentAccount != null) {
             infoBundle.putString("currentUsername", currentAccount.getUsername());
             currentAccount.addToObDodgeGameScores(score);
             saveObDodgerScoresToAccounts(activity, currentAccount, score);
-        }
-        else {
+        } else {
             infoBundle.putString("currentUsername", "-1");
         }
         infoBundle.putString("currentGame", "obDodger");
