@@ -228,8 +228,4 @@ public class UltTTTBoardManager {
     private void setText(TextView tv, String s) {
         tv.setText(s);
     }
-
-    public UltTTTConnector getConnector() {
-        return connector;
-    }
 }
