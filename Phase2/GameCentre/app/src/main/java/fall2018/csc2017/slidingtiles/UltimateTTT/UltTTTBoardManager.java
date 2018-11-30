@@ -1,23 +1,24 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
-import android.content.DialogInterface;
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AlertDialog;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import fall2018.csc2017.slidingtiles.R;
 import fall2018.csc2017.slidingtiles.ScoreBoard;
 import fall2018.csc2017.slidingtiles.UtilityManager;
 
-//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
-public class UltTTTBoardManager {
+/**
+ * Class for Ultimate Tic Tac Toe board manager.
+ */
+class UltTTTBoardManager {
     /**
      * The winner of current round
      */
@@ -205,10 +206,10 @@ public class UltTTTBoardManager {
     private void gameOver(String global_winner) {
         cellManager.disableAll();
         Intent tmp = new Intent(this.activity, ScoreBoard.class);
-        tmp.putExtra("currentGame","ultTTT");
+        tmp.putExtra("currentGame", "ultTTT");
         if (activity.IS_GUEST) {
             tmp.putExtra("currentUsername", "-1");
-        } else{
+        } else {
             tmp.putExtra("currentUsername", activity.P1Name);
             UtilityManager.saveUltTTTWinUpdate(this.activity, activity.getCurrentAccount(), global_winner.equals("Player 1"));
             UtilityManager.saveUltTTTBoardManager(this.activity, activity.getCurrentAccount(), -1);
@@ -218,17 +219,17 @@ public class UltTTTBoardManager {
         } else {
             tmp.putExtra("currentScore", "0");
         }
+        activity.finish();
         activity.startActivity(tmp);
     }
 
     /**
      * Sets the text
+     *
+     * @param tv the text view that will be changed
+     * @param s  the string
      */
     private void setText(TextView tv, String s) {
         tv.setText(s);
-    }
-
-    public UltTTTConnector getConnector() {
-        return connector;
     }
 }

@@ -1,11 +1,16 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
+
 import org.json.JSONObject;
 
 import java.util.Map;
 
 import fall2018.csc2017.slidingtiles.UtilityManager;
 
+/**
+ * Class for Ultimate Tic Tac Toe backend execute.
+ */
 class UltTTTBackendExecute {
     /**
      * The initializer for ultimate tic tac toe
@@ -82,9 +87,9 @@ class UltTTTBackendExecute {
 
         initializer.globalWinner = scanner.findGlobalWinner();
         currState = gamestates.toJson();
-        gamestates.updateTurn();
         gamestates.updateHistory(currState);
         UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), cell_number);
+        gamestates.updateTurn();
         return currState;
     }
 
@@ -190,6 +195,4 @@ class UltTTTBackendExecute {
             return "Undo";
         return "None";
     }
-
-
 }

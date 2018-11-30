@@ -14,27 +14,60 @@ import android.view.MotionEvent;
 
 import java.util.Observable;
 
+/**
+ * Class for Obstacle Dodger Gameplay scenes.
+ */
 public class GameplayScene extends Observable implements Scene {
 
+    /**
+     * The rectangle that contains the player animation.
+     */
     private Rect r = new Rect();
 
+    /**
+     * The rect player.
+     */
     private RectPlayer player;
+
+    /**
+     * The point where the rectangle spawns.
+     */
     private Point playerPoint;
+
+    /**
+     * The obstacle manager for the current game.
+     */
     private ObstacleManager obstacleManager;
 
+    /**
+     * Boolean that represents whether the player is moving.
+     */
     private boolean movingPlayer = false;
 
+    /**
+     * Boolean that represents whether game is over.
+     */
     private boolean gameOver = false;
+
+    /**
+     * The long representing the time after game finished.
+     */
     private long gameOverTime;
 
-    public GameplayScene() {
+    /**
+     * Creates a new gameplay scene.
+     */
+    GameplayScene() {
         player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));
         playerPoint = new Point(ObUtilityManager.getScreenWidth() / 2, 3 * ObUtilityManager.getScreenHeight() / 4);
         player.update(playerPoint);
         obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
     }
 
-    public void reset() {
+    /**
+     * Resets the gameplay scene, placing the player back at the start position and create new obstacles.
+     */
+    private void reset() {
         playerPoint = new Point(ObUtilityManager.getScreenWidth() / 2, 3 * ObUtilityManager.getScreenHeight() / 4);
         player.update(playerPoint);
         obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);
@@ -42,14 +75,8 @@ public class GameplayScene extends Observable implements Scene {
     }
 
     @Override
-    public void terminate() {
-        SceneManager.ACTIVE_SCENE = 0;
-        deleteObservers();
-    }
-
-    @Override
     public void receiveTouch(MotionEvent event) {
-        if(!gameOver)
+        if (!gameOver)
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if (!gameOver && player.getRectangle().contains((int) event.getX(), (int) event.getY()))
@@ -80,7 +107,8 @@ public class GameplayScene extends Observable implements Scene {
             Paint paint = new Paint();
             paint.setTextSize(100);
             paint.setColor(Color.MAGENTA);
-            drawCenterText(canvas, paint, "Game Over");
+            String text = "Game Over";
+            drawCenterText(canvas, paint, text);
         }
 
     }
@@ -99,6 +127,13 @@ public class GameplayScene extends Observable implements Scene {
         }
     }
 
+    /**
+     * Draws a text in the center of the screen.
+     *
+     * @param canvas the canvas to be drawn.
+     * @param paint  the paint for the canvas.
+     * @param text   the text to be drawn.
+     */
     private void drawCenterText(Canvas canvas, Paint paint, String text) {
         paint.setTextAlign(Paint.Align.LEFT);
         canvas.getClipBounds(r);

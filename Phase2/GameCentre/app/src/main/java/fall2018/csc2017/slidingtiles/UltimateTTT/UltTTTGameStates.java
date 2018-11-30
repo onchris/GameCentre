@@ -1,8 +1,13 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Class for Ultimate Tic Tac Toe game states.
+ */
 class UltTTTGameStates {
     /**
      * The initializer for ultimate tic tac toe game
@@ -163,8 +168,8 @@ class UltTTTGameStates {
     /**
      * Gets the player's id
      *
-     * @param num
-     * @return the player's id
+     * @param num the id number
+     * @return the player corresponding to the id
      */
     private String getPlayerID(int num) {
         if (num == 0)

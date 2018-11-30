@@ -77,8 +77,15 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
      * Custom adapter for displaying list of games by hooking up to CustomScrollView
      */
     private LoaderAdapter loaderAdapter;
+    /**
+     * The account manager
+     */
     private AccountManager accountManager;
+    /**
+     * The dialog manager
+     */
     private DialogManager dialogManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -222,10 +229,11 @@ public class GameSelection extends AppCompatActivity implements PopupMenu.OnMenu
 
     /**
      * Viewing scoreboard
+     *
      * @param v the view, called by activity
      */
-    public void scoreboardOnClick(View v){
-        Intent scoreboardIntent =  new Intent(this, GeneralScoreboard.class);
+    public void scoreboardOnClick(View v) {
+        Intent scoreboardIntent = new Intent(this, GeneralScoreboard.class);
         scoreboardIntent.putExtra("username", currentUsername);
         startActivity(scoreboardIntent);
     }

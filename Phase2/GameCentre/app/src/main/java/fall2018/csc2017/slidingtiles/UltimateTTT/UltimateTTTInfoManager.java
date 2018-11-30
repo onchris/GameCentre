@@ -1,14 +1,20 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
+/*
+Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/json/jsonparser.java
+https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
+ */
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class for Ultimate Tic Tac Toe info manager.
+ */
 class UltimateTTTInfoManager {
-    //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/json/jsonparser.java
-
     /**
      * Stores data in map
      *
@@ -42,28 +48,5 @@ class UltimateTTTInfoManager {
             System.err.println(jsonException);
         }
         return map;
-    }
-
-    static JSONObject getMapToJson(Map<String, String> mapData) {
-//        Adapted from toJson in Gamestates
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("CurrentActiveBlock", mapData.get("CurrentActiveBlock"));
-            jsonObject.put("CurrentCell", mapData.get("CurrentCell"));
-            jsonObject.put("NextActiveBlock", mapData.get("NextActiveBlock"));
-            jsonObject.put("CurrentWinner", mapData.get("CurrentWinner"));
-            jsonObject.put("GlobalWinner", mapData.get("GlobalWinner"));
-            jsonObject.put("Turn", mapData.get("Turn"));
-            jsonObject.put("DisableBlock", mapData.get("DisableBlock"));
-            jsonObject.put("DisableList", mapData.get("DisableList"));
-            jsonObject.put("ResetList", mapData.get("ResetList"));
-            jsonObject.put("ScoreP1", mapData.get("ScoreP1"));
-            jsonObject.put("ScoreP2", mapData.get("ScoreP2"));
-            jsonObject.put("ResetBlockColor", mapData.get("ResetBlockColor"));
-            jsonObject.put("ButtonPressed", mapData.get("ButtonPressed"));
-        } catch (JSONException jsonException) {
-            System.out.println("Exception in converting to JSON");
-        }
-        return jsonObject;
     }
 }

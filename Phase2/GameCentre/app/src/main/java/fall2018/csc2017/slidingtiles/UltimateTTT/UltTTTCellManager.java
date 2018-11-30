@@ -1,7 +1,12 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+
 import android.widget.ImageButton;
 
+/**
+ * Class for Ultimate Tic Tac Toe cell manager.
+ */
 class UltTTTCellManager {
     /**
      * The image buttons
