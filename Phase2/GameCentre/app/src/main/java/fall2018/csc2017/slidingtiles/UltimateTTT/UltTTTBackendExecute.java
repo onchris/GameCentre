@@ -82,9 +82,10 @@ class UltTTTBackendExecute {
 
         initializer.globalWinner = scanner.findGlobalWinner();
         currState = gamestates.toJson();
-        gamestates.updateTurn();
+//        gamestates.updateTurn();
         gamestates.updateHistory(currState);
         UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), cell_number);
+        gamestates.updateTurn();
         return currState;
     }
 
