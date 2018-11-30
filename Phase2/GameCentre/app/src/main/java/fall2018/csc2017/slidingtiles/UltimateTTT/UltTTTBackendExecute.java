@@ -32,7 +32,6 @@ class UltTTTBackendExecute {
         scanner = gamestates.getScanner();
     }
 
-
     /**
      * Execute movements depends on button press
      *
@@ -41,7 +40,7 @@ class UltTTTBackendExecute {
      */
     JSONObject execute(int cell_number) {
         int row, column;
-        JSONObject curr_state;
+        JSONObject currState;
 
         initializer.resetCells = new String();
         initializer.currentActiveBlock = getBlockNumber(cell_number);
@@ -49,9 +48,9 @@ class UltTTTBackendExecute {
         if (initializer.buttonPressed.equals("Reset")) {
             executeReset();
             initializer.buttonPressed = "Reset";
-            curr_state = gamestates.toJson();
-            gamestates.updateHistory(curr_state);
-            return curr_state;
+            currState = gamestates.toJson();
+            gamestates.updateHistory(currState);
+            return currState;
         } else if (initializer.buttonPressed.equals("Undo")) {
             executeUndo();
             initializer.buttonPressed = "Undo";
@@ -82,11 +81,11 @@ class UltTTTBackendExecute {
             initializer.result.add(initializer.winner);
 
         initializer.globalWinner = scanner.findGlobalWinner();
-        curr_state = gamestates.toJson();
+        currState = gamestates.toJson();
         gamestates.updateTurn();
-        gamestates.updateHistory(curr_state);
-        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), gamestates.toJson());
-        return curr_state;
+        gamestates.updateHistory(currState);
+        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), cell_number);
+        return currState;
     }
 
     /**
@@ -191,4 +190,6 @@ class UltTTTBackendExecute {
             return "Undo";
         return "None";
     }
+
+
 }

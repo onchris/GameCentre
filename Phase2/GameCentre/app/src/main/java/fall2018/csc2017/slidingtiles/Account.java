@@ -1,24 +1,14 @@
 package fall2018.csc2017.slidingtiles;
 
-import org.json.JSONObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
-import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTBoardManager;
-import fall2018.csc2017.slidingtiles.UltimateTTT.UltTTTConnector;
 
 /**
  * The account of the user.
  */
 public class Account implements Serializable {
-    /**
-     * Account's statistics, number of puzzles solved and scores achieved in sliding tiles
-     */
-    public int numSolved, highscore;
     /**
      * Account's username
      */
@@ -35,7 +25,7 @@ public class Account implements Serializable {
     /**
      * Account's saved ultimate tic tac toe games
      */
-    private transient JSONObject ultimateTTTSave = new JSONObject();
+    private ArrayList ultimateTTTSave = new ArrayList();
 
     /**
      * Account's sliding tile games' scores as a list
@@ -43,7 +33,7 @@ public class Account implements Serializable {
     private List<Integer> slidingGameScores = new ArrayList<>();
 
     /**
-     * Account's ultimate tic tac toe games' scores as a list
+     * Account's ultimate tic tac toe games' total wins
      */
     private Integer ultimateTTTScores;
 
@@ -61,8 +51,7 @@ public class Account implements Serializable {
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
-        numSolved = 0;
-        highscore = 0;
+        ultimateTTTScores = 0;
     }
 
     /**
@@ -81,6 +70,10 @@ public class Account implements Serializable {
      */
     public Integer getUltimateTTTScores() {
         return ultimateTTTScores;
+    }
+
+    public void ultimateTTTWinUpdate(Boolean won) {
+        if (won) ultimateTTTScores++;
     }
 
     /**
@@ -119,15 +112,6 @@ public class Account implements Serializable {
         return boardList;
     }
 
-//    /**
-//     * Gets this account's list of ultimate tic tac toe game's boards
-//     *
-//     * @return the List of UltTTTBoards
-//     */
-//    public List<UltTTTConnector> getUltimateTTTList() {
-//        return ultimateTTTList;
-//    }
-
     /**
      * Sets this account's list of sliding game's boards
      *
@@ -142,8 +126,13 @@ public class Account implements Serializable {
      *
      * @param ultTTTUserResponses the board to be replaced with
      */
-    public void setUltimateTTTSave(JSONObject ultTTTUserResponses) {
-        this.ultimateTTTSave = ultTTTUserResponses;
+    public void setUltimateTTTSave(int ultTTTUserResponses) {
+        if (ultTTTUserResponses < 0)
+            this.ultimateTTTSave = new ArrayList();
+        else {
+            this.ultimateTTTSave.add(ultTTTUserResponses);
+        }
+
     }
 
     /**
@@ -176,6 +165,7 @@ public class Account implements Serializable {
 
     /**
      * Add a score from a game of obstacle dodger to the list of user's scores
+     *
      * @param score the score to add to sliding games
      */
     public void addToObDodgeGameScores(int score) {
@@ -183,7 +173,8 @@ public class Account implements Serializable {
         sortGameScores();
     }
 
-    public JSONObject getUltimateTTTSave() {
+    public ArrayList getUltimateTTTSave() {
         return ultimateTTTSave;
     }
+
 }

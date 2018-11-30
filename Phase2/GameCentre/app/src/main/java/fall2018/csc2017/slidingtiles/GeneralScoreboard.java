@@ -96,6 +96,7 @@ public class GeneralScoreboard extends AppCompatActivity implements ScoreFragmen
             super(fm);
             fragments.add(ScoreFragment.newInstance("Sliding Tiles", username));
             fragments.add(ScoreFragment.newInstance("Obstacle Dodger", username));
+            fragments.add(ScoreFragment.newInstance("Ultimate TTT", username));
         }
 
         @Override

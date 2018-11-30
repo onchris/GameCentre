@@ -12,30 +12,58 @@ import android.graphics.Rect;
 
 public class Animation {
 
+    /*
+    The bitmap array for the animation frames.
+     */
     private Bitmap[] frames;
+
+    /*
+    The index for the animation frame.
+     */
     private int frameIndex;
 
+    /*
+    The boolean indicating if the animation is playing.
+     */
     private boolean isPlaying = false;
 
-    public boolean isPlaying() {
+    /*
+    Return whether the animation is playing.
+     */
+    boolean isPlaying() {
         return isPlaying;
     }
 
-    public void play() {
+    /*
+    Plays the animation.
+     */
+    void play() {
         isPlaying = true;
         frameIndex = 0;
         lastFrame = System.currentTimeMillis();
     }
 
-    public void stop() {
+    /*
+    Stops the animation.
+     */
+    void stop() {
         isPlaying = false;
     }
 
+    /*
+    The long representing the frame time.
+     */
     private float frameTime;
 
+    /*
+    The long representing the last frame.
+     */
     private long lastFrame;
 
-    public Animation(Bitmap[] frames, float animTime) {
+    /*
+    Creates a new animation.
+     */
+    Animation(Bitmap[] frames, float animTime) {
         this.frames = frames;
         frameIndex = 0;
 
@@ -44,6 +72,9 @@ public class Animation {
         lastFrame = System.currentTimeMillis();
     }
 
+    /*
+    Draws the animation.
+     */
     public void draw(Canvas canvas, Rect destination) {
         if (!isPlaying) {
             return;
@@ -54,6 +85,9 @@ public class Animation {
         canvas.drawBitmap(frames[frameIndex], null, destination, new Paint());
     }
 
+    /*
+    Scales a rectangle.
+     */
     private void scaleRect(Rect rect) {
         float whRatio = (float) (frames[frameIndex].getWidth()) / frames[frameIndex].getHeight();
         if (rect.width() > rect.height()) {
@@ -63,6 +97,9 @@ public class Animation {
         }
     }
 
+    /*
+    Updates the animation.
+     */
     public void update() {
         if (!isPlaying) {
             return;
