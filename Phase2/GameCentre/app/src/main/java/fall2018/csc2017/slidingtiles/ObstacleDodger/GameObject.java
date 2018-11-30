@@ -9,13 +9,15 @@ import android.graphics.Canvas;
 
 public interface GameObject {
 
-    /*
-    Draws a game object.
+    /**
+     * Draws a game object.
+     *
+     * @param canvas the canvas to be drawn.
      */
     void draw(Canvas canvas);
 
-    /*
-    Updates a game object.
+    /**
+     * Updates a game object.
      */
     void update();
 }
