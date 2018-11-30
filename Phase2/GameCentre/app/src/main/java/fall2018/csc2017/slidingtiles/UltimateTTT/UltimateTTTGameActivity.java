@@ -82,7 +82,7 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
                 ImageButtons = connector.getImageButtons();
                 tables = connector.getTables();
                 initialize();
-                runFrontEnd(saveFile.get(0));
+                runFrontEnd(saveFile);
             } else {
                 connector = new UltTTTConnector(this);
                 ImageButtons = connector.getImageButtons();
