@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -25,16 +24,33 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class ScoreFragment extends Fragment {
-
+    /**
+     * The game name
+     */
     private TextView gameName;
+    /**
+     * The user's name
+     */
     private String username;
+    /**
+     * The score manager
+     */
     private ScoreManager scoreManager;
+    /**
+     * List of displays
+     */
     private List<String> displayList = new ArrayList<>();
+    /**
+     * The display of score list
+     */
     private ListView scoresListDisplay;
+
     private OnFragmentInteractionListener mListener;
+
     public ScoreFragment() {
         // Required empty public constructor
     }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -50,6 +66,11 @@ public class ScoreFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Gets the score manager
+     *
+     * @return the score manager
+     */
     public ScoreManager getScoreManager() {
         return scoreManager;
     }
@@ -61,6 +82,11 @@ public class ScoreFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_scores, container, false);
     }
 
+    /**
+     * Gets the score list display
+     *
+     * @return the score list display
+     */
     public ListView getScoresListDisplay() {
         return scoresListDisplay;
     }
@@ -73,7 +99,7 @@ public class ScoreFragment extends Fragment {
         String game = getArguments().getString("game", "Scoreboard");
         gameName.setText(game);
         username = getArguments().getString("account", "Guest");
-        if(game.equals("Sliding Tiles")) {
+        if (game.equals("Sliding Tiles")) {
             scoreManager = new SlidingTilesScoreManager(username, getContext(), 0);
         } else if (game.equals("Obstacle Dodger")) {
             scoreManager = new ObDodgerScoreManager(username, getContext(), 0);
