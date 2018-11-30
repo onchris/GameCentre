@@ -203,9 +203,9 @@ public class LoginScreenTestAllComponents {
         onView(withId(R.id.button_register)).perform(click());
         assertNotNull(am.getAccountFromUsername("12345"));
 
-        // Check View Assertions for strings "am_credentials_saved" displayed by a Toast
+        // Check View Assertions for strings "am_register_succ" displayed by a Toast
         // when no existing user with input username and valid credentials
-        onView(withText(R.string.am_credentials_saved))
+        onView(withText(R.string.am_register_succ))
                 .inRoot(withDecorView(not(is(activity.getWindow().getDecorView()))))
                 .check(matches(isDisplayed()));
 
