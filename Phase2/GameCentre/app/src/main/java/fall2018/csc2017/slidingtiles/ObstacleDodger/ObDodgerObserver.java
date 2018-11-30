@@ -9,28 +9,31 @@ import fall2018.csc2017.slidingtiles.Account;
 
 import static fall2018.csc2017.slidingtiles.UtilityManager.saveObDodgerScoresToAccounts;
 
-/*
-Class to observe whether the obstacle dodger game is over.
+/**
+ * Class to observe whether the obstacle dodger game is over.
  */
 public class ObDodgerObserver implements Observer {
 
-    /*
-    The game activity of the observer.
+    /**
+     * The game activity of the observer.
      */
     private ObGameActivity activity;
 
-    /*
-    The game panel of the observer.
+    /**
+     * The game panel of the observer.
      */
     private GamePanel gamePanel;
 
-    /*
-    The current account of the observer.
+    /**
+     * The current account of the observer.
      */
     private Account currentAccount;
 
-    /*
-    Creates a new observer.
+    /**
+     * Creates a new observer.
+     * @param gamePanel the game panel being observed.
+     * @param account the account being observed
+     * @param activity the activity being observed.
      */
     ObDodgerObserver(GamePanel gamePanel, Account account, ObGameActivity activity) {
         this.gamePanel = gamePanel;
