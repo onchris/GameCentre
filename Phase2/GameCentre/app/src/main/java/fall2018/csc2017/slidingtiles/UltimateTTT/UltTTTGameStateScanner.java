@@ -1,10 +1,13 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
 
+import java.util.ArrayList;
+import java.util.Iterator;
 
+/**
+ * Class for Ultimate Tic Tac Toe game state scanner.
+ */
 class UltTTTGameStateScanner {
 
     /**
@@ -49,21 +52,6 @@ class UltTTTGameStateScanner {
     }
 
     /**
-     * Gets the global winner's name
-     *
-     * @return the global winner's name
-     */
-    String getGlobalWinnerName(String global_winner) {
-        if (global_winner.equals("Player 1"))
-            return activity.P1Name + " wins";
-        else if (global_winner.equals("Player 2"))
-            return activity.P2Name + " wins";
-        else if (global_winner.equals("Drawn"))
-            return "Match Drawn";
-        return "None";
-    }
-
-    /**
      * Gets the number of occurrences of certain string
      *
      * @param str  the string to be find
@@ -84,6 +72,11 @@ class UltTTTGameStateScanner {
         return num_occurrences;
     }
 
+    /**
+     * Return the game activity.
+     *
+     * @return return the UltimateTTTGameActivity
+     */
     public UltimateTTTGameActivity getActivity() {
         return activity;
     }
