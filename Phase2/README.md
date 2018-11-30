@@ -2,7 +2,7 @@
 
 ## The repo to clone:
 Use the following URL to clone the repo containing the GameCentre app:
-    https://markus.teach.cs.toronto.edu/git/csc207-2018-09-reg/group_0552/
+    https://markus.teach.cs.toronto.edu/git/csc207-2018-09-reg/group_0612
 ### How to clone the repo:
 1. Install Android Studio if not already installed
 2. At the Android Studio welcome screen, select "Check out project from
@@ -20,7 +20,7 @@ sources" and "Android Gradle", then select "Finish"
 ## Run the app in an emulator in Android studio:
 1. Open android studio navigate (File --> Open...)
 2. Open the GameCentre project (navigate to where the repo was cloned,
-open the folder Phase1 and select GameCentre, then press "OK")
+open the folder Phase2 and select GameCentre, then press "OK")
     - If you have not yet set up the SDK and Android Virtual Device in
     Android studio yet, please do so. Set the SDK level to Android 8.1
     API 27 and create a Google Pixel 2 with API level 27 emulator.
@@ -42,7 +42,8 @@ Using Credentials".
 button on the bottom left), UltimateTicTacToe game (Image button on the
 bottom right with circles and crosses signs), and Obstacle Dodger game
 (Green image button at the top).
-5. (1) If you chose SlidingTile game:
+5. Choose a game
+    1. If you chose SlidingTile game:
       - Pick a saved game to play, or start a new game
       - You can adjust the board size and number of undo-steps as you
         would like
@@ -52,7 +53,7 @@ bottom right with circles and crosses signs), and Obstacle Dodger game
       - Copy paste the URL where specified
       - Play until solved, the scores are calculated from a maximum, bonus
         points if you win faster
-   (2) If you chose UltimateTicTacToe game:
+   2. If you chose UltimateTicTacToe game:
       - Pick a saved game to play, or start a new game.
       - Two players needed. Each player gets to click one cell and next is
         the other player's turn.
@@ -64,7 +65,7 @@ bottom right with circles and crosses signs), and Obstacle Dodger game
         nine blocks have a winner.
       - The Player with higher marks win the game and gets one score shows on
         the scoreboard. The other player scores zero.
-   (3) If you chose Obstacle Dodger game:
+   3. If you chose Obstacle Dodger game:
       - New game starts once you click the game button. No saved games for
         Obstacle Dodger.
       - Put your finger on the little green robot and hold to move it. Scores
