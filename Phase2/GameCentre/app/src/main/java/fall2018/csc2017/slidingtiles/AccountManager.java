@@ -1,7 +1,6 @@
 package fall2018.csc2017.slidingtiles;
 
 import android.app.Activity;
-import android.content.Context;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
