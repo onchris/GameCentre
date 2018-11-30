@@ -11,7 +11,7 @@ import java.util.Stack;
 /**
  * Class for Ultimate Tic Tac Toe backend initializer.
  */
-class UltTTTBackendInit {
+public class UltTTTBackendInit {
     /**
      * The winner of current round
      */
@@ -35,7 +35,7 @@ class UltTTTBackendInit {
     /**
      * The list of scores
      */
-    int score[];
+    public int[] score;
     /**
      * The current cell
      */
@@ -55,7 +55,7 @@ class UltTTTBackendInit {
     /**
      * A check if it is player1's turn
      */
-    boolean isP1Turn;       //true for player1. false for player2
+    public boolean isP1Turn;       //true for player1. false for player2
     /**
      * The block color to reset
      */
@@ -63,7 +63,7 @@ class UltTTTBackendInit {
     /**
      * The status of the board
      */
-    int boardStatus[][][];
+    public int[][][] boardStatus;
     /**
      * No terms
      */
@@ -77,12 +77,12 @@ class UltTTTBackendInit {
     /**
      * The history of user's moves
      */
-    Stack<JSONObject> history;
+    public Stack<JSONObject> history;
 
     /**
      * Initialize Ultimate Tic Tac Toe game
      */
-    UltTTTBackendInit() {
+    public UltTTTBackendInit() {
         initialize();
     }
 

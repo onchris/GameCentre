@@ -14,14 +14,14 @@ import java.util.Map;
 /**
  * Class for Ultimate Tic Tac Toe info manager.
  */
-class UltimateTTTInfoManager {
+public class UltimateTTTInfoManager {
     /**
      * Stores data in map
      *
      * @param jsonData data to be stored in map
      * @return the map with all data entered
      */
-    static Map<String, String> parseJson(JSONObject jsonData) {
+    public static Map<String, String> parseJson(JSONObject jsonData) {
         HashMap<String, String> map;
         JSONObject jsonObject;
         jsonObject = jsonData;

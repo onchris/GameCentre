@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Class for Ultimate Tic Tac Toe game states.
  */
-class UltTTTGameStates {
+public class UltTTTGameStates {
     /**
      * The initializer for ultimate tic tac toe game
      */
@@ -24,7 +24,7 @@ class UltTTTGameStates {
      * @param initializer the initializer for ultimate tic tac toe game
      * @param scanner     the scanner for ultimate tic tac toe game
      */
-    UltTTTGameStates(UltTTTBackendInit initializer, UltTTTGameStateScanner scanner) {
+    public UltTTTGameStates(UltTTTBackendInit initializer, UltTTTGameStateScanner scanner) {
         this.initializer = initializer;
         this.scanner = scanner;
     }
@@ -61,7 +61,7 @@ class UltTTTGameStates {
      *
      * @param move_json the move just taken
      */
-    void updateHistory(JSONObject move_json) {
+    public void updateHistory(JSONObject move_json) {
         initializer.history.push(move_json);
     }
 
@@ -72,7 +72,7 @@ class UltTTTGameStates {
      * @param row         the row number
      * @param column      the column number
      */
-    void updateBoard(int blockNumber, int row, int column) {
+    public void updateBoard(int blockNumber, int row, int column) {
         if (blockNumber >= 0 && blockNumber <= 8)
             if (initializer.isP1Turn)
                 initializer.boardStatus[blockNumber][row][column] = 0;
@@ -85,14 +85,14 @@ class UltTTTGameStates {
      *
      * @param num the score
      */
-    void updateScore(int num) {
+    public void updateScore(int num) {
         ++initializer.score[num];
     }
 
     /**
      * Update the turn
      */
-    void updateTurn() {
+    public void updateTurn() {
         initializer.isP1Turn = !initializer.isP1Turn;
     }
 
@@ -102,7 +102,7 @@ class UltTTTGameStates {
      * @param block_num block number
      * @return the winner or null depends on different situations
      */
-    String getWinner(int block_num) {
+    public String getWinner(int block_num) {
         for (int i = 0; i < 3; i++) {
             if (initializer.boardStatus[block_num][i][0] == initializer.boardStatus[block_num][i][1] &&
                     initializer.boardStatus[block_num][i][1] == initializer.boardStatus[block_num][i][2]) {

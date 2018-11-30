@@ -8,7 +8,7 @@ import java.util.Iterator;
 /**
  * Class for Ultimate Tic Tac Toe game state scanner.
  */
-class UltTTTGameStateScanner {
+public class UltTTTGameStateScanner {
 
     /**
      * The initializer for ultimate tic tac toe game
@@ -25,7 +25,7 @@ class UltTTTGameStateScanner {
      * @param initializer the initializer for ultimate tic tac toe game
      * @param activity    the activity for ultimate tic tac toe game
      */
-    UltTTTGameStateScanner(UltTTTBackendInit initializer, UltimateTTTGameActivity activity) {
+    public UltTTTGameStateScanner(UltTTTBackendInit initializer, UltimateTTTGameActivity activity) {
         this.initializer = initializer;
         this.activity = activity;
     }

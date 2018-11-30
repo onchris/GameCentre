@@ -5,12 +5,12 @@ package fall2018.csc2017.slidingtiles.UltimateTTT;
 /**
  * Class for Ultimate Tic Tac Toe backend.
  */
-class UltimateTTTBackend {
+public class UltimateTTTBackend {
 
     /**
      * The backend executer for ultimate tic tac toe game
      */
-    UltTTTBackendExecute executer;
+    public UltTTTBackendExecute executer;
     /**
      * The activity for ultimate tic tac toe game
      */
@@ -25,7 +25,7 @@ class UltimateTTTBackend {
      *
      * @param activity the activity for ultimate tic tac toe game
      */
-    UltimateTTTBackend(UltimateTTTGameActivity activity) {
+    public UltimateTTTBackend(UltimateTTTGameActivity activity) {
         UltTTTBackendInit initializer = new UltTTTBackendInit();
         initializer.initialize();
 

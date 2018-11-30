@@ -11,11 +11,11 @@ import fall2018.csc2017.slidingtiles.UtilityManager;
 /**
  * Class for Ultimate Tic Tac Toe backend execute.
  */
-class UltTTTBackendExecute {
+public class UltTTTBackendExecute {
     /**
      * The initializer for ultimate tic tac toe
      */
-    private UltTTTBackendInit initializer;
+    public UltTTTBackendInit initializer;
     /**
      * The game state for ultimate tic tac toe
      */
@@ -43,7 +43,7 @@ class UltTTTBackendExecute {
      * @param cell_number the cell number
      * @return JSONObject the game state
      */
-    JSONObject execute(int cell_number) {
+    public JSONObject execute(int cell_number) {
         int row, column;
         JSONObject currState;
 
@@ -96,7 +96,7 @@ class UltTTTBackendExecute {
     /**
      * Reset to initial state
      */
-    private void executeReset() {
+    public void executeReset() {
         initializer.initialize();
     }
 
