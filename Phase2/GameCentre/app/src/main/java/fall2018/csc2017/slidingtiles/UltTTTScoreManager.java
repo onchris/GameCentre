@@ -8,9 +8,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Manage ultimate tic tac toe game score, including build GameScoresList
+ */
 public class UltTTTScoreManager extends ScoreManager {
 
-    UltTTTScoreManager(String username, Context ctx, Integer score){
+    /**
+     * The constructor for ultimate tic tac toe score manager
+     *
+     * @param username the user name
+     * @param ctx the context
+     * @param score the score of ultimate tic tac toe game
+     */
+    UltTTTScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
         if (!username.equals("-1") && currentAccount != null) {
             userScores.add(currentAccount.getUltimateTTTScores());
