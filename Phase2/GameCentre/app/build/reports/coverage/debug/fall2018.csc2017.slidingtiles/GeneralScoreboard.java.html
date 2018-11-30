@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneralScoreboard.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">GeneralScoreboard.java</span></div><h1>GeneralScoreboard.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static fall2018.csc2017.slidingtiles.UtilityManager.loadAccountList;
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+
+<span class="fc" id="L26">public class GeneralScoreboard extends AppCompatActivity implements ScoreFragment.OnFragmentInteractionListener {</span>
+    private ViewPager viewPager;
+    private FragmentPagerAdapter fragmentPagerAdapter;
+    private String username;
+    private TextView displayUsername;
+    private Fragment currentFragment;
+    private ListView currentScoreDisplay;
+    private boolean isGuest;
+    private boolean isGlobalScoreboard;
+    private Account currentAccount;
+    private List&lt;String&gt; displayUserScoresList, defaultList;
+    private ScoreManager fragmentScoreManager;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="fc" id="L40">        super.onCreate(savedInstanceState);</span>
+<span class="fc" id="L41">        setContentView(R.layout.activity_viewpager_scores);</span>
+<span class="fc" id="L42">        username = getIntent().getStringExtra(&quot;username&quot;);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        currentAccount = username == null ? null : new AccountManager(loadAccountList(this)).getAccountFromUsername(username);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        isGuest = currentAccount == null;</span>
+<span class="fc" id="L45">        viewPager = findViewById(R.id.vp_scores);</span>
+<span class="fc" id="L46">        displayUsername = findViewById(R.id.text_generalscore_user);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        displayUsername.setText(</span>
+<span class="fc" id="L48">                getString(R.string.gsb_logged_as, username == null ? &quot;Guest&quot; : username));</span>
+<span class="fc" id="L49">        fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager());</span>
+<span class="fc" id="L50">        viewPager.setAdapter(fragmentPagerAdapter);</span>
+<span class="fc" id="L51">        isGlobalScoreboard = true;</span>
+<span class="fc" id="L52">    }</span>
+
+    @Override
+    public void onBackPressed() {
+<span class="fc" id="L56">        super.onBackPressed();</span>
+<span class="fc" id="L57">        getSupportFragmentManager().popBackStack();;</span>
+<span class="fc" id="L58">    }</span>
+
+    public void backgroundImageViewOnClick(View view){
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (isGuest) {</span>
+<span class="nc" id="L62">            makeCustomToastText(getString(R.string.gsb_no_score), this);</span>
+<span class="nc" id="L63">            return;</span>
+        }
+<span class="nc" id="L65">        getDisplayScoreboard();</span>
+<span class="nc" id="L66">        fragmentScoreManager = ((ScoreFragment) currentFragment).getScoreManager();</span>
+<span class="nc" id="L67">        displayUserScoresList = fragmentScoreManager.getDisplayUserScoresList();</span>
+<span class="nc" id="L68">        defaultList = fragmentScoreManager.getDisplayGameScoresList();</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (isGlobalScoreboard) {</span>
+<span class="nc" id="L70">            ArrayAdapter arrayAdapter = new ArrayAdapter&lt;&gt;(this, R.layout.activity_scorelist, displayUserScoresList);</span>
+<span class="nc" id="L71">            currentScoreDisplay.setAdapter(arrayAdapter);</span>
+<span class="nc" id="L72">            arrayAdapter.notifyDataSetChanged();</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            isGlobalScoreboard = !isGlobalScoreboard;</span>
+<span class="nc" id="L74">        }</span>
+        else {
+<span class="nc" id="L76">            ArrayAdapter arrayAdapter = new ArrayAdapter&lt;&gt;(this,</span>
+                R.layout.activity_scorelist, defaultList);
+<span class="nc" id="L78">            currentScoreDisplay.setAdapter(arrayAdapter);</span>
+<span class="nc" id="L79">            arrayAdapter.notifyDataSetChanged();</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">            isGlobalScoreboard = !isGlobalScoreboard;</span>
+        }
+<span class="nc" id="L82">    }</span>
+
+    @Override
+    public void getDisplayScoreboard() {
+<span class="nc" id="L86">        currentFragment = fragmentPagerAdapter.getItem(viewPager.getCurrentItem());</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (currentFragment instanceof ScoreFragment){</span>
+<span class="nc" id="L88">            currentScoreDisplay = ((ScoreFragment) currentFragment).getScoresListDisplay();</span>
+        }
+<span class="nc" id="L90">    }</span>
+
+    public class FragmentPagerAdapter extends FragmentStatePagerAdapter{
+<span class="fc" id="L93">        private List&lt;Fragment&gt; fragments = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L95">        public FragmentPagerAdapter(FragmentManager fm) {</span>
+<span class="fc" id="L96">            super(fm);</span>
+<span class="fc" id="L97">            fragments.add(ScoreFragment.newInstance(&quot;Sliding Tiles&quot;, username));</span>
+<span class="fc" id="L98">            fragments.add(ScoreFragment.newInstance(&quot;Obstacle Dodger&quot;, username));</span>
+<span class="fc" id="L99">            fragments.add(ScoreFragment.newInstance(&quot;Ultimate TTT&quot;, username));</span>
+<span class="fc" id="L100">        }</span>
+
+        @Override
+        public Fragment getItem(int position) {
+<span class="fc" id="L104">            return fragments.get(position);</span>
+        }
+
+        @Override
+        public int getCount() {
+<span class="fc" id="L109">            return fragments.size();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

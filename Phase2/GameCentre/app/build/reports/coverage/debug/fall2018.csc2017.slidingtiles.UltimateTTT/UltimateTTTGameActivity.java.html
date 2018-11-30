@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UltimateTTTGameActivity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.UltimateTTT</a> &gt; <span class="el_source">UltimateTTTGameActivity.java</span></div><h1>UltimateTTTGameActivity.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.UltimateTTT;
+
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
+
+import org.json.JSONObject;
+
+import java.util.List;
+
+import fall2018.csc2017.slidingtiles.Account;
+import fall2018.csc2017.slidingtiles.R;
+
+/**
+ * Class for Ultimate Tic Tac Toe game activity.
+ */
+<span class="fc" id="L24">public class UltimateTTTGameActivity extends AppCompatActivity implements View.OnClickListener {</span>
+
+    /**
+     * The board manager for ultimate tic tac toe game
+     */
+    private UltTTTBoardManager ultTTTBoardManager;
+
+    /**
+     * The connector for ultimate tic tac toe game
+     */
+    private UltTTTConnector connector;
+
+    /**
+     * The image buttons
+     */
+    private ImageButton[] ImageButtons;
+
+    /**
+     * The tables
+     */
+    private TableLayout tables[];
+
+    /**
+     * The current account
+     */
+    private Account currentAccount;
+    /**
+     * A check if the user is a guest
+     */
+<span class="fc" id="L53">    public boolean IS_GUEST = false;</span>
+
+    /**
+     * The player1's name
+     */
+    String P1Name;
+
+    /**
+     * The player2's name
+     */
+    String P2Name;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="fc" id="L68">        super.onCreate(savedInstanceState);</span>
+<span class="fc" id="L69">        requestWindowFeature(Window.FEATURE_NO_TITLE);</span>
+<span class="fc" id="L70">        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,</span>
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+<span class="fc" id="L72">        setContentView(R.layout.activity_uttt_main);</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (getIntent().hasExtra(&quot;account&quot;)) {</span>
+<span class="fc" id="L75">            IS_GUEST = false;</span>
+<span class="fc" id="L76">            currentAccount = (Account) getIntent().getSerializableExtra(&quot;account&quot;);</span>
+<span class="fc" id="L77">            P1Name = currentAccount.getUsername();</span>
+<span class="fc" id="L78">            P2Name = &quot;Guest&quot;;</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">            if (currentAccount.getUltimateTTTSave().size() != 0) {</span>
+<span class="nc" id="L80">                List&lt;Integer&gt; saveFile = currentAccount.getUltimateTTTSave();</span>
+<span class="nc" id="L81">                connector = new UltTTTConnector(this);</span>
+<span class="nc" id="L82">                ImageButtons = connector.getImageButtons();</span>
+<span class="nc" id="L83">                tables = connector.getTables();</span>
+<span class="nc" id="L84">                initialize();</span>
+<span class="nc" id="L85">                runFrontEnd(saveFile.get(0));</span>
+<span class="nc" id="L86">            } else {</span>
+<span class="fc" id="L87">                connector = new UltTTTConnector(this);</span>
+<span class="fc" id="L88">                ImageButtons = connector.getImageButtons();</span>
+<span class="fc" id="L89">                tables = connector.getTables();</span>
+<span class="fc" id="L90">                initialize();</span>
+            }
+        } else {
+<span class="fc" id="L93">            IS_GUEST = true;</span>
+<span class="fc" id="L94">            P1Name = &quot;Guest1&quot;;</span>
+<span class="fc" id="L95">            P2Name = &quot;Guest2&quot;;</span>
+<span class="fc" id="L96">            connector = new UltTTTConnector(this);</span>
+<span class="fc" id="L97">            ImageButtons = connector.getImageButtons();</span>
+<span class="fc" id="L98">            tables = connector.getTables();</span>
+<span class="fc" id="L99">            initialize();</span>
+        }
+<span class="fc" id="L101">    }</span>
+
+    /**
+     * Initialize connector with scores and button states
+     */
+    public void initialize() {
+<span class="fc" id="L107">        connector.scoreP1.setText(&quot;0&quot;);</span>
+<span class="fc" id="L108">        connector.scoreP2.setText(&quot;0&quot;);</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        for (ImageButton ImageButton : ImageButtons) {</span>
+<span class="fc" id="L110">            ImageButton.setOnClickListener(this);</span>
+<span class="fc" id="L111">            ImageButton.setBackgroundResource(R.drawable.ult_clearimage);</span>
+        }
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        for (TableLayout tableLayout : tables)</span>
+<span class="fc" id="L114">            tableLayout.setBackgroundColor(Color.BLACK);</span>
+<span class="fc" id="L115">        connector.breset.setOnClickListener(this);</span>
+<span class="fc" id="L116">        connector.breset.setEnabled(true);</span>
+<span class="fc" id="L117">        connector.bundo.setOnClickListener(this);</span>
+<span class="fc" id="L118">        connector.bundo.setEnabled(true);</span>
+<span class="fc" id="L119">    }</span>
+
+    @Override
+    public void onClick(View v) {
+        int index;
+        ImageButton curr_button;
+<span class="nc" id="L125">        curr_button = findViewById(v.getId());</span>
+<span class="nc" id="L126">        index = connector.getIndex(curr_button);</span>
+<span class="nc" id="L127">        runFrontEnd(index);</span>
+<span class="nc" id="L128">        ultTTTBoardManager.operate();</span>
+<span class="nc" id="L129">    }</span>
+
+
+    /**
+     * Responds to the button pressed
+     *
+     * @param index the index of button pressed
+     */
+    public void runFrontEnd(int index) {
+        JSONObject response;
+<span class="nc" id="L139">        response = connector.backend.executer.execute(index);</span>
+<span class="nc" id="L140">        ultTTTBoardManager = new UltTTTBoardManager(UltimateTTTInfoManager.parseJson(response), connector);</span>
+<span class="nc" id="L141">    }</span>
+
+    /**
+     * Runs the saved moves to return to old game state.
+     *
+     * @param index the index of the move.
+     */
+    public void runFrontEnd(List&lt;Integer&gt; index) {
+        JSONObject response;
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        for (int i : index) {</span>
+<span class="nc" id="L151">            response = connector.backend.executer.execute(i);</span>
+<span class="nc" id="L152">            ultTTTBoardManager = new UltTTTBoardManager(UltimateTTTInfoManager.parseJson(response), connector);</span>
+<span class="nc" id="L153">            ultTTTBoardManager.operate();</span>
+<span class="nc" id="L154">        }</span>
+<span class="nc" id="L155">    }</span>
+
+    @Override
+    public void onBackPressed() {
+<span class="fc" id="L159">        super.onBackPressed();</span>
+<span class="fc" id="L160">        finish();</span>
+<span class="fc" id="L161">    }</span>
+
+    /**
+     * Returns the current account.
+     *
+     * @return returns the current account.
+     */
+    public Account getCurrentAccount() {
+<span class="nc" id="L169">        return currentAccount;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

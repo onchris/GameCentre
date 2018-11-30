@@ -1,7 +1,7 @@
 package fall2018.csc2017.slidingtiles;
 
 /**
- * The scoring system of the game.
+ * The scoring system of Sliding Tile game.
  */
 public class ScoringSystem {
 

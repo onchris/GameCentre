@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LaunchCentre.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">LaunchCentre.java</span></div><h1>LaunchCentre.java</h1><pre class="source lang-java linenums">/**
+ * There are no testable logic since this class only handles UI components for logging in.
+ * Although UI testing is implemented in LaunchCentreTest under androidTest which is an
+ * instrumented test specifically for testing extensively for UI logic.
+ *
+ * For instrumented testing of this class, please refer to LaunchCentreTest under src/androidTest
+ */
+package fall2018.csc2017.slidingtiles;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static fall2018.csc2017.slidingtiles.UtilityManager.ACCOUNTS_FILENAME;
+import static fall2018.csc2017.slidingtiles.UtilityManager.loadAccountList;
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+
+/**
+ * The launch centre, which is a login screen
+ */
+<span class="fc" id="L31">public class LaunchCentre extends AppCompatActivity {</span>
+    /**
+     * Account list, to be loaded from local file
+     */
+<span class="fc" id="L35">    private List&lt;Account&gt; accountsList = new ArrayList&lt;&gt;();</span>
+    /**
+     * Front-end texts interfaces for Username/Password Input
+     */
+    private EditText userTextField, passwordTextField;
+    /**
+     * Current user's name
+     */
+    private static String currentUser;
+    /**
+     * The checkbox of which user can select to remember credentials upon restart
+     */
+    private CheckBox rememberCheckbox;
+    /**
+     * The PreferenceManager that handles preferences retrieving and storing
+     */
+    private PreferenceManager preferenceManager;
+    /**
+     * The AccountManager that handles account related methods
+     */
+    private AccountManager accountManager;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="fc" id="L59">        super.onCreate(savedInstanceState);</span>
+<span class="fc" id="L60">        setContentView(R.layout.activity_launchcentre);</span>
+<span class="fc" id="L61">        accountsList = loadAccountList(this);</span>
+<span class="fc" id="L62">        accountManager = new AccountManager(accountsList);</span>
+<span class="fc" id="L63">        preferenceManager = new PreferenceManager(this);</span>
+<span class="fc" id="L64">        addPasswordOnKeyListener();</span>
+<span class="fc" id="L65">        userTextField = findViewById(R.id.text_username);</span>
+<span class="fc" id="L66">        passwordTextField = findViewById(R.id.text_password);</span>
+<span class="fc" id="L67">        rememberCheckbox = findViewById(R.id.cb_remember);</span>
+<span class="fc" id="L68">        preferenceManager.setWidgetPreferences();</span>
+<span class="fc" id="L69">    }</span>
+    /**
+     * Gets the account manager for different implementation for loading account lists
+     * @return account manager
+     */
+    public AccountManager getAccountManager() {
+<span class="fc" id="L75">        return accountManager;</span>
+    }
+    /**
+     * Gets the preference manager for different implementation for loading preference
+     * @return preference manager
+     */
+    public PreferenceManager getPreferenceManager() {
+<span class="fc" id="L82">        return preferenceManager;</span>
+    }
+
+    /**
+     * Password field can directly login using the Enter button
+     */
+    private void addPasswordOnKeyListener(){
+<span class="fc" id="L89">        EditText passwordField = findViewById(R.id.text_password);</span>
+<span class="fc" id="L90">        passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {</span>
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">                if(actionId == EditorInfo.IME_ACTION_DONE){</span>
+<span class="fc" id="L94">                    Button loginButton = findViewById(R.id.button_login);</span>
+<span class="fc" id="L95">                    loginButton.performClick();</span>
+<span class="fc" id="L96">                    return true;</span>
+                }
+<span class="nc" id="L98">                return false;</span>
+            }
+        });
+<span class="fc" id="L101">    }</span>
+    /**
+     * On click function for the register button
+     * @param v the current view(Called by application)
+     */
+    public void registerButtonOnClick(View v){
+<span class="fc" id="L107">        String regUsername = userTextField.getText().toString();</span>
+<span class="fc" id="L108">        String regPassword = passwordTextField.getText().toString();</span>
+<span class="fc" id="L109">        Account newAccount = accountManager.createNewAccount(regUsername, regPassword, this);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if(newAccount != null){</span>
+<span class="fc" id="L111">            accountManager.saveCredentials(ACCOUNTS_FILENAME, this);</span>
+        }
+<span class="fc" id="L113">    }</span>
+    /**
+     * On click function for the login button
+     * @param v the current view(Called by application)
+     */
+    public void loginButtonOnClick(View v){
+<span class="fc" id="L119">        String username = userTextField.getText().toString();</span>
+<span class="fc" id="L120">        String password = passwordTextField.getText().toString();</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if(accountManager.authenticateCredentials(username, password)) {</span>
+<span class="fc" id="L122">            currentUser = username;</span>
+<span class="fc" id="L123">            makeCustomToastText(this.getString(R.string.lc_login_successful), getBaseContext());</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">            if(rememberCheckbox.isChecked())</span>
+<span class="fc" id="L125">                preferenceManager.storeLoginData(currentUser,</span>
+<span class="fc" id="L126">                        passwordTextField.getText().toString(),</span>
+                        true);
+            else
+<span class="fc" id="L129">                preferenceManager.wipeLoginData();</span>
+<span class="fc" id="L130">            Intent tmp = new Intent(v.getContext(), GameSelection.class);</span>
+<span class="fc" id="L131">            tmp.putExtra(&quot;currentUser&quot;, currentUser);</span>
+<span class="fc" id="L132">            startActivity(tmp);</span>
+<span class="fc" id="L133">        }</span>
+        else{
+<span class="fc" id="L135">            makeCustomToastText(this.getString(R.string.lc_wrong_credentials), getBaseContext());</span>
+        }
+<span class="fc" id="L137">    }</span>
+    /**
+     * On click function for the guest button
+     * @param v the current view(Called by application)
+     */
+    public void guestButtonOnClick(View v){
+<span class="fc" id="L143">        Intent tmp = new Intent(v.getContext(), GameSelection.class);</span>
+<span class="fc" id="L144">        currentUser = &quot;-1&quot;;</span>
+<span class="fc" id="L145">        tmp.putExtra(&quot;currentUser&quot;, currentUser);</span>
+<span class="fc" id="L146">        startActivity(tmp);</span>
+<span class="fc" id="L147">    }</span>
+
+    @Override
+    protected void onRestart() {
+<span class="nc" id="L151">        super.onRestart();</span>
+<span class="nc" id="L152">        accountsList = loadAccountList(this);</span>
+<span class="nc" id="L153">        accountManager = new AccountManager(accountsList);</span>
+<span class="nc" id="L154">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Account.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">Account.java</span></div><h1>Account.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * The account of the user.
+ */
+public class Account implements Serializable {
+    /**
+     * Account's username
+     */
+    private String username;
+    /**
+     * Account's password
+     */
+    private String password;
+    /**
+     * Account's saved sliding tile games
+     */
+<span class="fc" id="L23">    private List&lt;BoardManager&gt; boardList = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Account's saved ultimate tic tac toe games
+     */
+<span class="fc" id="L28">    private List&lt;Integer&gt; ultimateTTTSave = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Account's sliding tile games' scores as a list
+     */
+<span class="fc" id="L33">    private List&lt;Integer&gt; slidingGameScores = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Account's ultimate tic tac toe games' total wins
+     */
+    private Integer ultimateTTTScores;
+
+    /**
+     * Account's obstacle dodger games' scores as a list
+     */
+<span class="fc" id="L43">    private List&lt;Integer&gt; obstacleDodgerScores = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Account constructor
+     *
+     * @param username user's name
+     * @param password user's password
+     */
+<span class="fc" id="L51">    public Account(String username, String password) {</span>
+<span class="fc" id="L52">        this.username = username;</span>
+<span class="fc" id="L53">        this.password = password;</span>
+<span class="fc" id="L54">        ultimateTTTScores = 0;</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Gets this account's username
+     *
+     * @return the username as String
+     */
+    public String getUsername() {
+<span class="fc" id="L63">        return username;</span>
+    }
+
+    /**
+     * Gets this account's list of scores for ultimate tic tac toe games
+     *
+     * @return this account's list of scores for ultimate tic tac toe games
+     */
+    public Integer getUltimateTTTScores() {
+<span class="fc" id="L72">        return ultimateTTTScores;</span>
+    }
+
+    public void ultimateTTTWinUpdate(Boolean won) {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (won) ultimateTTTScores++;</span>
+<span class="nc" id="L77">    }</span>
+
+    /**
+     * Gets this account's list of scores for obstacle dodger games
+     *
+     * @return this account's list of scores for obstacle dodger games
+     */
+    public List&lt;Integer&gt; getObstacleDodgerScores() {
+<span class="fc" id="L85">        return obstacleDodgerScores;</span>
+    }
+
+    /**
+     * Gets this account's password
+     *
+     * @return the password as String
+     */
+    public String getPassword() {
+<span class="fc" id="L94">        return password;</span>
+    }
+
+    /**
+     * Gets this account's list of scores
+     *
+     * @return this account's list of scores
+     */
+    public List&lt;Integer&gt; getSlidingGameScores() {
+<span class="fc" id="L103">        return this.slidingGameScores;</span>
+    }
+
+    /**
+     * Gets this account's list of sliding game's boards
+     *
+     * @return the List of Boards
+     */
+    public List&lt;BoardManager&gt; getBoardList() {
+<span class="fc" id="L112">        return boardList;</span>
+    }
+
+    /**
+     * Sets this account's list of sliding game's boards
+     *
+     * @param boardList the board to be replaced with
+     */
+    public void setBoardList(List&lt;BoardManager&gt; boardList) {
+<span class="fc" id="L121">        this.boardList = boardList;</span>
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * Sets this account's list of ultimate tic tac toe game's boards
+     *
+     * @param ultTTTUserResponses the board to be replaced with
+     */
+    public void setUltimateTTTSave(int ultTTTUserResponses) {
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (ultTTTUserResponses &lt; 0)</span>
+<span class="nc" id="L131">            this.ultimateTTTSave = new ArrayList&lt;&gt;();</span>
+        else {
+<span class="nc" id="L133">            this.ultimateTTTSave.add(ultTTTUserResponses);</span>
+        }
+
+<span class="nc" id="L136">    }</span>
+
+    /**
+     * Assert with this account's username is equal to the account to be compared with
+     *
+     * @param account the account to be compared with
+     * @return The equality test with this account's username and param account's username
+     */
+    public boolean equals(Account account) {
+<span class="pc bpc" id="L145" title="2 of 4 branches missed.">        return account != null &amp;&amp; account.getUsername().equals(this.getUsername());</span>
+    }
+
+    /**
+     * Add a score from a game of sliding tiles to the list of the user's scores
+     *
+     * @param score the score to add to sliding games
+     */
+    public void addToSlidingGameScores(int score) {
+<span class="fc" id="L154">        this.slidingGameScores.add(score);</span>
+<span class="fc" id="L155">        sortGameScores();</span>
+<span class="fc" id="L156">    }</span>
+
+    /**
+     * Sort the user's score lists in reverse order from highest to lowest
+     */
+    public void sortGameScores() {
+<span class="fc" id="L162">        Collections.sort(slidingGameScores, Collections.&lt;Integer&gt;reverseOrder());</span>
+<span class="fc" id="L163">        Collections.sort(obstacleDodgerScores, Collections.&lt;Integer&gt;reverseOrder());</span>
+<span class="fc" id="L164">    }</span>
+
+    /**
+     * Add a score from a game of obstacle dodger to the list of user's scores
+     *
+     * @param score the score to add to sliding games
+     */
+    public void addToObDodgeGameScores(int score) {
+<span class="fc" id="L172">        obstacleDodgerScores.add(score);</span>
+<span class="fc" id="L173">        sortGameScores();</span>
+<span class="fc" id="L174">    }</span>
+
+    public List getUltimateTTTSave() {
+<span class="fc" id="L177">        return ultimateTTTSave;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

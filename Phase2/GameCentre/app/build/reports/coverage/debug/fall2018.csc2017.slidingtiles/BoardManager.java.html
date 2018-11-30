@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoardManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">BoardManager.java</span></div><h1>BoardManager.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.graphics.Bitmap;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
+
+/**
+ * Manage a board, including swapping tiles, checking for a win, and managing taps.
+ */
+public class BoardManager implements Serializable, Undoable {
+
+    /**
+     * The board being managed.
+     */
+    private Board board;
+
+    /**
+     * The number of steps that users can undo.
+     */
+<span class="fc" id="L24">    private int numCanUndo = 3;</span>
+
+    /**
+     * The number of moves that users have taken.
+     */
+<span class="fc" id="L29">    private int moves = 0;</span>
+
+    /**
+     * The time that users have taken.
+     */
+<span class="fc" id="L34">    private long timeSpent = 0;</span>
+
+    /**
+     * The steps for users to undo.
+     */
+<span class="fc" id="L39">    private Stack&lt;Integer&gt; availableUndoSteps = new Stack&lt;&gt;();</span>
+
+    /**
+     * The images that users want to use.
+     */
+    private transient ArrayList&lt;Bitmap&gt; customImageSet;
+
+    /**
+     * A check if the user want to use images.
+     */
+    private transient boolean useImage;
+
+    /**
+     * Manage a board that has been pre-populated.
+     *
+     * @param board the board
+     */
+<span class="fc" id="L56">    public BoardManager(Board board) {</span>
+<span class="fc" id="L57">        this.board = board;</span>
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * Manage a new shuffled board.
+     */
+<span class="fc" id="L63">    public BoardManager() {</span>
+<span class="fc" id="L64">        List&lt;Tile&gt; tiles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L65">        int checkSolvable = 0; int count = 0;</span>
+<span class="fc" id="L66">        int numTiles = 4 * 4;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (int tileNum = 0; tileNum != numTiles; tileNum++) {</span>
+<span class="fc" id="L68">            tiles.add(new Tile(tileNum));</span>
+        }
+<span class="fc" id="L70">        Collections.shuffle(tiles);</span>
+        while(true){
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            for (int tileNum = 0; tileNum &lt; numTiles; tileNum++) {</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">                if(tiles.get(tileNum).getId() == numTiles){continue;}</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                for (int x = tileNum + 1; x &lt; numTiles; x++) {</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">                    if(tiles.get(tileNum).getId() == numTiles){continue;}</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">                    if(tiles.get(tileNum).getId() &gt; tiles.get(x).getId()){</span>
+<span class="fc" id="L77">                        count++;</span>
+                    }
+                }
+<span class="fc" id="L80">                checkSolvable += count;</span>
+<span class="fc" id="L81">                count = 0;</span>
+            }
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            if(checkSolvable % 2 == 0){</span>
+<span class="fc" id="L84">                break;</span>
+<span class="fc" id="L85">            }else {Collections.shuffle(tiles); checkSolvable = 0;}</span>
+        }
+<span class="fc" id="L87">        this.board = new Board(tiles);</span>
+<span class="fc" id="L88">    }</span>
+
+    /**
+     * Return if the user want to use images.
+     * @return if the user want to use images.
+     */
+    public boolean isUseImage() {
+<span class="fc" id="L95">        return useImage;</span>
+    }
+
+    /**
+     * Sets if the user want to use images
+     */
+    public void setUseImage(boolean useImage) {
+<span class="fc" id="L102">        this.useImage = useImage;</span>
+<span class="fc" id="L103">    }</span>
+
+    /**
+     * Gets the set of images that users want to use
+     * @return the set of images that users want to use
+     */
+    public ArrayList&lt;Bitmap&gt; getCustomImageSet() {
+<span class="nc" id="L110">        return customImageSet;</span>
+    }
+
+    /**
+     * Sets the set of images that users want to use
+     */
+    public void setCustomImageSet(ArrayList&lt;Bitmap&gt; customImageSet) {
+<span class="nc" id="L117">        this.customImageSet = customImageSet;</span>
+<span class="nc" id="L118">    }</span>
+
+    /**
+     * Gets the time spent
+     * @return the time spent
+     */
+    public long getTimeSpent() {
+<span class="fc" id="L125">        return timeSpent;</span>
+    }
+
+    /**
+     * Sets the time spent
+     */
+    public void setTimeSpent(long timeSpent) {
+<span class="fc" id="L132">        this.timeSpent = timeSpent;</span>
+<span class="fc" id="L133">    }</span>
+
+    /**
+     * Gets the total number of moves that users have taken.
+     *
+     * @return the total number of moves that users have taken
+     */
+    public int getMoves() {
+<span class="fc" id="L141">        return moves;</span>
+    }
+
+    /**
+     * Gets the available number of steps that users can undo.
+     *
+     * @return the available number of steps that users can undo
+     */
+    public int getNumCanUndo() {
+<span class="fc" id="L150">        return numCanUndo;</span>
+    }
+
+    /**
+     * sets the available number of steps that users can undo.
+     */
+    public void setNumCanUndo(int numCanUndo) {
+<span class="fc" id="L157">        this.numCanUndo = numCanUndo;</span>
+<span class="fc" id="L158">    }</span>
+
+    /**
+     * Return the current board.
+     */
+    public Board getBoard() {
+<span class="fc" id="L164">        return board;</span>
+    }
+
+    /**
+     * Return whether the tiles are in row-major order.
+     *
+     * @return whether the tiles are in row-major order
+     */
+    boolean puzzleSolved() {
+<span class="fc" id="L173">        boolean solved = true;</span>
+<span class="fc" id="L174">        int index = 1;</span>
+<span class="fc" id="L175">        Iterator&lt;Tile&gt; tileIterator = board.iterator();</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        while (index != board.numTiles()) {</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">            if (index != tileIterator.next().getId()) {</span>
+<span class="fc" id="L178">                solved = false;</span>
+            }
+<span class="fc" id="L180">            index++;</span>
+        }
+<span class="fc" id="L182">        return solved;</span>
+    }
+
+    /**
+     * Return whether any of the four surrounding tiles is the blank tile.
+     *
+     * @param position the tile to check
+     * @return whether the tile at position is surrounded by a blank tile
+     */
+    boolean isValidTap(int position) {
+
+<span class="fc" id="L193">        int row = position / board.getNumColumns();</span>
+<span class="fc" id="L194">        int col = position - row * board.getNumColumns();</span>
+<span class="fc" id="L195">        int blankId = board.numTiles();</span>
+        // Are any of the 4 the blank tile?
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        Tile above = row == 0 ? null : board.getTile(row - 1, col);</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        Tile below = row == board.getNumRows() - 1 ? null : board.getTile(row + 1, col);</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        Tile left = col == 0 ? null : board.getTile(row, col - 1);</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">        Tile right = col == board.getNumColumns() - 1 ? null : board.getTile(row, col + 1);</span>
+<span class="fc bfc" id="L201" title="All 6 branches covered.">        return (below != null &amp;&amp; below.getId() == blankId)</span>
+<span class="pc bpc" id="L202" title="1 of 4 branches missed.">                || (above != null &amp;&amp; above.getId() == blankId)</span>
+<span class="pc bpc" id="L203" title="1 of 4 branches missed.">                || (left != null &amp;&amp; left.getId() == blankId)</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">                || (right != null &amp;&amp; right.getId() == blankId);</span>
+    }
+
+    /**
+     * Process a touch at position in the board, swapping tiles as appropriate.
+     *
+     * @param position the position
+     */
+    void touchMove(int position) {
+<span class="fc" id="L213">        int row = position / board.getNumColumns();</span>
+<span class="fc" id="L214">        int col = position - row * board.getNumColumns();</span>
+<span class="fc" id="L215">        int blankId = board.numTiles();</span>
+<span class="pc bpc" id="L216" title="1 of 2 branches missed.">        if (isValidTap(position)) {</span>
+<span class="fc" id="L217">            availableUndoSteps.push(row);</span>
+<span class="fc" id="L218">            availableUndoSteps.push(col);</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">            Tile above = row == 0 ? null : board.getTile(row - 1, col);</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">            Tile below = row == board.getNumRows() - 1 ? null : board.getTile(row + 1, col);</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">            Tile left = col == 0 ? null : board.getTile(row, col - 1);</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">            Tile right = col == board.getNumColumns() - 1 ? null : board.getTile(row, col + 1);</span>
+<span class="pc bpc" id="L223" title="1 of 4 branches missed.">            if (above != null &amp;&amp; above.getId() == blankId) {</span>
+<span class="nc" id="L224">                board.swapTiles(row, col, row - 1, col);</span>
+<span class="nc" id="L225">                availableUndoSteps.push(row - 1);</span>
+<span class="nc" id="L226">                availableUndoSteps.push(col);</span>
+<span class="pc bpc" id="L227" title="1 of 4 branches missed.">            } else if (below != null &amp;&amp; below.getId() == blankId) {</span>
+<span class="fc" id="L228">                board.swapTiles(row, col, row + 1, col);</span>
+<span class="fc" id="L229">                availableUndoSteps.push(row + 1);</span>
+<span class="fc" id="L230">                availableUndoSteps.push(col);</span>
+<span class="pc bpc" id="L231" title="1 of 4 branches missed.">            } else if (left != null &amp;&amp; left.getId() == blankId) {</span>
+<span class="fc" id="L232">                board.swapTiles(row, col, row, col - 1);</span>
+<span class="fc" id="L233">                availableUndoSteps.push(row);</span>
+<span class="fc" id="L234">                availableUndoSteps.push(col - 1);</span>
+<span class="pc bpc" id="L235" title="2 of 4 branches missed.">            } else if (right != null &amp;&amp; right.getId() == blankId) {</span>
+<span class="fc" id="L236">                board.swapTiles(row, col, row, col + 1);</span>
+<span class="fc" id="L237">                availableUndoSteps.push(row);</span>
+<span class="fc" id="L238">                availableUndoSteps.push(col + 1);</span>
+            }
+<span class="fc" id="L240">            moves++;</span>
+        }
+<span class="fc" id="L242">    }</span>
+
+    @Override
+    public boolean canUndo() {
+<span class="pc bpc" id="L246" title="1 of 4 branches missed.">        return (!availableUndoSteps.isEmpty() &amp;&amp; numCanUndo != 0);</span>
+    }
+
+    @Override
+    public void undo() {
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">        if (canUndo()) {</span>
+<span class="fc" id="L252">            int col1 = availableUndoSteps.pop();</span>
+<span class="fc" id="L253">            int row1 = availableUndoSteps.pop();</span>
+<span class="fc" id="L254">            int col2 = availableUndoSteps.pop();</span>
+<span class="fc" id="L255">            int row2 = availableUndoSteps.pop();</span>
+<span class="fc" id="L256">            board.swapTiles(row1, col1, row2, col2);</span>
+<span class="fc" id="L257">            numCanUndo--;</span>
+<span class="fc" id="L258">            moves++;</span>
+        }
+<span class="fc" id="L260">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

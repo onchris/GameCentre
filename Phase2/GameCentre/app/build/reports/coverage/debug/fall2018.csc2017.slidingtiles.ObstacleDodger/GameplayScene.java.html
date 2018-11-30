@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameplayScene.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.ObstacleDodger</a> &gt; <span class="el_source">GameplayScene.java</span></div><h1>GameplayScene.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.ObstacleDodger;
+
+/*
+Adapted from:
+https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
+ */
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.view.MotionEvent;
+
+import java.util.Observable;
+
+/**
+ * Class for Obstacle Dodger Gameplay scenes.
+ */
+public class GameplayScene extends Observable implements Scene {
+
+    /**
+     * The rectangle that contains the player animation.
+     */
+<span class="fc" id="L25">    private Rect r = new Rect();</span>
+
+    /**
+     * The rect player.
+     */
+    private RectPlayer player;
+
+    /**
+     * The point where the rectangle spawns.
+     */
+    private Point playerPoint;
+
+    /**
+     * The obstacle manager for the current game.
+     */
+    private ObstacleManager obstacleManager;
+
+    /**
+     * Boolean that represents whether the player is moving.
+     */
+<span class="fc" id="L45">    private boolean movingPlayer = false;</span>
+
+    /**
+     * Boolean that represents whether game is over.
+     */
+<span class="fc" id="L50">    private boolean gameOver = false;</span>
+
+    /**
+     * The long representing the time after game finished.
+     */
+    private long gameOverTime;
+
+    /**
+     * Creates a new gameplay scene.
+     */
+<span class="fc" id="L60">    GameplayScene() {</span>
+<span class="fc" id="L61">        player = new RectPlayer(new Rect(100, 100, 200, 200), Color.rgb(255, 0, 0));</span>
+<span class="fc" id="L62">        playerPoint = new Point(ObUtilityManager.getScreenWidth() / 2, 3 * ObUtilityManager.getScreenHeight() / 4);</span>
+<span class="fc" id="L63">        player.update(playerPoint);</span>
+<span class="fc" id="L64">        obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);</span>
+<span class="fc" id="L65">    }</span>
+
+    /**
+     * Resets the gameplay scene, placing the player back at the start position and create new obstacles.
+     */
+    private void reset() {
+<span class="nc" id="L71">        playerPoint = new Point(ObUtilityManager.getScreenWidth() / 2, 3 * ObUtilityManager.getScreenHeight() / 4);</span>
+<span class="nc" id="L72">        player.update(playerPoint);</span>
+<span class="nc" id="L73">        obstacleManager = new ObstacleManager(200, 350, 75, Color.BLACK);</span>
+<span class="nc" id="L74">        movingPlayer = false;</span>
+<span class="nc" id="L75">    }</span>
+
+    @Override
+    public void receiveTouch(MotionEvent event) {
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (!gameOver)</span>
+<span class="nc bnc" id="L80" title="All 4 branches missed.">            switch (event.getAction()) {</span>
+                case MotionEvent.ACTION_DOWN:
+<span class="nc bnc" id="L82" title="All 4 branches missed.">                    if (!gameOver &amp;&amp; player.getRectangle().contains((int) event.getX(), (int) event.getY()))</span>
+<span class="nc" id="L83">                        movingPlayer = true;</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">                    if (gameOver &amp;&amp; System.currentTimeMillis() - gameOverTime &gt;= 2000) {</span>
+<span class="nc" id="L85">                        reset();</span>
+<span class="nc" id="L86">                        gameOver = true;</span>
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+<span class="nc bnc" id="L90" title="All 4 branches missed.">                    if (!gameOver &amp;&amp; movingPlayer)</span>
+<span class="nc" id="L91">                        playerPoint.set((int) event.getX(), (int) event.getY());</span>
+                    break;
+                case MotionEvent.ACTION_UP:
+<span class="nc" id="L94">                    movingPlayer = false;</span>
+                    break;
+            }
+<span class="nc" id="L97">    }</span>
+
+    @Override
+    public void draw(Canvas canvas) {
+<span class="fc" id="L101">        canvas.drawColor(Color.WHITE);</span>
+
+<span class="fc" id="L103">        player.draw(canvas);</span>
+<span class="fc" id="L104">        obstacleManager.draw(canvas);</span>
+
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if (gameOver) {</span>
+<span class="fc" id="L107">            Paint paint = new Paint();</span>
+<span class="fc" id="L108">            paint.setTextSize(100);</span>
+<span class="fc" id="L109">            paint.setColor(Color.MAGENTA);</span>
+<span class="fc" id="L110">            String text = &quot;Game Over&quot;;</span>
+<span class="fc" id="L111">            drawCenterText(canvas, paint, text);</span>
+        }
+
+<span class="fc" id="L114">    }</span>
+
+    @Override
+    public void update() {
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (!gameOver) {</span>
+<span class="fc" id="L119">            player.update(playerPoint);</span>
+<span class="fc" id="L120">            obstacleManager.update();</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if (obstacleManager.playerCollide(player)) {</span>
+<span class="fc" id="L122">                gameOver = true;</span>
+<span class="fc" id="L123">                gameOverTime = System.currentTimeMillis();</span>
+<span class="fc" id="L124">                setChanged();</span>
+<span class="fc" id="L125">                notifyObservers(obstacleManager.getScore());</span>
+            }
+        }
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * Draws a text in the center of the screen.
+     *
+     * @param canvas the canvas to be drawn.
+     * @param paint  the paint for the canvas.
+     * @param text   the text to be drawn.
+     */
+    private void drawCenterText(Canvas canvas, Paint paint, String text) {
+<span class="fc" id="L138">        paint.setTextAlign(Paint.Align.LEFT);</span>
+<span class="fc" id="L139">        canvas.getClipBounds(r);</span>
+<span class="fc" id="L140">        int cHeight = r.height();</span>
+<span class="fc" id="L141">        int cWidth = r.width();</span>
+<span class="fc" id="L142">        paint.getTextBounds(text, 0, text.length(), r);</span>
+<span class="fc" id="L143">        float x = cWidth / 2f - r.width() / 2f - r.left;</span>
+<span class="fc" id="L144">        float y = cHeight / 2f + r.height() / 2f - r.bottom;</span>
+<span class="fc" id="L145">        canvas.drawText(text, x, y, paint);</span>
+<span class="fc" id="L146">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

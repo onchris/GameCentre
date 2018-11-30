@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoaderAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">LoaderAdapter.java</span></div><h1>LoaderAdapter.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.TextView;
+import java.util.ArrayList;
+
+
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
+
+public class LoaderAdapter extends BaseAdapter {
+    /**
+     * The list of boards that this adapter will handle
+     */
+<span class="fc" id="L25">    private ArrayList&lt;BoardManager&gt; boardList = new ArrayList&lt;&gt;();</span>
+    /**
+     * The current context the adapter will show in
+     */
+    private Context ctx;
+    /**
+     * Records the last time a user clicked on an item
+     * which checks for double clicks for item deletion
+     */
+    private long lastTimeClicked;
+    /**
+     * AlertDialog to warn user of deletion of items
+     */
+    private AlertDialog ad;
+    /**
+     * Current account
+     */
+    public Account account;
+    /**
+     * A subclass which holds each individual view components for ease of retrieval
+     */
+<span class="fc" id="L46">    static class ViewHolder {</span>
+        TextView text;
+        TextView textDifficulty;
+        TextView textUndos;
+        Button button;
+    }
+
+    /**
+     * LoaderAdapter constructor
+     * @param boardList the current board list to be building with
+     * @param ctx the current context
+     */
+<span class="fc" id="L58">    public LoaderAdapter(ArrayList&lt;BoardManager&gt; boardList, Context ctx){</span>
+<span class="fc" id="L59">        this.boardList = boardList;</span>
+<span class="fc" id="L60">        this.ctx = ctx;</span>
+<span class="fc" id="L61">        ad = UtilityManager.alertDialogBuilder(null, &quot;You can't undelete a game! Make your choice!&quot;, ctx);</span>
+<span class="fc" id="L62">    }</span>
+
+    /**
+     * Gets the count of the boardList
+     * @return the size of the boardList
+     */
+    @Override
+    public int getCount() {
+<span class="fc" id="L70">        return boardList.size();</span>
+    }
+
+    /**
+     * Gets the board at i position in the view
+     * @param i the position that the item is in
+     * @return the BoardManager which has board and other informations
+     */
+    @Override
+    public BoardManager getItem(int i) {
+<span class="fc" id="L80">        return boardList.get(i);</span>
+    }
+
+    /**
+     * Gets the item id. (Required implementation, not used by anything)
+     * @param i the position that the item is in
+     * @return the position of the item
+     */
+    @Override
+    public long getItemId(int i) {
+<span class="nc" id="L90">        return i;</span>
+    }
+
+    /**
+     * Gets the dimension of the board as a string
+     * @param i the position that the item is in
+     * @return the dimensions of the board as a string
+     */
+    private String getDifficulty(int i){
+<span class="fc" id="L99">        BoardManager b = boardList.get(i);</span>
+<span class="fc" id="L100">        String returnString = b.getBoard().getTilesDimension();</span>
+<span class="fc" id="L101">        String[] stringArray = returnString.split(&quot;x&quot;);</span>
+<span class="fc" id="L102">        return stringArray[0] + &quot;x&quot; + stringArray[1];</span>
+    }
+
+    /**
+     * Gets the item as display it accordingly as a view component
+     * @param i the position that the item is in
+     * @param view the current uninitialized view
+     * @param viewGroup the view that items will be shown in
+     * @return the display of each individual items as a view component
+     */
+    @Override
+    public View getView(final int i, View view, final ViewGroup viewGroup) {
+<span class="fc" id="L114">        ViewHolder v = new ViewHolder();</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if(view == null) {</span>
+<span class="fc" id="L116">            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.adapter_loadlist, viewGroup, false  );</span>
+<span class="fc" id="L117">            v.button = view.findViewById(R.id.button_load);</span>
+<span class="fc" id="L118">            v.text = view.findViewById(R.id.text_game);</span>
+<span class="fc" id="L119">            v.textDifficulty = view.findViewById(R.id.text_difficulty);</span>
+<span class="fc" id="L120">            v.textUndos = view.findViewById(R.id.text_undos);</span>
+<span class="fc" id="L121">            view.setTag(v);</span>
+        }
+        else
+<span class="nc" id="L124">            v = (ViewHolder) view.getTag();</span>
+
+<span class="fc" id="L126">        v.button.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="fc" id="L129">                BoardManager bm = getItem(i);</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">                if(bm.isUseImage())</span>
+<span class="nc" id="L131">                    GameActivity.IMAGE_SET = bm.getCustomImageSet();</span>
+<span class="fc" id="L132">                saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME, bm, ctx);</span>
+<span class="fc" id="L133">                Intent tmp = new Intent(view.getContext(), GameActivity.class);</span>
+<span class="fc" id="L134">                tmp.putExtra(&quot;account&quot;, account);</span>
+<span class="fc" id="L135">                tmp.putExtra(&quot;boardList&quot;, boardList);</span>
+<span class="fc" id="L136">                tmp.putExtra(&quot;boardIndex&quot;, i);</span>
+<span class="fc" id="L137">                ctx.startActivity(tmp);</span>
+<span class="fc" id="L138">            }</span>
+        });
+<span class="fc" id="L140">        v.text.setText(&quot;Game &quot; + i);</span>
+<span class="fc" id="L141">        v.textDifficulty.setText(getDifficulty(i));</span>
+<span class="fc" id="L142">        v.textUndos.setText(&quot;Undos: &quot; + ((BoardManager)getItem(i)).getNumCanUndo());</span>
+<span class="fc" id="L143">        view.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="fc" id="L146">                long currTime = System.currentTimeMillis();</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">                if (currTime - lastTimeClicked &lt; ViewConfiguration.getDoubleTapTimeout()) {</span>
+<span class="fc" id="L148">                    deleteFromBoard(i, viewGroup.getContext());</span>
+                }
+<span class="fc" id="L150">                lastTimeClicked = currTime;</span>
+<span class="fc" id="L151">            }</span>
+        });
+<span class="fc" id="L153">        return view;</span>
+    }
+
+    /**
+     * Deletes the item from the list of items as well as it's appearance
+     * @param position the position that the item is in
+     * @param ctx the current context the dialogs will be shown on
+     */
+    private void deleteFromBoard(final int position, final Context ctx){
+<span class="fc" id="L162">        ad.setButton(AlertDialog.BUTTON_POSITIVE, &quot;Yes&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+<span class="fc" id="L165">                boardList.remove(position);</span>
+<span class="fc" id="L166">                saveBoardsToAccounts(ctx, account, boardList);</span>
+<span class="fc" id="L167">                notifyDataSetChanged();</span>
+<span class="fc" id="L168">            }</span>
+        });
+<span class="fc" id="L170">        ad.setButton(AlertDialog.BUTTON_NEGATIVE, &quot;No&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+<span class="fc" id="L173">                dialogInterface.dismiss();</span>
+<span class="fc" id="L174">            }</span>
+        });
+<span class="fc" id="L176">        TextView titleText = new TextView(ctx);</span>
+<span class="fc" id="L177">        titleText.setText(&quot;Delete Game &quot; + position + &quot;?&quot;);</span>
+<span class="fc" id="L178">        titleText.setPadding(10,10,10,10);</span>
+<span class="fc" id="L179">        titleText.setTextSize(30);</span>
+<span class="fc" id="L180">        titleText.setGravity(Gravity.CENTER);</span>
+<span class="fc" id="L181">        ad.setCustomTitle(titleText);</span>
+<span class="fc" id="L182">        ad.show();</span>
+<span class="fc" id="L183">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

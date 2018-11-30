@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UltTTTBackendExecute.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.UltimateTTT</a> &gt; <span class="el_source">UltTTTBackendExecute.java</span></div><h1>UltTTTBackendExecute.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.UltimateTTT;
+
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
+
+import org.json.JSONObject;
+
+import java.util.Map;
+
+import fall2018.csc2017.slidingtiles.UtilityManager;
+
+/**
+ * Class for Ultimate Tic Tac Toe backend execute.
+ */
+class UltTTTBackendExecute {
+    /**
+     * The initializer for ultimate tic tac toe
+     */
+    private UltTTTBackendInit initializer;
+    /**
+     * The game state for ultimate tic tac toe
+     */
+    private UltTTTGameStates gamestates;
+    /**
+     * The scanner for ultimate tic tac toe
+     */
+    private UltTTTGameStateScanner scanner;
+
+    /**
+     * Initialize backend execute for ultimate tic tac toe
+     *
+     * @param initializer the initializer for ultimate tic tac toe
+     * @param gamestates  the game state for ultimate tic tac toe
+     */
+<span class="fc" id="L34">    UltTTTBackendExecute(UltTTTBackendInit initializer, UltTTTGameStates gamestates) {</span>
+<span class="fc" id="L35">        this.initializer = initializer;</span>
+<span class="fc" id="L36">        this.gamestates = gamestates;</span>
+<span class="fc" id="L37">        scanner = gamestates.getScanner();</span>
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * Execute movements depends on button press
+     *
+     * @param cell_number the cell number
+     * @return JSONObject the game state
+     */
+    JSONObject execute(int cell_number) {
+        int row, column;
+        JSONObject currState;
+
+<span class="nc" id="L50">        initializer.resetCells = new String();</span>
+<span class="nc" id="L51">        initializer.currentActiveBlock = getBlockNumber(cell_number);</span>
+<span class="nc" id="L52">        initializer.buttonPressed = getButtonPressed(cell_number);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (initializer.buttonPressed.equals(&quot;Reset&quot;)) {</span>
+<span class="nc" id="L54">            executeReset();</span>
+<span class="nc" id="L55">            initializer.buttonPressed = &quot;Reset&quot;;</span>
+<span class="nc" id="L56">            currState = gamestates.toJson();</span>
+<span class="nc" id="L57">            gamestates.updateHistory(currState);</span>
+<span class="nc" id="L58">            return currState;</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        } else if (initializer.buttonPressed.equals(&quot;Undo&quot;)) {</span>
+<span class="nc" id="L60">            executeUndo();</span>
+<span class="nc" id="L61">            initializer.buttonPressed = &quot;Undo&quot;;</span>
+<span class="nc" id="L62">            return gamestates.toJson();</span>
+        }
+<span class="nc" id="L64">        initializer.currentCell = cell_number;</span>
+<span class="nc" id="L65">        row = getRowNumber(cell_number);</span>
+<span class="nc" id="L66">        column = getColumnNumber(cell_number);</span>
+
+<span class="nc" id="L68">        initializer.usedCells.append(cell_number + &quot;::::&quot;);</span>
+<span class="nc" id="L69">        gamestates.updateBoard(initializer.currentActiveBlock, row, column);</span>
+<span class="nc" id="L70">        initializer.no_terms[initializer.currentActiveBlock]++;</span>
+
+<span class="nc" id="L72">        initializer.winner = gamestates.getWinner(initializer.currentActiveBlock);</span>
+
+<span class="nc bnc" id="L74" title="All 10 branches missed.">        switch (initializer.winner) {</span>
+            case &quot;Player 1&quot;:
+<span class="nc" id="L76">                initializer.disabledBlocks[initializer.currentActiveBlock] = true;</span>
+<span class="nc" id="L77">                gamestates.updateScore(0);</span>
+<span class="nc" id="L78">                break;</span>
+            case &quot;Player 2&quot;:
+<span class="nc" id="L80">                initializer.disabledBlocks[initializer.currentActiveBlock] = true;</span>
+<span class="nc" id="L81">                gamestates.updateScore(1);</span>
+                break;
+        }
+<span class="nc" id="L84">        initializer.nextActiveBlock = gamestates.getNextActiveBlock(cell_number);</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (!initializer.winner.equals(&quot;None&quot;))</span>
+<span class="nc" id="L86">            initializer.result.add(initializer.winner);</span>
+
+<span class="nc" id="L88">        initializer.globalWinner = scanner.findGlobalWinner();</span>
+<span class="nc" id="L89">        currState = gamestates.toJson();</span>
+<span class="nc" id="L90">        gamestates.updateHistory(currState);</span>
+<span class="nc" id="L91">        UtilityManager.saveUltTTTBoardManager(scanner.getActivity(), scanner.getActivity().getCurrentAccount(), cell_number);</span>
+<span class="nc" id="L92">        gamestates.updateTurn();</span>
+<span class="nc" id="L93">        return currState;</span>
+    }
+
+    /**
+     * Reset to initial state
+     */
+    private void executeReset() {
+<span class="nc" id="L100">        initializer.initialize();</span>
+<span class="nc" id="L101">    }</span>
+
+    /**
+     * Undo the execute
+     */
+    private void executeUndo() {
+        Map previous_values;
+        Map current_values;
+        JSONObject previous_move;
+        JSONObject current_move;
+        String used_cells_raw_string_array[];
+        String pre_nab;
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (initializer.history.isEmpty()) {</span>
+<span class="nc" id="L114">            initializer.initialize();</span>
+<span class="nc" id="L115">            return;</span>
+        }
+<span class="nc" id="L117">        current_move = initializer.history.pop();</span>
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (initializer.history.isEmpty()) {</span>
+<span class="nc" id="L120">            initializer.initialize();</span>
+<span class="nc" id="L121">            return;</span>
+        }
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        initializer.isP1Turn = !initializer.isP1Turn;</span>
+<span class="nc" id="L125">        previous_move = initializer.history.peek();</span>
+<span class="nc" id="L126">        current_values = UltimateTTTInfoManager.parseJson(current_move);</span>
+<span class="nc" id="L127">        previous_values = UltimateTTTInfoManager.parseJson(previous_move);</span>
+<span class="nc" id="L128">        initializer.nextActiveBlock = Integer.parseInt((String) previous_values.get(&quot;NextActiveBlock&quot;));</span>
+<span class="nc" id="L129">        initializer.currentActiveBlock = Integer.parseInt((String) previous_values.get(&quot;CurrentActiveBlock&quot;));</span>
+<span class="nc" id="L130">        initializer.winner = (String) current_values.get(&quot;CurrentWinner&quot;);</span>
+<span class="nc" id="L131">        pre_nab = (String) current_values.get(&quot;CurrentActiveBlock&quot;);</span>
+<span class="nc" id="L132">        initializer.resetCells = (String) current_values.get(&quot;CurrentCell&quot;);</span>
+<span class="nc" id="L133">        initializer.resetBlockColor = (String) current_values.get(&quot;NextActiveBlock&quot;);</span>
+<span class="nc" id="L134">        used_cells_raw_string_array = initializer.usedCells.toString().split(&quot;::::&quot;);</span>
+<span class="nc" id="L135">        initializer.usedCells = new StringBuilder();</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        for (int i = 0; i &lt; used_cells_raw_string_array.length; i++)</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">            if (!used_cells_raw_string_array[i].equals(initializer.resetCells))</span>
+<span class="nc" id="L138">                initializer.usedCells.append(used_cells_raw_string_array[i] + &quot;::::&quot;);</span>
+<span class="nc" id="L139">        initializer.score[0] = Integer.parseInt((String) previous_values.get(&quot;ScoreP1&quot;));</span>
+<span class="nc" id="L140">        initializer.score[1] = Integer.parseInt((String) previous_values.get(&quot;ScoreP2&quot;));</span>
+
+        // boardstatus is a 3D array.
+<span class="nc" id="L143">        System.out.println(&quot;Print it&quot; + pre_nab);</span>
+<span class="nc" id="L144">        initializer.boardStatus[Integer.parseInt(pre_nab)]</span>
+<span class="nc" id="L145">                [getRowNumber(Integer.parseInt(initializer.resetCells))]</span>
+<span class="nc" id="L146">                [getColumnNumber(Integer.parseInt(initializer.resetCells))] = -1;</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (!initializer.winner.equals(&quot;None&quot;)) {</span>
+<span class="nc" id="L148">            initializer.disabledBlocks[Integer.parseInt(pre_nab)] = false;</span>
+<span class="nc" id="L149">            initializer.result.remove(0);</span>
+        }
+<span class="nc" id="L151">    }</span>
+
+    /**
+     * Gets the column number that current cell is in
+     *
+     * @param cell_number the cell number
+     * @return the column number that current cell is in
+     */
+    private int getColumnNumber(int cell_number) {
+<span class="nc" id="L160">        return (cell_number % 9) % 3;</span>
+    }
+
+    /**
+     * Gets the row number that current cell is in
+     *
+     * @param cell_number the cell number
+     * @return the row number that current cell is in
+     */
+    private int getRowNumber(int cell_number) {
+<span class="nc" id="L170">        return (cell_number % 9) / 3;</span>
+    }
+
+    /**
+     * Gets the block number that current cell is in
+     *
+     * @param cell_number the cell number
+     * @return the block number that current cell is in
+     */
+    private int getBlockNumber(int cell_number) {
+<span class="nc" id="L180">        return cell_number / 9;</span>
+    }
+
+    /**
+     * Gets the button pressed
+     *
+     * @param cell_number the cell number
+     * @return the button pressed
+     */
+    private String getButtonPressed(int cell_number) {
+<span class="nc bnc" id="L190" title="All 4 branches missed.">        if (cell_number &gt;= 0 &amp;&amp; cell_number &lt;= 80)</span>
+<span class="nc" id="L191">            return &quot;GameButton&quot;;</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        else if (cell_number == 100)</span>
+<span class="nc" id="L193">            return &quot;Reset&quot;;</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        else if (cell_number == 200)</span>
+<span class="nc" id="L195">            return &quot;Undo&quot;;</span>
+<span class="nc" id="L196">        return &quot;None&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

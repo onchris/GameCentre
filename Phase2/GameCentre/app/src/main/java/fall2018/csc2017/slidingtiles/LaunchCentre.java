@@ -145,4 +145,11 @@ public class LaunchCentre extends AppCompatActivity {
         tmp.putExtra("currentUser", currentUser);
         startActivity(tmp);
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        accountsList = loadAccountList(this);
+        accountManager = new AccountManager(accountsList);
+    }
 }

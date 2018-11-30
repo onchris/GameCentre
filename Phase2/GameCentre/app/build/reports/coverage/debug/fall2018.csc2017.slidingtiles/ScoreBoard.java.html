@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScoreBoard.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">ScoreBoard.java</span></div><h1>ScoreBoard.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import fall2018.csc2017.slidingtiles.ObstacleDodger.ObGameActivity;
+import fall2018.csc2017.slidingtiles.UltimateTTT.UltimateTTTGameActivity;
+
+import static fall2018.csc2017.slidingtiles.UtilityManager.newRandomBoard;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardManagerToFile;
+
+/**
+ * A general scoreboard activity that displays game-wide and user-specific scores.
+ */
+<span class="fc" id="L26">public class ScoreBoard extends AppCompatActivity{</span>
+
+    /**
+     * Current user's account
+     */
+    private Account currentAccount;
+    /**
+     * ScoreManager to manage the scores for display.
+     */
+    private ScoreManager scoreManager;
+    /**
+     * ListView for the scores to be displayed
+     */
+    private ListView scoreList;
+    /**
+     * Scores list for user scores for display with user's name
+     */
+<span class="fc" id="L43">    private List&lt;String&gt; displayUserScoresList = new ArrayList&lt;&gt;();</span>
+    /**
+     * Scores List for Game-wide scores for display with all pair
+     */
+<span class="fc" id="L47">    private List&lt;String&gt; displayGameScoresList = new ArrayList&lt;&gt;();</span>
+    /**
+     * A check for if the player is a guest
+     */
+    private boolean IS_GUEST;
+    /**
+     * A check for if the scoreboard is global
+     */
+    private boolean IS_GLOBAL_SCOREBOARD;
+    /**
+     * The board for the game
+     */
+    private Board board;
+    /**
+     * the last game played
+     */
+    private String currentGame;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="fc" id="L67">        super.onCreate(savedInstanceState);</span>
+<span class="fc" id="L68">        setContentView(R.layout.activity_score_board);</span>
+<span class="fc" id="L69">        scoreList = findViewById(R.id.scoreboard_list);</span>
+
+<span class="fc" id="L71">        currentGame = getIntent().getStringExtra(&quot;currentGame&quot;);</span>
+<span class="fc" id="L72">        int currentUserScore = getIntent().getIntExtra(&quot;currentScore&quot;, 0);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (currentGame.equals(&quot;slidingTiles&quot;)) {</span>
+<span class="fc" id="L74">            scoreManager = new SlidingTilesScoreManager(getIntent().getStringExtra(&quot;currentUsername&quot;),</span>
+<span class="fc" id="L75">                    scoreList.getContext(),</span>
+<span class="fc" id="L76">                    currentUserScore);</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        } else if (currentGame.equals(&quot;obDodger&quot;)) {</span>
+<span class="fc" id="L78">            scoreManager = new ObDodgerScoreManager(getIntent().getStringExtra(&quot;currentUsername&quot;),</span>
+<span class="fc" id="L79">                    scoreList.getContext(),</span>
+<span class="fc" id="L80">                    currentUserScore);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        } else if (currentGame.equals(&quot;ultTTT&quot;)) {</span>
+<span class="nc" id="L82">            scoreManager = new UltTTTScoreManager(getIntent().getStringExtra(&quot;currentUsername&quot;),</span>
+<span class="nc" id="L83">                    scoreList.getContext(),</span>
+<span class="nc" id="L84">                    currentUserScore);</span>
+        }
+<span class="fc" id="L86">        addNewGameButtonListener();</span>
+<span class="fc" id="L87">        displayGameScoresList = scoreManager.getDisplayGameScoresList();</span>
+<span class="fc" id="L88">        displayUserScoresList = scoreManager.getDisplayUserScoresList();</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if(scoreManager.getCurrentAccount() != null) {</span>
+<span class="fc" id="L91">            IS_GUEST = false;</span>
+<span class="fc" id="L92">            currentAccount = scoreManager.getCurrentAccount();</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">            if (getIntent().hasExtra(&quot;board&quot;)) {</span>
+<span class="fc" id="L94">                board = (Board) getIntent().getSerializableExtra(&quot;board&quot;);</span>
+            }
+        } else {
+<span class="fc" id="L97">            IS_GUEST = true;</span>
+        }
+
+        /*
+          TextView for the score from the most recently completed game
+         */
+<span class="fc" id="L103">        TextView currentScore = findViewById(R.id.lastscore);</span>
+<span class="fc" id="L104">        currentScore.setText(String.format(&quot;%s&quot;, currentUserScore));</span>
+
+<span class="fc" id="L106">        ArrayAdapter arrayAdapter = new ArrayAdapter&lt;&gt;(this,</span>
+                R.layout.activity_scorelist, displayGameScoresList);
+<span class="fc" id="L108">        IS_GLOBAL_SCOREBOARD = true;</span>
+<span class="fc" id="L109">        scoreList.setAdapter(arrayAdapter);</span>
+<span class="fc" id="L110">        arrayAdapter.notifyDataSetChanged();</span>
+<span class="fc" id="L111">    }</span>
+
+
+    /**
+     * On click function for the change scoreboard view button
+     * @param v the current view(Called by application)
+     */
+    public void changeScoreboardViewOnClick(View v) {
+<span class="fc" id="L119">        scoreList = findViewById(R.id.scoreboard_list);</span>
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (IS_GLOBAL_SCOREBOARD) {</span>
+<span class="fc" id="L121">            ArrayAdapter arrayAdapter = new ArrayAdapter&lt;&gt;(this, R.layout.activity_scorelist, displayUserScoresList);</span>
+<span class="fc" id="L122">            scoreList.setAdapter(arrayAdapter);</span>
+<span class="fc" id="L123">            arrayAdapter.notifyDataSetChanged();</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">            IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            if (IS_GUEST) {</span>
+<span class="fc" id="L126">                Toast.makeText(scoreList.getContext(), getString(R.string.gsb_no_score), Toast.LENGTH_SHORT).show();</span>
+                //IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;
+            }
+<span class="fc" id="L129">        } else {</span>
+<span class="nc" id="L130">            ArrayAdapter arrayAdapter = new ArrayAdapter&lt;&gt;(this,</span>
+                    R.layout.activity_scorelist, displayGameScoresList);
+<span class="nc" id="L132">            scoreList.setAdapter(arrayAdapter);</span>
+<span class="nc" id="L133">            arrayAdapter.notifyDataSetChanged();</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">            IS_GLOBAL_SCOREBOARD = !IS_GLOBAL_SCOREBOARD;</span>
+        }
+<span class="fc" id="L136">    }</span>
+
+    /**
+     * A button to allow the user to begin a new game of what they just played
+     */
+    private void addNewGameButtonListener() {
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (currentGame.equals(&quot;slidingTiles&quot;)) {</span>
+<span class="fc" id="L143">            Button newGameButton = findViewById(R.id.button_new_game);</span>
+<span class="fc" id="L144">            newGameButton.setOnClickListener(new View.OnClickListener() {</span>
+                @Override
+                public void onClick(View v) {
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">                    if(IS_GUEST){</span>
+<span class="fc" id="L148">                        saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME,</span>
+<span class="fc" id="L149">                                new BoardManager(), v.getContext());</span>
+<span class="fc" id="L150">                        Intent tmp = new Intent(v.getContext(), GameActivity.class);</span>
+<span class="fc" id="L151">                        tmp.putExtra(&quot;account&quot;, -1);</span>
+<span class="fc" id="L152">                        startActivity(tmp);</span>
+<span class="fc" id="L153">                    } else {</span>
+<span class="nc" id="L154">                        BoardManager bm = new BoardManager(newRandomBoard(board.getNumRows(), board.getNumColumns()));</span>
+<span class="nc" id="L155">                        saveBoardManagerToFile(UtilityManager.TEMP_SAVE_FILENAME, bm, v.getContext());</span>
+<span class="nc" id="L156">                        Intent tmp = new Intent(v.getContext(), GameActivity.class);</span>
+<span class="nc" id="L157">                        currentAccount.getBoardList().add(bm);</span>
+<span class="nc" id="L158">                        tmp.putExtra(&quot;account&quot;, currentAccount);</span>
+<span class="nc" id="L159">                        tmp.putExtra(&quot;boardList&quot;, (Serializable) currentAccount.getBoardList());</span>
+<span class="nc" id="L160">                        tmp.putExtra(&quot;boardIndex&quot;, currentAccount.getBoardList().indexOf(bm));</span>
+<span class="nc" id="L161">                        startActivity(tmp);</span>
+                    }
+<span class="fc" id="L163">                    finish();</span>
+<span class="fc" id="L164">                }</span>
+            });
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">        } else if (currentGame.equals(&quot;obDodger&quot;)) {</span>
+<span class="fc" id="L167">            Button newGameButton = findViewById(R.id.button_new_game);</span>
+<span class="fc" id="L168">            newGameButton.setOnClickListener(new View.OnClickListener() {</span>
+                @Override
+                public void onClick(View v) {
+<span class="fc bfc" id="L171" title="All 2 branches covered.">                    if(IS_GUEST){</span>
+<span class="fc" id="L172">                        Intent tmp = new Intent(v.getContext(), ObGameActivity.class);</span>
+<span class="fc" id="L173">                        startActivity(tmp);</span>
+<span class="fc" id="L174">                    } else {</span>
+<span class="fc" id="L175">                        Intent tmp = new Intent(v.getContext(), ObGameActivity.class);</span>
+<span class="fc" id="L176">                        tmp.putExtra(&quot;account&quot;, currentAccount);</span>
+<span class="fc" id="L177">                        startActivity(tmp);</span>
+                    }
+<span class="fc" id="L179">                    finish();</span>
+<span class="fc" id="L180">                }</span>
+            });
+<span class="fc" id="L182">        } else {</span>
+<span class="nc" id="L183">            Button newGameButton = findViewById(R.id.button_new_game);</span>
+<span class="nc" id="L184">            newGameButton.setOnClickListener(new View.OnClickListener() {</span>
+                @Override
+                public void onClick(View v) {
+<span class="nc bnc" id="L187" title="All 2 branches missed.">                    if (IS_GUEST) {</span>
+<span class="nc" id="L188">                        Intent tmp = new Intent(v.getContext(), UltimateTTTGameActivity.class);</span>
+<span class="nc" id="L189">                        startActivity(tmp);</span>
+<span class="nc" id="L190">                    } else {</span>
+<span class="nc" id="L191">                        Intent tmp = new Intent(v.getContext(), UltimateTTTGameActivity.class);</span>
+<span class="nc" id="L192">                        tmp.putExtra(&quot;account&quot;, currentAccount);</span>
+<span class="nc" id="L193">                        startActivity(tmp);</span>
+                    }
+<span class="nc" id="L195">                    finish();</span>
+<span class="nc" id="L196">                }</span>
+            });
+        }
+<span class="fc" id="L199">    }</span>
+
+    /**
+     * On click function for the game selection button
+     * @param v the current view(Called by application)
+     */
+    public void gameSelectionButtonOnClick(View v){
+<span class="fc" id="L206">        this.getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span>
+<span class="fc" id="L207">        onBackPressed();</span>
+<span class="fc" id="L208">    }</span>
+
+    /**
+     * Handles phone's back button functionality
+     * If at Scoreboard screen, back button would send user to the Game Selection screen
+     * instead of login screen, vice versa.
+     */
+    @Override
+    public void onBackPressed(){
+<span class="fc" id="L217">        super.onBackPressed();</span>
+<span class="fc" id="L218">        finish();</span>
+<span class="fc" id="L219">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

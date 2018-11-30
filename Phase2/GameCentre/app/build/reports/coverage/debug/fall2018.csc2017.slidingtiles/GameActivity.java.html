@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameActivity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">GameActivity.java</span></div><h1>GameActivity.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.SystemClock;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.TextView;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static fall2018.csc2017.slidingtiles.UtilityManager.TEMP_SAVE_FILENAME;
+import static fall2018.csc2017.slidingtiles.UtilityManager.makeCustomToastText;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveBoardsToAccounts;
+import static fall2018.csc2017.slidingtiles.UtilityManager.saveScoresToAccounts;
+
+/**
+ * The game activity.
+ */
+<span class="fc" id="L33">public class GameActivity extends AppCompatActivity implements Observer {</span>
+    /**
+     * The board manager.
+     */
+    private BoardManager boardManager;
+    /**
+     * The buttons to display.
+     */
+    private ArrayList&lt;Button&gt; tileButtons;
+    /**
+     * Interval in seconds for non-guest to auto-save;
+     */
+    public static final int SAVE_INTERVAL = 10000;
+
+    /**
+     * Grid View for the game
+     */
+    private GestureDetectGridView gridView;
+    /**
+     * width and height of the sliding tiles columns
+     */
+    private static int columnWidth, columnHeight;
+    /**
+     * the current account of the game player, null if guest player
+     */
+    private Account currentAccount;
+    /**
+     * the account's list of boards
+     */
+    private ArrayList&lt;BoardManager&gt; boardList;
+    /**
+     * the index of the current board being played on from the current account's list of boards
+     */
+    private int boardIndex;
+    /**
+     * the game timer
+     */
+<span class="fc" id="L70">    private Timer timer = new Timer();</span>
+    /**
+     * timer task for this game activity
+     */
+    private TimerTask timerTask;
+    /**
+     * undo button for the game
+     */
+    private Button undoButton;
+    /**
+     * current game score
+     */
+    private Integer currentScore;
+    /**
+     * number of rows and columns on this game board
+     */
+    private int numRows, numColumns;
+<span class="fc" id="L87">    private final Context ctx = this; //TODO: can we remove?</span>
+    /**
+     * tile builder for the game board
+     */
+    private TileBuilder tileBuilder;
+    /**
+     * chronometer for the game
+     */
+    private Chronometer chronometer;
+    /**
+     * check if chronometer is running, true if yes
+     */
+    private boolean isChmRunning;
+    /**
+     * time when the game is pasued
+     */
+    private long pauseTime;
+    /**
+     * scoring system for the game
+     */
+<span class="fc" id="L107">    private ScoringSystem scoringSystem = new ScoringSystem();</span>
+    /**
+     * Broken up image for background of tiles
+     */
+    public static ArrayList&lt;Bitmap&gt; IMAGE_SET;
+    /**
+     * Set up the background image for each button based on the master list
+     * of positions, and then call the adapter to set the view.
+     */
+    // Display
+    public void display() {
+<span class="fc" id="L118">        updateTileButtons();</span>
+<span class="fc" id="L119">        gridView.setAdapter(new CustomAdapter(tileButtons, columnWidth, columnHeight));</span>
+<span class="fc" id="L120">        checkGameIsOver();</span>
+<span class="fc" id="L121">        undoButton = findViewById(R.id.UndoButton);</span>
+<span class="fc" id="L122">        undoButton.setText(getString(R.string.ga_undo, boardManager.getNumCanUndo()));</span>
+<span class="fc" id="L123">    }</span>
+
+    /**
+     * A check if the board is solved and change to the scoreboard
+     */
+    private void checkGameIsOver() {
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (boardManager.puzzleSolved()) {</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            if(currentAccount!=null) {</span>
+<span class="fc" id="L131">                timer.cancel();</span>
+<span class="fc" id="L132">                timerTask.cancel();</span>
+            }
+<span class="fc" id="L134">            pauseChronometer(chronometer);</span>
+<span class="fc" id="L135">            int movesTaken = boardManager.getMoves();</span>
+<span class="fc" id="L136">            boardManager.setTimeSpent(SystemClock.elapsedRealtime() - chronometer.getBase());</span>
+<span class="fc" id="L137">            int timeTaken = (int)boardManager.getTimeSpent() / 1000;</span>
+<span class="fc" id="L138">            currentScore = scoringSystem.calculateScore(movesTaken, timeTaken);</span>
+<span class="fc" id="L139">            gridView = findViewById(R.id.grid);</span>
+<span class="fc" id="L140">            Intent tmp = new Intent(gridView.getContext(), ScoreBoard.class);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">            if(currentAccount != null) {</span>
+<span class="fc" id="L142">                currentAccount.addToSlidingGameScores(currentScore);</span>
+<span class="fc" id="L143">                saveScoresToAccounts(this, currentAccount, currentScore);</span>
+<span class="fc" id="L144">                tmp.putExtra(&quot;currentUsername&quot;, currentAccount.getUsername());</span>
+<span class="fc" id="L145">                tmp.putExtra(&quot;board&quot;, boardManager.getBoard());</span>
+<span class="fc" id="L146">                boardList.remove(boardManager);</span>
+<span class="fc" id="L147">                saveBoardsToAccounts(this,currentAccount,boardList);</span>
+            }
+            else {
+<span class="fc" id="L150">                tmp.putExtra(&quot;currentUsername&quot;, &quot;-1&quot;);</span>
+            }
+<span class="fc" id="L152">            tmp.putExtra(&quot;currentGame&quot;, &quot;slidingTiles&quot;);</span>
+<span class="fc" id="L153">            tmp.putExtra(&quot;currentScore&quot;, currentScore);</span>
+<span class="fc" id="L154">            startActivity(tmp);</span>
+<span class="fc" id="L155">            IMAGE_SET = null;</span>
+<span class="fc" id="L156">            finish();</span>
+        }
+<span class="fc" id="L158">    }</span>
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="fc" id="L162">        super.onCreate(savedInstanceState);</span>
+        try {
+<span class="fc" id="L164">            loadFromFile(TEMP_SAVE_FILENAME);</span>
+<span class="nc" id="L165">        } catch (Exception e) {</span>
+<span class="nc" id="L166">            e.printStackTrace();</span>
+<span class="fc" id="L167">        }</span>
+<span class="fc" id="L168">        boardList = (ArrayList&lt;BoardManager&gt;) getIntent().getSerializableExtra(&quot;boardList&quot;);</span>
+<span class="fc" id="L169">        boardIndex = this.getIntent().getIntExtra(&quot;boardIndex&quot;, -1);</span>
+<span class="fc" id="L170">        setContentView(R.layout.activity_main);</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if(!GameSelection.IS_GUEST)</span>
+<span class="fc" id="L172">            setCurrentAccount((Account) getIntent().getSerializableExtra(&quot;account&quot;));</span>
+        else
+<span class="fc" id="L174">            setCurrentAccount(null);</span>
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">        boolean useImage = IMAGE_SET != null;</span>
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">        if(boardManager == null)</span>
+        {
+<span class="nc" id="L178">            boardManager = boardList.get(boardIndex);</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">            numRows = boardManager != null? boardManager.getBoard().getNumRows(): 1;</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">            numColumns = boardManager != null? boardManager.getBoard().getNumColumns(): 1;</span>
+        }
+<span class="fc" id="L182">        boardManager.setUseImage(useImage);</span>
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        if(boardManager.isUseImage()){</span>
+<span class="nc" id="L184">            boardManager.setCustomImageSet(IMAGE_SET);</span>
+        }
+<span class="fc" id="L186">        addUndoButtonListener();</span>
+<span class="fc" id="L187">        chronometer = findViewById(R.id.chronometer);</span>
+<span class="fc" id="L188">        startChronometer(chronometer);</span>
+<span class="fc" id="L189">        chronometer.setBase(SystemClock.elapsedRealtime() - boardManager.getTimeSpent());</span>
+
+        // Add View to activity
+<span class="fc" id="L192">        gridView = findViewById(R.id.grid);</span>
+<span class="fc" id="L193">        gridView.setNumColumns(numColumns);</span>
+<span class="fc" id="L194">        gridView.setBoardManager(boardManager);</span>
+<span class="fc" id="L195">        boardManager.getBoard().addObserver(this);</span>
+        // Observer sets up desired dimensions as well as calls our display function
+<span class="fc" id="L197">        gridView.getViewTreeObserver().addOnGlobalLayoutListener(</span>
+<span class="fc" id="L198">                new ViewTreeObserver.OnGlobalLayoutListener() {</span>
+                    @Override
+                    public void onGlobalLayout() {
+<span class="fc" id="L201">                        gridView.getViewTreeObserver().removeOnGlobalLayoutListener(</span>
+                                this);
+<span class="fc" id="L203">                        int displayWidth = gridView.getMeasuredWidth();</span>
+<span class="fc" id="L204">                        int displayHeight = gridView.getMeasuredHeight();</span>
+<span class="fc" id="L205">                        columnWidth = displayWidth / numColumns;</span>
+<span class="fc" id="L206">                        columnHeight = displayHeight / numRows;</span>
+<span class="fc" id="L207">                        tileBuilder = new TileBuilder(boardManager, getBaseContext(), columnWidth);</span>
+<span class="fc" id="L208">                        tileBuilder.setUseImages(boardManager.isUseImage(), IMAGE_SET);</span>
+<span class="fc" id="L209">                        tileBuilder.createTileButtons();</span>
+<span class="fc" id="L210">                        tileButtons = tileBuilder.getTileButtons();</span>
+
+<span class="fc" id="L212">                        display();</span>
+<span class="fc" id="L213">                    }</span>
+                });
+<span class="fc" id="L215">    }</span>
+
+    /**
+     * Update the backgrounds on the buttons to match the tiles.
+     */
+    private void updateTileButtons() {
+<span class="fc" id="L221">        Board board = boardManager.getBoard();</span>
+<span class="fc" id="L222">        int count = 0;</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">        for(int row = 0; row != numRows; row++){</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">            for(int col = 0; col != numColumns; col++){</span>
+<span class="fc" id="L225">                tileButtons.get(count).setBackground(board.getTile(row,col).getBackground());</span>
+<span class="fc" id="L226">                count++;</span>
+            }
+        }
+<span class="fc" id="L229">    }</span>
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+<span class="fc" id="L235">        super.onPause();</span>
+<span class="fc" id="L236">        saveToFile(UtilityManager.TEMP_SAVE_FILENAME);</span>
+<span class="fc" id="L237">    }</span>
+    /**
+     * Load the board manager from fileName.
+     *
+     * @param fileName the name of the file
+     */
+    private void loadFromFile(String fileName) throws Exception {
+<span class="fc" id="L244">        InputStream inputStream = this.openFileInput(fileName);</span>
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (inputStream != null) {</span>
+<span class="fc" id="L246">            ObjectInputStream input = new ObjectInputStream(inputStream);</span>
+<span class="fc" id="L247">            boardManager = (BoardManager) input.readObject();</span>
+<span class="fc" id="L248">            numRows = boardManager.getBoard().getNumRows();</span>
+<span class="fc" id="L249">            numColumns = boardManager.getBoard().getNumColumns();</span>
+<span class="fc" id="L250">            inputStream.close();</span>
+        }
+<span class="fc" id="L252">    }</span>
+    /**
+     * Save the board manager to fileName.
+     *
+     * @param fileName the name of the file
+     */
+    public void saveToFile(String fileName) {
+        try {
+<span class="fc" id="L260">            ObjectOutputStream outputStream = new ObjectOutputStream(</span>
+<span class="fc" id="L261">                    this.openFileOutput(fileName, MODE_PRIVATE));</span>
+<span class="fc" id="L262">            outputStream.writeObject(boardManager);</span>
+<span class="fc" id="L263">            outputStream.close();</span>
+<span class="nc" id="L264">        } catch (IOException e) {</span>
+<span class="nc" id="L265">            Log.e(&quot;Exception&quot;, &quot;File write failed: &quot; + e.toString());</span>
+<span class="fc" id="L266">        }</span>
+<span class="fc" id="L267">    }</span>
+    /**
+     * Activate the undo button.
+     */
+    private void addUndoButtonListener() {
+<span class="fc" id="L272">        Button undoButton = findViewById(R.id.UndoButton);</span>
+<span class="fc" id="L273">        undoButton.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="fc bfc" id="L276" title="All 2 branches covered.">                if (boardManager.canUndo()){</span>
+<span class="fc" id="L277">                    boardManager.undo();</span>
+<span class="fc" id="L278">                    display();</span>
+                } else{
+<span class="fc" id="L280">                    Context context = getApplicationContext();</span>
+<span class="fc" id="L281">                    makeCustomToastText(getString(R.string.ga_cannot_undo), context);</span>
+                }
+<span class="fc" id="L283">            }</span>
+        });
+<span class="fc" id="L285">    }</span>
+
+    /**
+     * method to save board
+     * @param v the view
+     * @param isAutosave true if the game save method is autosave
+     */
+    public void onClickSaveBoard(View v, boolean isAutosave){
+<span class="pc bpc" id="L293" title="1 of 2 branches missed.">        if (boardIndex != -1) {</span>
+<span class="fc" id="L294">            boardList.set(boardIndex, boardManager);</span>
+        }
+<span class="fc bfc" id="L296" title="All 2 branches covered.">        if (isAutosave)</span>
+<span class="fc" id="L297">            makeCustomToastText(getString(R.string.ga_auto_saved), this);</span>
+<span class="fc" id="L298">        saveBoardsToAccounts(this, currentAccount, boardList);</span>
+<span class="fc" id="L299">    }</span>
+
+    /**
+     * on click method to save board
+     * @param v
+     */
+    public void onClickSaveBoard(View v){
+<span class="fc bfc" id="L306" title="All 2 branches covered.">        if(currentAccount == null)</span>
+<span class="fc" id="L307">            makeCustomToastText(getString(R.string.ga_guest_save), this);</span>
+        else {
+<span class="pc bpc" id="L309" title="1 of 2 branches missed.">            if (boardIndex != -1) {</span>
+<span class="fc" id="L310">                boardList.set(boardIndex, boardManager);</span>
+            }
+<span class="fc" id="L312">            saveBoardsToAccounts(this, currentAccount, boardList);</span>
+<span class="fc" id="L313">            makeCustomToastText(getString(R.string.ga_manual_save), this);</span>
+        }
+<span class="fc" id="L315">    }</span>
+
+    /**
+     * start the chronometer for the game
+     * @param chronometer the chronometer to start
+     */
+    public void startChronometer(Chronometer chronometer){
+<span class="pc bpc" id="L322" title="1 of 2 branches missed.">        if (!isChmRunning){</span>
+<span class="fc" id="L323">            chronometer.start();</span>
+<span class="fc" id="L324">            isChmRunning = true;</span>
+        }
+<span class="fc" id="L326">    }</span>
+
+    /**
+     * pause the chronometer for the game
+     * @param chronometer the chronometer
+     */
+    public void pauseChronometer(Chronometer chronometer){
+<span class="pc bpc" id="L333" title="1 of 2 branches missed.">        if (isChmRunning){</span>
+<span class="fc" id="L334">            pauseTime = SystemClock.elapsedRealtime() - chronometer.getBase();</span>
+<span class="fc" id="L335">            chronometer.stop();</span>
+<span class="fc" id="L336">            isChmRunning = false;</span>
+        }
+<span class="fc" id="L338">    }</span>
+
+    @Override
+    public void onBackPressed() {
+<span class="fc" id="L342">        pauseChronometer(chronometer);</span>
+<span class="pc bpc" id="L343" title="1 of 2 branches missed.">        if(boardManager!=null)</span>
+<span class="fc" id="L344">            boardManager.setTimeSpent(pauseTime);</span>
+<span class="fc bfc" id="L345" title="All 2 branches covered.">        if(currentAccount != null) {</span>
+<span class="fc" id="L346">            onClickSaveBoard(getCurrentFocus(), false);</span>
+<span class="pc bpc" id="L347" title="2 of 4 branches missed.">            if(timer != null &amp;&amp; timerTask != null) {</span>
+<span class="fc" id="L348">                timer.cancel();</span>
+<span class="fc" id="L349">                timerTask.cancel();</span>
+            }
+        }
+<span class="fc" id="L352">        IMAGE_SET = null;</span>
+<span class="fc" id="L353">        super.onBackPressed();</span>
+<span class="fc" id="L354">        finish();</span>
+<span class="fc" id="L355">    }</span>
+
+    /**
+     * Set current account depending on different implementation of account loading
+     * @param currentAccount current player's account
+     */
+    public void setCurrentAccount(Account currentAccount) {
+<span class="fc" id="L362">        this.currentAccount = currentAccount;</span>
+<span class="fc" id="L363">        TextView v = findViewById(R.id.text_currentUserGame);</span>
+<span class="fc bfc" id="L364" title="All 2 branches covered.">        if(this.currentAccount != null) {</span>
+<span class="fc" id="L365">            v.setText(getString(R.string.ga_current_user, currentAccount.getUsername()));</span>
+<span class="fc" id="L366">            timerTask = new TimerTask() {</span>
+                @Override
+                public void run() {
+<span class="fc" id="L369">                    runOnUiThread(new Runnable() {</span>
+                        @Override
+                        public void run() {
+<span class="fc" id="L372">                            onClickSaveBoard(getCurrentFocus(),true);</span>
+<span class="fc" id="L373">                        }</span>
+                    });
+<span class="fc" id="L375">                }</span>
+            };
+<span class="fc" id="L377">            timer.scheduleAtFixedRate(timerTask, SAVE_INTERVAL, SAVE_INTERVAL);</span>
+        }
+        else
+<span class="fc" id="L380">            v.setText(getString(R.string.ga_guest_user));</span>
+
+<span class="fc" id="L382">    }</span>
+    @Override
+    public void update(Observable o, Object arg) {
+<span class="fc" id="L385">        display();</span>
+<span class="fc" id="L386">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

@@ -77,12 +77,12 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
             P1Name = currentAccount.getUsername();
             P2Name = "Guest";
             if (currentAccount.getUltimateTTTSave().size() != 0) {
-                List saveFile = currentAccount.getUltimateTTTSave();
+                List<Integer> saveFile = currentAccount.getUltimateTTTSave();
                 connector = new UltTTTConnector(this);
                 ImageButtons = connector.getImageButtons();
                 tables = connector.getTables();
                 initialize();
-                runFrontEnd(saveFile);
+                runFrontEnd(saveFile.get(0));
             } else {
                 connector = new UltTTTConnector(this);
                 ImageButtons = connector.getImageButtons();

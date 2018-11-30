@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ObstacleManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.ObstacleDodger</a> &gt; <span class="el_source">ObstacleManager.java</span></div><h1>ObstacleManager.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.ObstacleDodger;
+/*
+Adapted from:
+https://www.youtube.com/watch?v=OojQitoAEXs - Retro Chicken Android Studio 2D Game Series
+ */
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
+import java.util.ArrayList;
+
+/**
+ * Manage obstacles, check colliding and update
+ */
+public class ObstacleManager {
+
+    /**
+     * List of obstacles
+     */
+    private ArrayList&lt;Obstacle&gt; obstacles;
+    /**
+     * Gap for player
+     */
+    private int playerGap;
+    /**
+     * Gap of obstacle
+     */
+    private int obstacleGap;
+    /**
+     * Height of obstacle
+     */
+    private int obstacleHeight;
+    /**
+     * The color of obstacle
+     */
+    private int color;
+    /**
+     * The start time
+     */
+    private long startTime;
+    /**
+     * Current time
+     */
+    private long initTime;
+    /**
+     * The score
+     */
+<span class="fc" id="L49">    private int score = 0;</span>
+    /**
+     * List of all scores
+     */
+<span class="fc" id="L53">    public static ArrayList&lt;Integer&gt; allScores = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Manage obstacles
+     *
+     * @param playerGap      player's gap
+     * @param obstacleGap    gap of obstacle
+     * @param obstacleHeight height of obstacle
+     * @param color          the color og obstacle
+     */
+<span class="fc" id="L63">    ObstacleManager(int playerGap, int obstacleGap, int obstacleHeight, int color) {</span>
+<span class="fc" id="L64">        this.playerGap = playerGap;</span>
+<span class="fc" id="L65">        this.obstacleGap = obstacleGap;</span>
+<span class="fc" id="L66">        this.obstacleHeight = obstacleHeight;</span>
+<span class="fc" id="L67">        this.color = color;</span>
+<span class="fc" id="L68">        startTime = initTime = System.currentTimeMillis();</span>
+<span class="fc" id="L69">        obstacles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L70">        populateObstacles();</span>
+<span class="fc" id="L71">    }</span>
+
+    /**
+     * Check if player hits the obstacle
+     *
+     * @param player the player
+     * @return if the player collides with the obstacle
+     */
+    boolean playerCollide(RectPlayer player) {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (Obstacle ob : obstacles) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (ob.playerCollide(player))</span>
+                //allScores.add(score);
+<span class="fc" id="L83">                return true;</span>
+<span class="fc" id="L84">        }</span>
+<span class="fc" id="L85">        return false;</span>
+    }
+
+    /**
+     * Populate obstacles for screen
+     */
+    private void populateObstacles() {
+<span class="fc" id="L92">        int currY = -5 * ObUtilityManager.getScreenHeight() / 4;</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        while (currY &lt; 0) {</span>
+<span class="fc" id="L94">            int xStart = (int) (Math.random() * (ObUtilityManager.getScreenWidth() - playerGap));</span>
+<span class="fc" id="L95">            obstacles.add(new Obstacle(obstacleHeight, color, xStart, currY, playerGap));</span>
+<span class="fc" id="L96">            currY += obstacleHeight + obstacleGap;</span>
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">    }</span>
+
+    /**
+     * Update obstacles and scores
+     */
+    public void update() {
+<span class="fc" id="L104">        int elapsedTime = (int) (System.currentTimeMillis() - startTime);</span>
+<span class="fc" id="L105">        startTime = System.currentTimeMillis();</span>
+<span class="fc" id="L106">        float speed = (float) (Math.sqrt(1 + (startTime - initTime) / 2000.0)) * ObUtilityManager.getScreenHeight() / (10000.0f);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        for (Obstacle ob : obstacles) {</span>
+<span class="fc" id="L108">            ob.incrementY(speed * elapsedTime);</span>
+<span class="fc" id="L109">        }</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (obstacles.get(obstacles.size() - 1).getRectangle().top &gt;= ObUtilityManager.getScreenHeight()) {</span>
+<span class="nc" id="L111">            int xStart = (int) (Math.random() * (ObUtilityManager.getScreenWidth() - playerGap));</span>
+<span class="nc" id="L112">            obstacles.add(0, new Obstacle(obstacleHeight, color, xStart, obstacles.get(0).getRectangle().top - obstacleHeight - obstacleGap, playerGap));</span>
+<span class="nc" id="L113">            obstacles.remove(obstacles.size() - 1);</span>
+<span class="nc" id="L114">            score++;</span>
+        }
+<span class="fc" id="L116">    }</span>
+
+    /**
+     * draw obstacles
+     *
+     * @param canvas the canvas to be draw on
+     */
+    public void draw(Canvas canvas) {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        for (Obstacle ob : obstacles)</span>
+<span class="fc" id="L125">            ob.draw(canvas);</span>
+<span class="fc" id="L126">        Paint paint = new Paint();</span>
+<span class="fc" id="L127">        paint.setTextSize(100);</span>
+<span class="fc" id="L128">        paint.setColor(Color.MAGENTA);</span>
+<span class="fc" id="L129">        canvas.drawText(&quot;&quot; + score, 50, 50 + paint.descent() - paint.ascent(), paint);</span>
+<span class="fc" id="L130">    }</span>
+
+    /**
+     * Gets the score
+     *
+     * @return the score
+     */
+    public int getScore() {
+<span class="fc" id="L138">        return score;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

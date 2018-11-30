@@ -159,8 +159,8 @@ public class Account implements Serializable {
      * Sort the user's score lists in reverse order from highest to lowest
      */
     public void sortGameScores() {
-        Collections.sort(this.slidingGameScores, Collections.<Integer>reverseOrder());
-        Collections.sort(this.obstacleDodgerScores, Collections.<Integer>reverseOrder());
+        Collections.sort(slidingGameScores, Collections.<Integer>reverseOrder());
+        Collections.sort(obstacleDodgerScores, Collections.<Integer>reverseOrder());
     }
 
     /**
@@ -169,7 +169,7 @@ public class Account implements Serializable {
      * @param score the score to add to sliding games
      */
     public void addToObDodgeGameScores(int score) {
-        this.obstacleDodgerScores.add(score);
+        obstacleDodgerScores.add(score);
         sortGameScores();
     }
 

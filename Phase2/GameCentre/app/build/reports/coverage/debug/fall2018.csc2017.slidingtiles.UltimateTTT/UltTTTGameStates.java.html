@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UltTTTGameStates.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.UltimateTTT</a> &gt; <span class="el_source">UltTTTGameStates.java</span></div><h1>UltTTTGameStates.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.UltimateTTT;
+
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Class for Ultimate Tic Tac Toe game states.
+ */
+class UltTTTGameStates {
+    /**
+     * The initializer for ultimate tic tac toe game
+     */
+    private UltTTTBackendInit initializer;
+    /**
+     * The scanner for ultimate tic tac toe game
+     */
+    private UltTTTGameStateScanner scanner;
+
+    /**
+     * Game states for Ultimate TTT
+     *
+     * @param initializer the initializer for ultimate tic tac toe game
+     * @param scanner     the scanner for ultimate tic tac toe game
+     */
+<span class="fc" id="L27">    UltTTTGameStates(UltTTTBackendInit initializer, UltTTTGameStateScanner scanner) {</span>
+<span class="fc" id="L28">        this.initializer = initializer;</span>
+<span class="fc" id="L29">        this.scanner = scanner;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Convert information to jsonObject
+     *
+     * @return JSONObject
+     */
+    JSONObject toJson() {
+<span class="nc" id="L38">        JSONObject jsonObject = new JSONObject();</span>
+        try {
+<span class="nc" id="L40">            jsonObject.put(&quot;CurrentActiveBlock&quot;, initializer.currentActiveBlock);</span>
+<span class="nc" id="L41">            jsonObject.put(&quot;CurrentCell&quot;, initializer.currentCell);</span>
+<span class="nc" id="L42">            jsonObject.put(&quot;NextActiveBlock&quot;, initializer.nextActiveBlock);</span>
+<span class="nc" id="L43">            jsonObject.put(&quot;CurrentWinner&quot;, initializer.winner);</span>
+<span class="nc" id="L44">            jsonObject.put(&quot;GlobalWinner&quot;, initializer.globalWinner);</span>
+<span class="nc" id="L45">            jsonObject.put(&quot;Turn&quot;, getTurn());</span>
+<span class="nc" id="L46">            jsonObject.put(&quot;DisableBlock&quot;, getDisableBlockString());</span>
+<span class="nc" id="L47">            jsonObject.put(&quot;DisableList&quot;, initializer.usedCells);</span>
+<span class="nc" id="L48">            jsonObject.put(&quot;ResetList&quot;, initializer.resetCells);</span>
+<span class="nc" id="L49">            jsonObject.put(&quot;ScoreP1&quot;, initializer.score[0]);</span>
+<span class="nc" id="L50">            jsonObject.put(&quot;ScoreP2&quot;, initializer.score[1]);</span>
+<span class="nc" id="L51">            jsonObject.put(&quot;ResetBlockColor&quot;, initializer.resetBlockColor);</span>
+<span class="nc" id="L52">            jsonObject.put(&quot;ButtonPressed&quot;, initializer.buttonPressed);</span>
+<span class="nc" id="L53">        } catch (JSONException jsonException) {</span>
+<span class="nc" id="L54">            System.out.println(&quot;Exception in converting to JSON&quot;);</span>
+<span class="nc" id="L55">        }</span>
+<span class="nc" id="L56">        return jsonObject;</span>
+    }
+
+    /**
+     * Add moves to history
+     *
+     * @param move_json the move just taken
+     */
+    void updateHistory(JSONObject move_json) {
+<span class="nc" id="L65">        initializer.history.push(move_json);</span>
+<span class="nc" id="L66">    }</span>
+
+    /**
+     * Update the board
+     *
+     * @param blockNumber the block number
+     * @param row         the row number
+     * @param column      the column number
+     */
+    void updateBoard(int blockNumber, int row, int column) {
+<span class="nc bnc" id="L76" title="All 4 branches missed.">        if (blockNumber &gt;= 0 &amp;&amp; blockNumber &lt;= 8)</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">            if (initializer.isP1Turn)</span>
+<span class="nc" id="L78">                initializer.boardStatus[blockNumber][row][column] = 0;</span>
+            else
+<span class="nc" id="L80">                initializer.boardStatus[blockNumber][row][column] = 1;</span>
+<span class="nc" id="L81">    }</span>
+
+    /**
+     * Update the score
+     *
+     * @param num the score
+     */
+    void updateScore(int num) {
+<span class="nc" id="L89">        ++initializer.score[num];</span>
+<span class="nc" id="L90">    }</span>
+
+    /**
+     * Update the turn
+     */
+    void updateTurn() {
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        initializer.isP1Turn = !initializer.isP1Turn;</span>
+<span class="nc" id="L97">    }</span>
+
+    /**
+     * Gets the winner
+     *
+     * @param block_num block number
+     * @return the winner or null depends on different situations
+     */
+    String getWinner(int block_num) {
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        for (int i = 0; i &lt; 3; i++) {</span>
+<span class="nc bnc" id="L107" title="All 4 branches missed.">            if (initializer.boardStatus[block_num][i][0] == initializer.boardStatus[block_num][i][1] &amp;&amp;</span>
+                    initializer.boardStatus[block_num][i][1] == initializer.boardStatus[block_num][i][2]) {
+<span class="nc bnc" id="L109" title="All 2 branches missed.">                if (!(initializer.boardStatus[block_num][i][0] == -1))</span>
+<span class="nc" id="L110">                    return getPlayerID(initializer.boardStatus[block_num][i][0]);</span>
+<span class="nc bnc" id="L111" title="All 4 branches missed.">            } else if (initializer.boardStatus[block_num][0][i] == initializer.boardStatus[block_num][1][i] &amp;&amp;</span>
+                    initializer.boardStatus[block_num][1][i] == initializer.boardStatus[block_num][2][i]) {
+<span class="nc bnc" id="L113" title="All 2 branches missed.">                if (!(initializer.boardStatus[block_num][0][i] == -1))</span>
+<span class="nc" id="L114">                    return getPlayerID(initializer.boardStatus[block_num][0][i]);</span>
+<span class="nc bnc" id="L115" title="All 4 branches missed.">            } else if (initializer.boardStatus[block_num][0][0] == initializer.boardStatus[block_num][1][1] &amp;&amp;</span>
+                    initializer.boardStatus[block_num][1][1] == initializer.boardStatus[block_num][2][2]) {
+<span class="nc bnc" id="L117" title="All 2 branches missed.">                if (!(initializer.boardStatus[block_num][0][0] == -1))</span>
+<span class="nc" id="L118">                    return getPlayerID(initializer.boardStatus[block_num][1][1]);</span>
+<span class="nc bnc" id="L119" title="All 4 branches missed.">            } else if (initializer.boardStatus[block_num][0][2] == initializer.boardStatus[block_num][1][1] &amp;&amp;</span>
+                    initializer.boardStatus[block_num][1][1] == initializer.boardStatus[block_num][2][0]) {
+<span class="nc bnc" id="L121" title="All 2 branches missed.">                if (!(initializer.boardStatus[block_num][0][2] == -1))</span>
+<span class="nc" id="L122">                    return getPlayerID(initializer.boardStatus[block_num][1][1]);</span>
+            }
+        }
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (initializer.no_terms[block_num] == 9)</span>
+<span class="nc" id="L126">            return &quot;Drawn&quot;;</span>
+<span class="nc" id="L127">        return &quot;None&quot;;</span>
+    }
+
+    /**
+     * Gets which player is playing next
+     *
+     * @return which player is playing next
+     */
+    private String getTurn() {
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (initializer.isP1Turn)</span>
+<span class="nc" id="L137">            return &quot;Player 1&quot;;</span>
+<span class="nc" id="L138">        return &quot;Player 2&quot;;</span>
+    }
+
+    /**
+     * Gets the next active block
+     *
+     * @param cell_number the cell number
+     * @return the next active block
+     */
+    int getNextActiveBlock(int cell_number) {
+<span class="nc" id="L148">        int nab = cell_number % 9;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (initializer.disabledBlocks[nab])</span>
+<span class="nc" id="L150">            return Integer.MAX_VALUE;</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        return initializer.no_terms[cell_number / 9] == 9 ? Integer.MAX_VALUE : nab;</span>
+    }
+
+    /**
+     * Gets string format of disable blocks
+     *
+     * @return the string format of disable blocks
+     */
+    private String getDisableBlockString() {
+<span class="nc" id="L160">        String result = &quot;&quot;;</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        for (int i = 0; i &lt; 9; i++)</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">            if (initializer.disabledBlocks[i]) {</span>
+<span class="nc" id="L163">                result = result + i;</span>
+            }
+<span class="nc" id="L165">        return result;</span>
+    }
+
+    /**
+     * Gets the player's id
+     *
+     * @param num the id number
+     * @return the player corresponding to the id
+     */
+    private String getPlayerID(int num) {
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (num == 0)</span>
+<span class="nc" id="L176">            return &quot;Player 1&quot;;</span>
+<span class="nc" id="L177">        return &quot;Player 2&quot;;</span>
+    }
+
+    /**
+     * Gets the scanner for ultimate ttt game
+     *
+     * @return the scanner for ultimate ttt game
+     */
+    UltTTTGameStateScanner getScanner() {
+<span class="fc" id="L186">        return scanner;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

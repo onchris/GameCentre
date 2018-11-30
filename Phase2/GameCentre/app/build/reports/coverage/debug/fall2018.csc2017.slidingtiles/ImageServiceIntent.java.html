@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageServiceIntent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles</a> &gt; <span class="el_source">ImageServiceIntent.java</span></div><h1>ImageServiceIntent.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles;
+
+import android.app.IntentService;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.ResultReceiver;
+import android.support.annotation.Nullable;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+
+/**
+ * modified intent service to handle splitting an image
+ */
+public class ImageServiceIntent extends IntentService {
+    /**
+     * The bundle that this intent will be sending to a receiver
+     */
+    private Bundle bundle;
+    /**
+     * The receiver that this intent will send information to
+     */
+    private ResultReceiver rr;
+    /**
+     * The URL to be handled as an image
+     */
+    private String url;
+    /**
+     * The dimensions of which images will be split proportionally
+     */
+    private int rows, columns;
+
+    /**
+     * The required constructors for assigning worker's name.
+     */
+    public ImageServiceIntent(String name) {
+<span class="nc" id="L43">        super(name);</span>
+<span class="nc" id="L44">    }</span>
+    public ImageServiceIntent() {
+<span class="nc" id="L46">        super(&quot;DisplayNotification&quot;);</span>
+<span class="nc" id="L47">    }</span>
+    /**
+     * Initializes this intent service and creates an empty bundle
+     */
+    @Override
+    public void onCreate(){
+<span class="nc" id="L53">        super.onCreate();</span>
+<span class="nc" id="L54">        bundle = new Bundle();</span>
+<span class="nc" id="L55">    }</span>
+
+    /**
+     * The implementation of the functionality this service intent will handle
+     * @param intent the intent that is using this service intent
+     */
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+<span class="nc" id="L63">        rr = intent.getParcelableExtra(&quot;receiver&quot;);</span>
+<span class="nc" id="L64">        url = intent.getStringExtra(&quot;url&quot;);</span>
+<span class="nc" id="L65">        rows = intent.getIntExtra(&quot;rows&quot;, 0);</span>
+<span class="nc" id="L66">        columns = intent.getIntExtra(&quot;columns&quot;, 0);</span>
+        try{
+<span class="nc" id="L68">            InputStream is = (InputStream) new URL(url).getContent();</span>
+<span class="nc" id="L69">            Drawable d = Drawable.createFromStream(is, &quot;drawable&quot;);</span>
+<span class="nc" id="L70">            BitmapDrawable bitmap = (BitmapDrawable) d;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">            if(bitmap == null){</span>
+<span class="nc" id="L72">                rr.send(2, null);</span>
+            }
+<span class="nc bnc" id="L74" title="All 4 branches missed.">            else if(rows == 0 &amp;&amp; columns == 0) {</span>
+<span class="nc" id="L75">                bundle.putParcelable(&quot;image&quot;, bitmap.getBitmap());</span>
+<span class="nc" id="L76">                rr.send(3, bundle);</span>
+            } else {
+<span class="nc" id="L78">                bundle.putParcelable(&quot;image&quot;, bitmap.getBitmap());</span>
+<span class="nc" id="L79">                bundle.putSerializable(&quot;imagearray&quot;, bitmapSplitter(bitmap.getBitmap(), rows, columns));</span>
+<span class="nc" id="L80">                bundle.putIntegerArrayList(&quot;size&quot;, new ArrayList&lt;Integer&gt;() {{</span>
+<span class="nc" id="L81">                    add(rows);</span>
+<span class="nc" id="L82">                    add(columns);</span>
+<span class="nc" id="L83">                }});</span>
+<span class="nc" id="L84">                intent.putExtra(&quot;splits&quot;, 16);</span>
+<span class="nc" id="L85">                rr.send(1, bundle);</span>
+            }
+<span class="nc" id="L87">        } catch (MalformedURLException e) {</span>
+<span class="nc" id="L88">            rr.send(2,null);</span>
+<span class="nc" id="L89">            e.printStackTrace();</span>
+<span class="nc" id="L90">        } catch (IOException e) {</span>
+<span class="nc" id="L91">            rr.send(3,null);</span>
+<span class="nc" id="L92">            e.printStackTrace();</span>
+<span class="nc" id="L93">        }</span>
+<span class="nc" id="L94">    }</span>
+
+    /**
+     * Processes the image to multiple separate images
+     * @param bm the intent that is using this service intent
+     * @param rows the rows which the board is set to have
+     * @param columns the columns which the board is set to have
+     * @return the bitmap array which stores its corresponding images in order
+     */
+    public static Bitmap[][] bitmapSplitter(Bitmap bm, int rows, int columns){
+<span class="nc bnc" id="L104" title="All 4 branches missed.">        if(rows == 0 || columns == 0)</span>
+<span class="nc" id="L105">            return null;</span>
+<span class="nc" id="L106">        Bitmap[][] bmArr = new Bitmap[rows][columns];</span>
+<span class="nc" id="L107">        int dWidth = bm.getWidth()/rows;</span>
+<span class="nc" id="L108">        int dHeight = bm.getHeight()/columns;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        for(int row = 0; row &lt; rows; row++){</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">            for(int column = 0; column &lt; columns; column++){</span>
+<span class="nc" id="L111">                bmArr[row][column] = Bitmap.createBitmap(bm, column*dWidth, row*dHeight, dWidth, dHeight);</span>
+            }
+        }
+<span class="nc" id="L114">        return bmArr;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

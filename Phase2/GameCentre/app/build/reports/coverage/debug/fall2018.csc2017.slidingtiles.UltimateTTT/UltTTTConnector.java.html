@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UltTTTConnector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debugAndroidTest</a> &gt; <a href="index.source.html" class="el_package">fall2018.csc2017.slidingtiles.UltimateTTT</a> &gt; <span class="el_source">UltTTTConnector.java</span></div><h1>UltTTTConnector.java</h1><pre class="source lang-java linenums">package fall2018.csc2017.slidingtiles.UltimateTTT;
+
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+
+import android.app.Activity;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TextView;
+
+import fall2018.csc2017.slidingtiles.R;
+
+/**
+ * Class for Ultimate Tic Tac Toe Connector.
+ */
+public class UltTTTConnector {
+    /**
+     * The game activity of Ultimate Tic Tac Toe game
+     */
+    public UltimateTTTGameActivity activity;
+    /**
+     * The text view of player1's score
+     */
+    TextView scoreP1;
+    /**
+     * The text view of player2's score
+     */
+    TextView scoreP2;
+    /**
+     * The reset button
+     */
+    ImageButton breset;
+    /**
+     * The undo button
+     */
+    ImageButton bundo;
+    /**
+     * The backend of ultimate tic tac toe game
+     */
+    UltimateTTTBackend backend;
+    /**
+     * The image buttons of the board
+     */
+    private ImageButton[] ImageButtons;
+    /**
+     * The tables
+     */
+    private TableLayout tables[];
+
+    /**
+     * Connect the activity
+     *
+     * @param activity the activity of ultimate tic tac toe game
+     */
+<span class="fc" id="L54">    UltTTTConnector(UltimateTTTGameActivity activity) {</span>
+<span class="fc" id="L55">        this.activity = activity;</span>
+<span class="fc" id="L56">        bind();</span>
+<span class="fc" id="L57">    }</span>
+
+    /**
+     * Bind activity information with views
+     */
+    private void bind() {
+<span class="fc" id="L63">        scoreP1 = activity.findViewById(R.id.textView3);</span>
+<span class="fc" id="L64">        scoreP2 = activity.findViewById(R.id.textView4);</span>
+<span class="fc" id="L65">        backend = new UltimateTTTBackend(activity);</span>
+<span class="fc" id="L66">        breset = activity.findViewById(R.id.imageButton4);</span>
+<span class="fc" id="L67">        bundo = activity.findViewById(R.id.imageButton3);</span>
+<span class="fc" id="L68">        ImageButtons =</span>
+                new ImageButton[]{
+<span class="fc" id="L70">                        activity.findViewById(R.id.b00), activity.findViewById(R.id.b01),</span>
+<span class="fc" id="L71">                        activity.findViewById(R.id.b02), activity.findViewById(R.id.b03),</span>
+<span class="fc" id="L72">                        activity.findViewById(R.id.b04), activity.findViewById(R.id.b05),</span>
+<span class="fc" id="L73">                        activity.findViewById(R.id.b06), activity.findViewById(R.id.b07),</span>
+<span class="fc" id="L74">                        activity.findViewById(R.id.b08), activity.findViewById(R.id.b09),</span>
+<span class="fc" id="L75">                        activity.findViewById(R.id.b10), activity.findViewById(R.id.b11),</span>
+<span class="fc" id="L76">                        activity.findViewById(R.id.b12), activity.findViewById(R.id.b13),</span>
+<span class="fc" id="L77">                        activity.findViewById(R.id.b14), activity.findViewById(R.id.b15),</span>
+<span class="fc" id="L78">                        activity.findViewById(R.id.b16), activity.findViewById(R.id.b17),</span>
+<span class="fc" id="L79">                        activity.findViewById(R.id.b18), activity.findViewById(R.id.b19),</span>
+<span class="fc" id="L80">                        activity.findViewById(R.id.b20), activity.findViewById(R.id.b21),</span>
+<span class="fc" id="L81">                        activity.findViewById(R.id.b22), activity.findViewById(R.id.b23),</span>
+<span class="fc" id="L82">                        activity.findViewById(R.id.b24), activity.findViewById(R.id.b25),</span>
+<span class="fc" id="L83">                        activity.findViewById(R.id.b26), activity.findViewById(R.id.b27),</span>
+<span class="fc" id="L84">                        activity.findViewById(R.id.b28), activity.findViewById(R.id.b29),</span>
+<span class="fc" id="L85">                        activity.findViewById(R.id.b30), activity.findViewById(R.id.b31),</span>
+<span class="fc" id="L86">                        activity.findViewById(R.id.b32), activity.findViewById(R.id.b33),</span>
+<span class="fc" id="L87">                        activity.findViewById(R.id.b34), activity.findViewById(R.id.b35),</span>
+<span class="fc" id="L88">                        activity.findViewById(R.id.b36), activity.findViewById(R.id.b37),</span>
+<span class="fc" id="L89">                        activity.findViewById(R.id.b38), activity.findViewById(R.id.b39),</span>
+<span class="fc" id="L90">                        activity.findViewById(R.id.b40), activity.findViewById(R.id.b41),</span>
+<span class="fc" id="L91">                        activity.findViewById(R.id.b42), activity.findViewById(R.id.b43),</span>
+<span class="fc" id="L92">                        activity.findViewById(R.id.b44), activity.findViewById(R.id.b45),</span>
+<span class="fc" id="L93">                        activity.findViewById(R.id.b46), activity.findViewById(R.id.b47),</span>
+<span class="fc" id="L94">                        activity.findViewById(R.id.b48), activity.findViewById(R.id.b49),</span>
+<span class="fc" id="L95">                        activity.findViewById(R.id.b50), activity.findViewById(R.id.b51),</span>
+<span class="fc" id="L96">                        activity.findViewById(R.id.b52), activity.findViewById(R.id.b53),</span>
+<span class="fc" id="L97">                        activity.findViewById(R.id.b54), activity.findViewById(R.id.b55),</span>
+<span class="fc" id="L98">                        activity.findViewById(R.id.b56), activity.findViewById(R.id.b57),</span>
+<span class="fc" id="L99">                        activity.findViewById(R.id.b58), activity.findViewById(R.id.b59),</span>
+<span class="fc" id="L100">                        activity.findViewById(R.id.b60), activity.findViewById(R.id.b61),</span>
+<span class="fc" id="L101">                        activity.findViewById(R.id.b62), activity.findViewById(R.id.b63),</span>
+<span class="fc" id="L102">                        activity.findViewById(R.id.b64), activity.findViewById(R.id.b65),</span>
+<span class="fc" id="L103">                        activity.findViewById(R.id.b66), activity.findViewById(R.id.b67),</span>
+<span class="fc" id="L104">                        activity.findViewById(R.id.b68), activity.findViewById(R.id.b69),</span>
+<span class="fc" id="L105">                        activity.findViewById(R.id.b70), activity.findViewById(R.id.b71),</span>
+<span class="fc" id="L106">                        activity.findViewById(R.id.b72), activity.findViewById(R.id.b73),</span>
+<span class="fc" id="L107">                        activity.findViewById(R.id.b74), activity.findViewById(R.id.b75),</span>
+<span class="fc" id="L108">                        activity.findViewById(R.id.b76), activity.findViewById(R.id.b77),</span>
+<span class="fc" id="L109">                        activity.findViewById(R.id.b78), activity.findViewById(R.id.b79),</span>
+<span class="fc" id="L110">                        activity.findViewById(R.id.b80)</span>
+                };
+
+<span class="fc" id="L113">        tables =</span>
+                new TableLayout[]{
+<span class="fc" id="L115">                        activity.findViewById(R.id.table0),</span>
+<span class="fc" id="L116">                        activity.findViewById(R.id.table1),</span>
+<span class="fc" id="L117">                        activity.findViewById(R.id.table2),</span>
+<span class="fc" id="L118">                        activity.findViewById(R.id.table3),</span>
+<span class="fc" id="L119">                        activity.findViewById(R.id.table4),</span>
+<span class="fc" id="L120">                        activity.findViewById(R.id.table5),</span>
+<span class="fc" id="L121">                        activity.findViewById(R.id.table6),</span>
+<span class="fc" id="L122">                        activity.findViewById(R.id.table7),</span>
+<span class="fc" id="L123">                        activity.findViewById(R.id.table8),</span>
+                };
+<span class="fc" id="L125">    }</span>
+
+    /**
+     * Gets the image buttons
+     *
+     * @return the image buttons
+     */
+    ImageButton[] getImageButtons() {
+<span class="fc" id="L133">        return ImageButtons;</span>
+    }
+
+    /**
+     * Gets the tables
+     *
+     * @return the tables
+     */
+    TableLayout[] getTables() {
+<span class="fc" id="L142">        return tables;</span>
+    }
+
+    /**
+     * Gets the activity
+     *
+     * @return the activity
+     */
+    public Activity getActivity() {
+<span class="nc" id="L151">        return activity;</span>
+    }
+
+    /**
+     * Gets the index of the image button
+     *
+     * @param b the image button
+     * @return the index of the image button
+     */
+    int getIndex(ImageButton b) {
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        for (int i = 0; i &lt; ImageButtons.length; i++) {</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">            if (ImageButtons[i].equals(b)) {</span>
+<span class="nc" id="L163">                return i;</span>
+            }
+        }
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (b.equals(breset))</span>
+<span class="nc" id="L167">            return 100;</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (b.equals(bundo))</span>
+<span class="nc" id="L169">            return 200;</span>
+<span class="nc" id="L170">        return -1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>Generated by the Android Gradle plugin 3.2.1</div></body></html>

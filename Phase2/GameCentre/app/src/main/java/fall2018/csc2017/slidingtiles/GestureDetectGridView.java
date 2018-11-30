@@ -19,9 +19,21 @@ import android.widget.GridView;
  * Gridview with logic for handling swipes between buttons
  */
 public class GestureDetectGridView extends GridView {
+    /**
+     * The minimum distance for swiping
+     */
     public static final int SWIPE_MIN_DISTANCE = 100;
+    /**
+     * The maximum off path
+     */
     public static final int SWIPE_MAX_OFF_PATH = 100;
+    /**
+     * The swipe threshold velocity
+     */
     public static final int SWIPE_THRESHOLD_VELOCITY = 100;
+    /**
+     * The Gesture detector
+     */
     private GestureDetector gDetector;
     /**
      * movement controller for this grid view
@@ -35,18 +47,39 @@ public class GestureDetectGridView extends GridView {
      * movement touch x and y coordinates
      */
     private float mTouchX, mTouchY;
+    /**
+     * The board manager
+     */
     private BoardManager boardManager;
 
+    /**
+     * The grid view for gesture detector
+     *
+     * @param context the context
+     */
     public GestureDetectGridView(Context context) {
         super(context);
         init(context);
     }
 
+    /**
+     * The grid view for gesture detector
+     *
+     * @param context the context
+     * @param attrs   the attribute set
+     */
     public GestureDetectGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
+    /**
+     * The grid view for gesture detector
+     *
+     * @param context      the context
+     * @param attrs        the attribute set
+     * @param defStyleAttr the default style attribute
+     */
     public GestureDetectGridView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
@@ -59,6 +92,11 @@ public class GestureDetectGridView extends GridView {
         init(context);
     }
 
+    /**
+     * Initialize movement controller and gesture detector
+     *
+     * @param context the context
+     */
     private void init(final Context context) {
         mController = new MovementController();
         gDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
