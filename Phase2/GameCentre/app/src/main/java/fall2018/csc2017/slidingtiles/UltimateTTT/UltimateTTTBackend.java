@@ -1,7 +1,11 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
-class UltimateTTTBackend {
 //Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/backend/Backend.java
+
+/**
+ * Class for Ultimate Tic Tac Toe backend.
+ */
+class UltimateTTTBackend {
 
     /**
      * The backend executer for ultimate tic tac toe game

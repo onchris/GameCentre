@@ -16,9 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Tests for BoardManager
  */
 public class BoardAndTileTest {
 
@@ -198,6 +196,17 @@ public class BoardAndTileTest {
         assertNull(customBoard.getTile(5,5).getBackground());
         assertNull(customBoard.getTile(5,6).getBackground());
         assertEquals(1, customBoard.getTile(5,5).compareTo(customBoard.getTile(5,6)));
+    }
+
+    /**
+     * Test for touch move
+     */
+    @Test
+    public void testTouchMove(){
+        board4x4.touchMove(14);
+        board4x4.touchMove(10);
+        board4x4.touchMove(11);
+        board4x4.touchMove(15);
     }
 }
 

@@ -1,5 +1,7 @@
 package fall2018.csc2017.slidingtiles.UltimateTTT;
 
+//Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,40 +19,44 @@ import fall2018.csc2017.slidingtiles.Account;
 import fall2018.csc2017.slidingtiles.R;
 
 /**
- * Adapted from: https://github.com/Prakash2403/UltimateTicTacToe/blob/master/app/src/main/java/com/example/prakash/ultimatetictactoe/frontend/Fifth.java
+ * Class for Ultimate Tic Tac Toe game activity.
  */
-
 public class UltimateTTTGameActivity extends AppCompatActivity implements View.OnClickListener {
+
     /**
      * The board manager for ultimate tic tac toe game
      */
     private UltTTTBoardManager ultTTTBoardManager;
+
     /**
      * The connector for ultimate tic tac toe game
      */
     private UltTTTConnector connector;
+
     /**
      * The image buttons
      */
     private ImageButton[] ImageButtons;
+
     /**
      * The tables
      */
     private TableLayout tables[];
+
     /**
      * The current account
      */
-
     private Account currentAccount;
     /**
      * A check if the user is a guest
      */
     public boolean IS_GUEST = false;
+
     /**
      * The player1's name
      */
-
     String P1Name;
+
     /**
      * The player2's name
      */
@@ -71,12 +77,12 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
             P1Name = currentAccount.getUsername();
             P2Name = "Guest";
             if (currentAccount.getUltimateTTTSave().size() != 0) {
-                List saveFile = currentAccount.getUltimateTTTSave();
+                List<Integer> saveFile = currentAccount.getUltimateTTTSave();
                 connector = new UltTTTConnector(this);
                 ImageButtons = connector.getImageButtons();
                 tables = connector.getTables();
                 initialize();
-                runFrontEnd(saveFile);
+                runFrontEnd(saveFile.get(0));
             } else {
                 connector = new UltTTTConnector(this);
                 ImageButtons = connector.getImageButtons();
@@ -134,6 +140,11 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         ultTTTBoardManager = new UltTTTBoardManager(UltimateTTTInfoManager.parseJson(response), connector);
     }
 
+    /**
+     * Runs the saved moves to return to old game state.
+     *
+     * @param index the index of the move.
+     */
     public void runFrontEnd(List<Integer> index) {
         JSONObject response;
         for (int i : index) {
@@ -149,6 +160,11 @@ public class UltimateTTTGameActivity extends AppCompatActivity implements View.O
         finish();
     }
 
+    /**
+     * Returns the current account.
+     *
+     * @return returns the current account.
+     */
     public Account getCurrentAccount() {
         return currentAccount;
     }

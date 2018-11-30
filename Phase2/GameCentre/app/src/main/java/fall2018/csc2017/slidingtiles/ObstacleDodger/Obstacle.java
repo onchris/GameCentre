@@ -9,7 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 /**
- * The obstacle
+ * Class for obstacles.
  */
 public class Obstacle implements GameObject {
     /**
@@ -30,7 +30,7 @@ public class Obstacle implements GameObject {
      *
      * @return the rectangle
      */
-    public Rect getRectangle() {
+    Rect getRectangle() {
         return rectangle;
     }
 
@@ -39,7 +39,7 @@ public class Obstacle implements GameObject {
      *
      * @param y the amount to be added to obstacle
      */
-    public void incrementY(float y) {
+    void incrementY(float y) {
         rectangle.top += y;
         rectangle.bottom += y;
         rectangle2.top += y;
@@ -67,7 +67,7 @@ public class Obstacle implements GameObject {
      * @param player the player
      * @return if the player collides with obstacle
      */
-    public boolean playerCollide(RectPlayer player) {
+    boolean playerCollide(RectPlayer player) {
         return Rect.intersects(rectangle, player.getRectangle()) || Rect.intersects(rectangle2, player.getRectangle());
     }
 
