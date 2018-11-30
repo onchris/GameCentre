@@ -39,7 +39,7 @@ public class AccountManager {
      * @param username the account to be checked
      * @return whether if account already exists
      */
-    public boolean checkExistingUser(String username){
+    boolean checkExistingUser(String username){
         if(accountsList == null || accountsList.isEmpty())
             return false;
         for (Account existingAccount : accountsList) {
@@ -52,9 +52,9 @@ public class AccountManager {
     /**
      * Sets the account lists based on different implementation of loading accountsList
      * Part of dependency-injection usage.
-     * @param accountsList
+     * @param accountsList the list of accounts
      */
-    public void setAccountsList(List<Account> accountsList) {
+    void setAccountsList(List<Account> accountsList) {
         this.accountsList = accountsList;
     }
 
@@ -62,7 +62,7 @@ public class AccountManager {
      * Retrieves the current accounts lists
      * @return List<Account> the list of accounts.
      */
-    public List<Account> getAccountsList(){
+    List<Account> getAccountsList(){
         return accountsList;
     }
 
@@ -72,7 +72,7 @@ public class AccountManager {
      * @param username the username to be checked
      * @return whether if input credentials match
      */
-    public boolean authenticateCredentials(String username, String password) {
+    boolean authenticateCredentials(String username, String password) {
         for (Account acc : accountsList) {
             if (username.equals(acc.getUsername()) && password.equals(acc.getPassword())) {
                 return true;
@@ -87,7 +87,7 @@ public class AccountManager {
      * @param name the username used to get account
      * @return the account of the username
      */
-    public Account getAccountFromUsername(String name){
+    Account getAccountFromUsername(String name){
         if(accountsList == null || accountsList.isEmpty())
             return null;
         for(Account acc: accountsList)
@@ -102,7 +102,7 @@ public class AccountManager {
     /**
      * Gets the current accounts' board list
      */
-    public List<BoardManager> getCurrentAccountBoardList(Account account, boolean guest) {
+    List<BoardManager> getCurrentAccountBoardList(Account account, boolean guest) {
         List<BoardManager> bm;
         bm = guest ? new ArrayList<BoardManager>() :
                 account != null ? account.getBoardList() : new ArrayList<BoardManager>();
@@ -117,7 +117,7 @@ public class AccountManager {
      * @param activity the activity this manager is in for toast messages
      * @return A new account, null if invalid credentials or existing account
      */
-    public Account createNewAccount(String username, String password, Activity activity) {
+    Account createNewAccount(String username, String password, Activity activity) {
         Account account;
         if(username.equals("Guest") || username.equals("guest")){
             makeToastMessage(ToastConstant.TOAST_RESERVED, activity);
@@ -184,7 +184,7 @@ public class AccountManager {
      * @param fileName        the name of the file
      * @param currentActivity the activity this manager is in for openFileOutput() accessing.
      */
-    public void saveCredentials(String fileName, Activity currentActivity){
+    void saveCredentials(String fileName, Activity currentActivity){
         try{
             ObjectOutputStream outputStream;
             if(currentActivity == null || currentActivity.getApplicationContext() == null) {

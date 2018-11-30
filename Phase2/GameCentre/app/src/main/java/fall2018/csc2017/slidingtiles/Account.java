@@ -68,11 +68,16 @@ public class Account implements Serializable {
      *
      * @return this account's list of scores for ultimate tic tac toe games
      */
-    public Integer getUltimateTTTScores() {
+    Integer getUltimateTTTScores() {
         return ultimateTTTScores;
     }
 
-    public void ultimateTTTWinUpdate(Boolean won) {
+    /**
+     * Updates the score for the current account.
+     *
+     * @param won checks if the player won the UltTTT game.
+     */
+    void ultimateTTTWinUpdate(Boolean won) {
         if (won) ultimateTTTScores++;
     }
 
@@ -81,7 +86,7 @@ public class Account implements Serializable {
      *
      * @return this account's list of scores for obstacle dodger games
      */
-    public List<Integer> getObstacleDodgerScores() {
+    List<Integer> getObstacleDodgerScores() {
         return obstacleDodgerScores;
     }
 
@@ -99,7 +104,7 @@ public class Account implements Serializable {
      *
      * @return this account's list of scores
      */
-    public List<Integer> getSlidingGameScores() {
+    List<Integer> getSlidingGameScores() {
         return this.slidingGameScores;
     }
 
@@ -126,7 +131,7 @@ public class Account implements Serializable {
      *
      * @param ultTTTUserResponses the board to be replaced with
      */
-    public void setUltimateTTTSave(int ultTTTUserResponses) {
+    void setUltimateTTTSave(int ultTTTUserResponses) {
         if (ultTTTUserResponses < 0)
             this.ultimateTTTSave = new ArrayList<>();
         else {
@@ -150,7 +155,7 @@ public class Account implements Serializable {
      *
      * @param score the score to add to sliding games
      */
-    public void addToSlidingGameScores(int score) {
+    void addToSlidingGameScores(int score) {
         this.slidingGameScores.add(score);
         sortGameScores();
     }
@@ -158,7 +163,7 @@ public class Account implements Serializable {
     /**
      * Sort the user's score lists in reverse order from highest to lowest
      */
-    public void sortGameScores() {
+    void sortGameScores() {
         Collections.sort(slidingGameScores, Collections.<Integer>reverseOrder());
         Collections.sort(obstacleDodgerScores, Collections.<Integer>reverseOrder());
     }
@@ -173,6 +178,11 @@ public class Account implements Serializable {
         sortGameScores();
     }
 
+    /**
+     * Returns a list of UltimateTTT saved moves
+     *
+     * @return returns the UltimateTTT save.
+     */
     public List getUltimateTTTSave() {
         return ultimateTTTSave;
     }

@@ -15,9 +15,9 @@ class ObDodgerScoreManager extends ScoreManager {
 
     /**
      * Constructor for a new obstacle dodger score manager
-     * @param username
-     * @param ctx
-     * @param score
+     * @param username the current account's username
+     * @param ctx the context
+     * @param score the score
      */
     ObDodgerScoreManager(String username, Context ctx, Integer score) {
         super(username, ctx, score);
